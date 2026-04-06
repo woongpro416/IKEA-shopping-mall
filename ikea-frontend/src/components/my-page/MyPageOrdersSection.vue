@@ -99,6 +99,7 @@ function requestOrderAction(order) {
             <img :src="order.image" :alt="order.title" />
             <div>
               <strong>{{ order.title }}</strong>
+              <p v-if="order.orderNumber" class="my-order-row__number">주문번호 {{ order.orderNumber }}</p>
               <p>{{ order.option }}</p>
             </div>
           </div>
@@ -250,10 +251,16 @@ function requestOrderAction(order) {
   min-width: 0;
 }
 
+.my-order-row__product > div {
+  min-width: 0;
+}
+
 .my-order-row__product img {
   width: 96px;
   height: 96px;
-  object-fit: cover;
+  object-fit: contain;
+  border: 1px solid var(--border-soft);
+  background: #ffffff;
 }
 
 .my-order-row__product strong {
@@ -261,6 +268,8 @@ function requestOrderAction(order) {
   color: var(--text-strong);
   font-size: 18px;
   line-height: 1.45;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 
 .my-order-row__product p {
@@ -268,6 +277,14 @@ function requestOrderAction(order) {
   color: var(--text-muted-strong);
   font-size: 13px;
   line-height: 1.6;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.my-order-row__number {
+  color: var(--text-strong);
+  font-weight: 600;
+  word-break: break-all;
 }
 
 .my-order-row__price {
@@ -310,7 +327,7 @@ function requestOrderAction(order) {
   cursor: default;
 }
 
-@media (max-width: 1080px) {
+@media (max-width: 1180px) {
   .my-status-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
@@ -326,9 +343,13 @@ function requestOrderAction(order) {
   .my-order-row__price {
     display: none;
   }
+
+  .my-order-row__actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
-@media (max-width: 720px) {
+@media (max-width: 980px) {
   .my-status-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -345,6 +366,17 @@ function requestOrderAction(order) {
     grid-template-columns: 1fr;
     gap: 14px;
     padding: 18px 0;
+  }
+
+  .my-order-row__product {
+    grid-template-columns: 88px minmax(0, 1fr);
+    gap: 14px;
+    align-items: start;
+  }
+
+  .my-order-row__product img {
+    width: 88px;
+    height: 88px;
   }
 
   .my-order-row__status,

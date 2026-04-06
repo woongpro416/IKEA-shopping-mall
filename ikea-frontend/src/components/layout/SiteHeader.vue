@@ -532,24 +532,77 @@ defineExpose({
   }
 
   .hs-header__inner {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr) auto;
     grid-template-areas:
-      'logo'
-      'tabs'
-      'search'
-      'utils';
-    justify-items: start;
+      'logo utils'
+      'tabs tabs'
+      'search search';
+    align-items: center;
+    column-gap: 12px;
+    row-gap: 10px;
+    padding-block: 12px;
+  }
+
+  .hs-header__logo {
+    width: 132px;
+    height: 30px;
   }
 
   .hs-header__tabs,
-  .hs-header__utils {
+  .hs-header__search {
     width: 100%;
+  }
+
+  .hs-header__tabs {
     justify-content: flex-start;
     flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .hs-header__tab {
+    font-size: 15px;
+  }
+
+  .hs-header__search input {
+    height: 44px;
+  }
+
+  .hs-header__utils {
+    width: auto;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+    gap: 16px;
+  }
+
+  .hs-util {
+    gap: 3px;
+  }
+
+  .hs-util svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .hs-util > span {
+    font-size: 12px;
   }
 
   .hs-submenu__sofa {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 420px) {
+  .hs-header__tabs {
+    gap: 16px;
+  }
+
+  .hs-header__tab {
+    font-size: 14px;
+  }
+
+  .hs-header__utils {
+    gap: 12px;
   }
 }
 </style>

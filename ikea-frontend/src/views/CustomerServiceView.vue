@@ -83,15 +83,25 @@ const qnaNoteMessage = computed(() => {
     return 'QnA는 로그인한 계정 기준으로 등록 내역과 답변 상태를 확인할 수 있습니다.';
   }
 
+  if (qnaViewerMode.value === 'admin') {
+    return '관리자 계정은 전체 QnA 목록을 확인할 수 있습니다.';
+  }
+
   return '로그인한 계정의 등록 내역만 표시됩니다.';
 });
 
 const qnaSearchPlaceholder = computed(() => '제목/답변 검색');
-const qnaEmptyDescription = computed(() => (
-  qnaViewerMode.value === 'member'
-    ? '등록한 내역이 없습니다.'
-    : '로그인 후 등록 내역을 확인해 주세요.'
-));
+const qnaEmptyDescription = computed(() => {
+  if (qnaViewerMode.value === 'member') {
+    return '등록한 내역이 없습니다.';
+  }
+
+  if (qnaViewerMode.value === 'admin') {
+    return '등록된 문의가 없습니다.';
+  }
+
+  return '로그인 후 등록 내역을 확인해 주세요.';
+});
 
 function openQnaWrite() {
   router.push(ROUTE_PATHS.customerServiceQnaWrite);
@@ -247,7 +257,7 @@ async function removeQna(item) {
       <div class="cs-qna-actions">
         <div class="cs-qna-actions__buttons">
           <button v-if="qnaViewerMode === 'member'" type="button" @click="openQnaWrite">작성하기</button>
-          <button v-else type="button" class="is-light" @click="openQnaLogin">로그인 후 보기</button>
+          <button v-else-if="qnaViewerMode === 'guest'" type="button" class="is-light" @click="openQnaLogin">로그인 후 보기</button>
         </div>
       </div>
 
@@ -286,6 +296,7 @@ async function removeQna(item) {
             :items="pagedQnaRows"
             :empty-description="qnaEmptyDescription"
             :show-item-actions="qnaViewerMode === 'member'"
+            :show-writer="qnaViewerMode === 'admin'"
             @edit-item="openQnaEdit"
             @delete-item="removeQna"
           />

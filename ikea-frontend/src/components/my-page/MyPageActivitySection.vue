@@ -148,7 +148,9 @@ defineProps({
 .my-product-row img {
   width: 108px;
   height: 108px;
-  object-fit: cover;
+  object-fit: contain;
+  border: 1px solid var(--border-soft);
+  background: #ffffff;
 }
 
 .my-product-row__copy {
@@ -166,6 +168,8 @@ defineProps({
   color: var(--text-strong);
   font-size: 17px;
   line-height: 1.45;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 
 .my-product-row__copy p {
@@ -173,6 +177,8 @@ defineProps({
   color: var(--text-muted-strong);
   font-size: 13px;
   line-height: 1.5;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 
 .my-product-row b {
@@ -184,7 +190,25 @@ defineProps({
 
 @media (max-width: 1080px) {
   .my-panel-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .my-product-row {
+    grid-template-columns: 96px minmax(0, 1fr);
+    align-items: start;
+    padding: 16px 0;
+  }
+
+  .my-product-row img {
+    width: 96px;
+    height: 96px;
+  }
+
+  .my-product-row b {
+    grid-column: 2;
+    justify-self: start;
+    text-align: left;
   }
 }
 
@@ -198,17 +222,21 @@ defineProps({
   }
 
   .my-product-row {
-    grid-template-columns: 1fr;
+    grid-template-columns: 88px minmax(0, 1fr);
+    gap: 14px;
+    align-items: start;
     padding: 16px 0;
   }
 
   .my-product-row img {
-    width: 100%;
-    height: 180px;
+    width: 88px;
+    height: 88px;
   }
 
   .my-product-row b {
+    grid-column: 2;
     justify-self: start;
+    text-align: left;
   }
 }
 </style>

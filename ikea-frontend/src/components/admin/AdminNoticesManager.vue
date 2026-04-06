@@ -26,7 +26,6 @@ const { memberName, loginId } = storeToRefs(accountStore);
 
 const notices = shallowRef([]);
 const selectedNoticeId = shallowRef('');
-const selectedFiles = shallowRef([]);
 const statusMessage = shallowRef('');
 const loadErrorMessage = shallowRef('');
 const isLoading = shallowRef(false);
@@ -66,7 +65,6 @@ function clearFormFields() {
   formState.title = '';
   formState.writer = resolveOperatorName();
   formState.content = '';
-  selectedFiles.value = [];
 }
 
 function beginCreateMode({ clearStatus = true } = {}) {
@@ -92,8 +90,6 @@ async function beginEditMode(notice) {
     formState.title = notice.title;
     formState.writer = notice.writer || resolveOperatorName();
     formState.content = notice.content;
-  } finally {
-    selectedFiles.value = [];
   }
 }
 
@@ -138,10 +134,6 @@ async function loadNotices(options = {}) {
   return true;
 }
 
-function handleFileChange(event) {
-  selectedFiles.value = [...(event.target.files ?? [])];
-}
-
 async function submitNotice() {
   if (!formState.title.trim() || !formState.content.trim()) {
     statusMessage.value = '제목과 내용을 모두 입력해 주세요.';
@@ -156,7 +148,6 @@ async function submitNotice() {
     title: formState.title.trim(),
     writer: formState.writer.trim() || resolveOperatorName(),
     content: formState.content.trim(),
-    files: selectedFiles.value,
   };
 
   try {
@@ -298,12 +289,6 @@ onMounted(async () => {
           <span>내용</span>
           <textarea v-model="formState.content" rows="10" />
         </label>
-
-        <label>
-          <span>첨부 파일</span>
-          <input type="file" multiple @change="handleFileChange" />
-        </label>
-
         <div class="admin-notices-manager__actions admin-notices-manager__actions--form">
           <button type="button" class="admin-notices-manager__secondary" @click="beginCreateMode">
             입력 초기화
@@ -365,6 +350,8 @@ onMounted(async () => {
   color: #111111;
   font-size: 15px;
   text-align: left;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 
 .admin-notices-manager__actions {
@@ -442,6 +429,11 @@ onMounted(async () => {
 
   .admin-notices-manager__head {
     display: none;
+  }
+
+  .admin-notices-manager__row {
+    gap: 8px;
+    align-items: start;
   }
 }
 

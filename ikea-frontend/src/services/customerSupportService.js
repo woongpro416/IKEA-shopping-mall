@@ -255,8 +255,9 @@ function lookupGuestOrdersFromSession({ buyerName = '', orderNumber = '', phoneN
     });
 }
 
-export async function getCustomerSupportQnaRows(query = {}) {
-  const response = await httpRequester.get('/qna', { params: query });
+export async function getCustomerSupportQnaRows(query = {}, options = {}) {
+  const endpoint = options.includeAll ? '/admin/qna' : '/qna';
+  const response = await httpRequester.get(endpoint, { params: query });
   return normalizeCustomerSupportQnaRows(response);
 }
 

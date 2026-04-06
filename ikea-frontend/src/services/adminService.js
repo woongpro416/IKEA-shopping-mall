@@ -61,6 +61,13 @@ function buildJsonPartFormData(dto, files = [], fileFieldName) {
   return formData;
 }
 
+function buildAdminQnaAnswerPayload(payload = {}) {
+  return {
+    title: String(payload.title ?? '').trim(),
+    content: String(payload.content ?? '').trim(),
+  };
+}
+
 export function getProductCatalog(query) {
   if (query?.keyword) {
     return httpRequester.get('/product/search', {
@@ -112,11 +119,17 @@ export function removeAdminReview(reviewId) {
 }
 
 export function createAdminQnaAnswer(parentId, payload) {
-  return httpRequester.post(`/admin/qna/${parentId}/answer`, payload);
+  return httpRequester.post(
+    `/admin/qna/${parentId}/answer`,
+    buildAdminQnaAnswerPayload(payload),
+  );
 }
 
 export function updateAdminQnaAnswer(qnaId, payload) {
-  return httpRequester.put(`/admin/qna/${qnaId}/answer`, payload);
+  return httpRequester.put(
+    `/admin/qna/${qnaId}/answer`,
+    buildAdminQnaAnswerPayload(payload),
+  );
 }
 
 export function deleteAdminQnaAnswer(qnaId) {

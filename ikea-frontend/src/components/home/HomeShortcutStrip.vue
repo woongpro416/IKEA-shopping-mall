@@ -141,7 +141,42 @@ const emit = defineEmits(['activate']);
 @media (max-width: 720px) {
   .hs-shortcuts {
     width: calc(100% - 24px);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: -18px;
+  }
+
+  .hs-shortcut {
+    min-height: 136px;
+    padding: 14px 10px;
+    gap: 10px;
+  }
+
+  .hs-shortcut__thumb {
+    height: 84px;
+  }
+
+  .hs-shortcut.is-category .hs-shortcut__thumb {
+    height: 92px;
+  }
+
+  .hs-shortcut.is-category .hs-shortcut__thumb img {
+    object-fit: contain !important;
+  }
+
+  .hs-shortcut__label {
+    min-height: auto;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 420px) {
+  .hs-shortcuts {
     grid-template-columns: 1fr;
+  }
+
+  .hs-shortcut.is-category .hs-shortcut__thumb {
+    height: 112px;
   }
 }
 </style>

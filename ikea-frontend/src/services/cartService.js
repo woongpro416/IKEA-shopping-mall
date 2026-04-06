@@ -49,17 +49,7 @@ function buildLegacyMemberCartPath(suffix = '') {
 }
 
 export async function getMyCart() {
-  const legacyPath = buildLegacyMemberCartPath();
-  const requestFactories = [
-    () => httpRequester.get('/cart/me'),
-    () => httpRequester.get('/cart'),
-  ];
-
-  if (legacyPath) {
-    requestFactories.push(() => httpRequester.get(legacyPath));
-  }
-
-  return runCartRequestWithFallback(requestFactories);
+  return httpRequester.get('/cart');
 }
 
 export function getMemberCart() {
@@ -68,17 +58,7 @@ export function getMemberCart() {
 
 export async function addCartItem(memberIdOrCartRequest, maybeCartRequest) {
   const cartRequest = maybeCartRequest === undefined ? memberIdOrCartRequest : maybeCartRequest;
-  const legacyPath = buildLegacyMemberCartPath();
-  const requestFactories = [
-    () => httpRequester.post('/cart/me', cartRequest),
-    () => httpRequester.post('/cart', cartRequest),
-  ];
-
-  if (legacyPath) {
-    requestFactories.push(() => httpRequester.post(legacyPath, cartRequest));
-  }
-
-  return runCartRequestWithFallback(requestFactories);
+  return httpRequester.post('/cart', cartRequest);
 }
 
 export function addGuestCartItem(cartRequest = {}, guestCartKey = '') {
@@ -112,17 +92,7 @@ export function deleteCartItem(cartItemId) {
 }
 
 export async function clearMyCart() {
-  const legacyPath = buildLegacyMemberCartPath('/clear');
-  const requestFactories = [
-    () => httpRequester.delete('/cart/me/clear'),
-    () => httpRequester.delete('/cart/clear'),
-  ];
-
-  if (legacyPath) {
-    requestFactories.push(() => httpRequester.delete(legacyPath));
-  }
-
-  return runCartRequestWithFallback(requestFactories);
+  return httpRequester.delete('/cart/clear');
 }
 
 export function clearMemberCart() {

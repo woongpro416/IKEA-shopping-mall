@@ -1,9 +1,10 @@
 import bedMattressShortcutImage from '../../assets/home/shortcuts/bed-mattress.jpg';
-import deskShortcutImage from '../../assets/home/shortcuts/desk.jpg';
 import diningShortcutImage from '../../assets/home/shortcuts/dining.jpg';
 import kitchenFurnitureShortcutImage from '../../assets/home/shortcuts/kitchen-furniture.jpg';
 import plantShortcutImage from '../../assets/home/shortcuts/plant.jpg';
 import sofaShortcutImage from '../../assets/home/shortcuts/sofa.jpg';
+
+const deskShortcutImage = 'https://www.ikea.com/kr/ko/images/products/lagkapten-adils-desk-white__0977229_pe813472_s5.jpg';
 
 const topShortcutImageMap = {
   sofa: sofaShortcutImage,
@@ -52,6 +53,8 @@ export const topShortcutBoxes = [
     id: 'shortcut-desk',
     type: 'category',
     image: topShortcutImageMap.desk,
+    imageFit: 'contain',
+    imagePosition: 'center center',
     label: '책상',
     categorySlug: 'desk',
   },
@@ -59,6 +62,8 @@ export const topShortcutBoxes = [
     id: 'shortcut-kitchen-furniture',
     type: 'category',
     image: topShortcutImageMap['kitchen-furniture'],
+    imageFit: 'contain',
+    imagePosition: 'center center',
     label: '주방가구',
     categorySlug: 'kitchen-furniture',
   },

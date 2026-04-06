@@ -30,7 +30,7 @@ const {
 
 const inquiryPlaceholder = computed(() => (
   inquiryType.value === 'order'
-    ? '주문번호를 입력해 주세요.'
+    ? '예: ORDER_20260406_ab12cd34'
     : '휴대전화번호를 입력해 주세요.'
 ));
 const memberLoginError = computed(() => loginValidationError.value || loginError.value);
@@ -264,6 +264,7 @@ watch(
                   주문번호를 찾을 수 없는 경우,<br />
                   HOMiO 고객센터 1688-4945로 문의해 주세요.
                 </p>
+                <p class="login-help">주문번호에는 밑줄(_)이 포함될 수 있습니다.</p>
                 <p v-if="guestLookupError" class="login-status login-status--error">{{ guestLookupError }}</p>
               </div>
 

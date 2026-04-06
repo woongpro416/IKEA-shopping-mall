@@ -433,6 +433,15 @@ onMounted(loadMembers);
   color: #8c8c8c;
 }
 
+.admin-members-manager__row strong,
+.admin-members-manager__row span,
+.admin-members-manager__info-grid strong,
+.admin-members-manager__address strong,
+.admin-members-manager__address p {
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
 .admin-members-manager__badge {
   display: inline-flex;
   margin-left: 8px;
@@ -558,6 +567,11 @@ onMounted(loadMembers);
   .admin-members-manager__head {
     display: none;
   }
+
+  .admin-members-manager__row {
+    gap: 8px;
+    align-items: start;
+  }
 }
 
 @media (max-width: 720px) {
@@ -577,6 +591,11 @@ onMounted(loadMembers);
 
   .admin-members-manager__actions {
     flex-direction: column;
+  }
+
+  .admin-members-manager__primary,
+  .admin-members-manager__secondary {
+    width: 100%;
   }
 }
 </style>

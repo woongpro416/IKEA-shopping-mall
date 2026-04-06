@@ -21,7 +21,7 @@ const statusClass = computed(() => ({
 <template>
   <section class="guest-order">
     <div class="guest-order__intro">
-      <p>주문을 진행한 현재 브라우저에서 이름과 주문번호 또는 휴대전화번호를 입력하면 주문 상태를 확인할 수 있습니다.</p>
+      <p>주문을 진행한 현재 브라우저에서 이름과 주문번호 또는 휴대전화번호를 입력하면 주문 상태를 확인할 수 있습니다. 주문번호에는 밑줄(_)이 포함될 수 있습니다.</p>
     </div>
 
     <form class="guest-order__form" @submit.prevent="submitLookup">
@@ -51,7 +51,7 @@ const statusClass = computed(() => ({
           v-model.trim="form.orderNumber"
           type="text"
           maxlength="30"
-          placeholder="예: HS-240320-1089"
+          placeholder="예: ORDER_20260406_ab12cd34"
         />
       </div>
 

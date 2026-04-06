@@ -110,6 +110,7 @@ const operatorLabel = computed(() => memberName.value || loginId.value || 'ìš´ì˜
   display: flex;
   align-items: center;
   gap: 9px;
+  flex-wrap: wrap;
   color: #8f8f8f;
   font-size: 13px;
   line-height: 1;
@@ -249,6 +250,10 @@ const operatorLabel = computed(() => memberName.value || loginId.value || 'ìš´ì˜
     border: 1px solid #e6e6e6;
     text-align: center;
   }
+
+  .admin-sidebar__meta {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 720px) {
@@ -263,8 +268,37 @@ const operatorLabel = computed(() => memberName.value || loginId.value || 'ìš´ì˜
     flex-direction: column;
   }
 
+  .admin-sidebar h1 {
+    margin-bottom: 20px;
+    font-size: 30px;
+  }
+
+  .admin-sidebar__nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .admin-sidebar__link strong {
+    font-size: 14px;
+    line-height: 1.35;
+    word-break: keep-all;
+  }
+
+  .admin-sidebar__meta {
+    grid-template-columns: 1fr;
+  }
+
   .admin-content__copy h2 {
     font-size: 32px;
+  }
+}
+
+@media (max-width: 420px) {
+  .admin-sidebar__nav {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-content__copy h2 {
+    font-size: 28px;
   }
 }
 </style>

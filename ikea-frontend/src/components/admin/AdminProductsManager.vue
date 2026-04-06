@@ -46,6 +46,7 @@ const activeProductId = shallowRef('');
 const selectedMainFiles = shallowRef([]);
 const selectedGalleryFiles = shallowRef([]);
 const selectedDimensionFiles = shallowRef([]);
+const productFormRef = shallowRef(null);
 const statusMessage = shallowRef('');
 const loadErrorMessage = shallowRef('');
 const { requestConfirm } = useFeedback();
@@ -295,7 +296,13 @@ function beginEditMode(product) {
   formState.highlightsText = detailDraft.highlightsText;
   formState.measurementsText = detailDraft.measurementsText;
   resetFileSelections();
-  statusMessage.value = '';
+  statusMessage.value = `"${normalizedProduct.name}" 상품 수정 중입니다.`;
+  requestAnimationFrame(() => {
+    productFormRef.value?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
+  });
 }
 
 function applyProducts(items) {
@@ -544,7 +551,7 @@ onMounted(async () => {
         </button>
       </template>
 
-      <form class="admin-products-manager__form" @submit.prevent="submitProduct">
+      <form ref="productFormRef" class="admin-products-manager__form" @submit.prevent="submitProduct">
         <AdminProductBasicSection
           :form-state="formState"
           :categories="categories"
@@ -644,7 +651,7 @@ onMounted(async () => {
   width: 76px;
   height: 76px;
   border: 1px solid var(--border-subtle);
-  object-fit: cover;
+  object-fit: contain;
   background: var(--surface-soft);
 }
 
@@ -653,6 +660,8 @@ onMounted(async () => {
   color: var(--text-strong);
   font-size: 15px;
   line-height: 1.4;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 
 .admin-products-manager__product span {
@@ -660,6 +669,8 @@ onMounted(async () => {
   margin-top: 6px;
   color: var(--text-muted);
   font-size: 13px;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 
 .admin-products-manager__row-actions {
@@ -741,11 +752,36 @@ onMounted(async () => {
   .admin-products-manager__head {
     display: none;
   }
+
+  .admin-products-manager__row {
+    gap: 8px;
+    align-items: start;
+  }
+
+  .admin-products-manager__row-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 720px) {
   .admin-products-manager__search {
     width: 100%;
+  }
+
+  .admin-products-manager__product {
+    grid-template-columns: 64px minmax(0, 1fr);
+    gap: 12px;
+    align-items: start;
+  }
+
+  .admin-products-manager__product img {
+    width: 64px;
+    height: 64px;
+  }
+
+  .admin-products-manager__row-actions {
+    grid-template-columns: 1fr;
   }
 
   .admin-products-manager__form-actions {

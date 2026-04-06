@@ -1,6 +1,5 @@
 <script setup>
 import { computed, onMounted, reactive, shallowRef, watch } from 'vue';
-import { storeToRefs } from 'pinia';
 import AdminPagination from './AdminPagination.vue';
 import AdminPanel from './AdminPanel.vue';
 import CommonStatePanel from '../common/CommonStatePanel.vue';
@@ -16,11 +15,7 @@ import {
   normalizeArrayPayload,
 } from '../../mappers/adminManagementMapper';
 import { useFeedback } from '../../composables/useFeedback';
-import { useAccountStore } from '../../stores/account';
 import { resolveAdminActionErrorMessage } from '../../utils/apiErrorMessage';
-
-const accountStore = useAccountStore();
-const { memberName, loginId } = storeToRefs(accountStore);
 
 const threads = shallowRef([]);
 const selectedThreadId = shallowRef('');
@@ -35,7 +30,6 @@ const pageSize = 5;
 const { requestConfirm } = useFeedback();
 
 const answerForm = reactive({
-  writer: '',
   content: '',
 });
 
@@ -90,16 +84,11 @@ const submitButtonLabel = computed(() => {
   return selectedThread.value?.answer ? '답변 수정' : '답변 등록';
 });
 
-function resolveOperatorName() {
-  return memberName.value || loginId.value || '운영 관리자';
-}
-
 function getThreadStatus(thread) {
   return thread?.answer ? '답변완료' : '답변대기';
 }
 
 function syncAnswerForm(thread) {
-  answerForm.writer = thread?.answer?.writer || resolveOperatorName();
   answerForm.content = thread?.answer?.content || '';
 }
 
@@ -168,7 +157,6 @@ async function submitAnswer() {
   const payload = {
     title: `${selectedThread.value.title} 답변`,
     content: answerForm.content.trim(),
-    writer: answerForm.writer.trim() || resolveOperatorName(),
   };
 
   try {
@@ -325,11 +313,6 @@ onMounted(loadThreads);
         </article>
 
         <form class="admin-qna-manager__answer-form" @submit.prevent="submitAnswer">
-          <label>
-            <span>답변 작성자</span>
-            <input v-model="answerForm.writer" type="text" />
-          </label>
-
           <label>
             <span>답변 내용</span>
             <textarea v-model="answerForm.content" rows="8" />

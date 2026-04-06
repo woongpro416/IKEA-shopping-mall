@@ -446,8 +446,42 @@ onBeforeUnmount(() => {
   }
 
   .hs-footer__top {
-    flex-direction: column;
     align-items: flex-start;
+  }
+
+  .hs-footer__links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px 14px;
+    width: 100%;
+  }
+
+  .hs-footer__brand-logo {
+    width: 124px;
+  }
+
+  .hs-support-inline {
+    gap: 8px;
+    padding: 16px;
+    border: 1px solid #d8dde5;
+    background: #ffffff;
+  }
+
+  .hs-footer__qr {
+    display: none;
+  }
+
+  .hs-footer__company-lines {
+    display: grid;
+    gap: 4px;
+  }
+
+  .hs-footer__company-lines p {
+    padding-right: 0;
+  }
+
+  .hs-footer__company-lines p::after {
+    display: none;
   }
 
   .hs-footer-modal {
