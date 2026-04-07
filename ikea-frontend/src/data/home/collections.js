@@ -1,4 +1,4 @@
-import {
+﻿import {
   categoryMap,
   categoryMeta,
   categorySlugOrder,
@@ -23,6 +23,15 @@ export const weeklyDeals = [
     }),
   );
 
+const diningSpotlightCandidates = getTopProducts('dining', 12);
+const diningSpotlightTable = diningSpotlightCandidates.find((product) => String(product.id) === '80365802')
+  ?? diningSpotlightCandidates.find((product) => product.typeSlug === 'table')
+  ?? findPrimaryProduct('dining');
+const diningSpotlightChair = diningSpotlightCandidates.find((product) => String(product.id) === '80566749')
+  ?? diningSpotlightCandidates.find((product) => product.typeSlug === 'chair')
+  ?? getNaturalProducts('dining', 12).find((product) => product.typeSlug === 'chair')
+  ?? null;
+
 export const curatedSpotlight = {
   title: '공간별 추천 셀렉션',
   featured: {
@@ -34,15 +43,15 @@ export const curatedSpotlight = {
     categorySlug: 'dining',
   },
   items: [
-    toProductCard(findPrimaryProduct('desk'), {
-      id: 'spotlight-desk',
-      badge: 'WORK SETUP',
-      tags: ['작업 공간', '집중 환경'],
+    toProductCard(diningSpotlightTable, {
+      id: 'spotlight-dining-table',
+      badge: 'DINING TABLE',
+      tags: ['원목 포인트', '브라운 톤'],
     }),
-    toProductCard(findPrimaryProduct('plant'), {
-      id: 'spotlight-plant',
-      badge: 'GREEN TOUCH',
-      tags: ['공간 포인트', '실내 연출'],
+    toProductCard(diningSpotlightChair, {
+      id: 'spotlight-dining-chair',
+      badge: 'DINING CHAIR',
+      tags: ['패브릭 좌판', '다크 베이지'],
     }),
   ].filter(Boolean),
 };

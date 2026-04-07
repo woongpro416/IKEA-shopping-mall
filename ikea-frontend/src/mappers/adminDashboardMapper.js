@@ -44,22 +44,11 @@ function toOrderStatusLabel(status) {
   return getAdminOrderStatusLabel(status);
 }
 
-function buildStockSeed(sourceId) {
-  const id = String(sourceId ?? '');
-  const hash = [...id].reduce((sum, char) => sum + char.charCodeAt(0), 0);
-
-  if (hash % 7 === 0) {
-    return 3;
-  }
-
-  if (hash % 5 === 0) {
-    return 7;
-  }
-
-  return (hash % 18) + 11;
-}
-
 function resolveStockState(stock) {
+  if (!Number.isFinite(stock) || stock < 0) {
+    return 'unknown';
+  }
+
   if (stock <= 3) {
     return 'critical';
   }
@@ -122,63 +111,6 @@ function buildNormalizedProductMap(products) {
     result.set(key, product);
     return result;
   }, new Map());
-}
-
-export function createFallbackReviews(orderReviewItems = []) {
-  const seededReviews = orderReviewItems
-    .filter((item) => item.review)
-    .map((item, index) => ({
-      reviewId: index + 1,
-      memberName: item.memberName ?? item.orderNo?.replace('HS-', '') ?? 'guest',
-      productName: item.product,
-      content: item.review.content,
-      rating: item.review.rating,
-      createdAt: `2026-03-${String(18 - index).padStart(2, '0')}T10:00:00`,
-    }));
-
-  return seededReviews.length
-    ? seededReviews
-    : [
-        {
-          reviewId: 1,
-          memberName: 'roomtone',
-          productName: '아일랜드 모듈 소파',
-          content: '조합성이 좋고 패브릭 촉감도 좋아 거실용 소파로 만족하며 사용 중입니다.',
-          rating: 5,
-          createdAt: '2026-03-18T10:00:00',
-        },
-      ];
-}
-
-export function createFallbackQnas(qnaThreads = []) {
-  return qnaThreads.flatMap((thread) => {
-    const question = {
-      qnaId: thread.id * 10,
-      level: 0,
-      parentId: thread.id * 10,
-      title: thread.title,
-      content: thread.question,
-      writer: thread.author,
-      createdAt: `${thread.date}T09:00:00`,
-    };
-
-    if (!thread.answer) {
-      return [question];
-    }
-
-    return [
-      question,
-      {
-        qnaId: thread.id * 10 + 1,
-        level: 1,
-        parentId: thread.id * 10,
-        title: `${thread.title} 답변`,
-        content: thread.answer,
-        writer: '운영 관리자',
-        createdAt: `${thread.date}T14:00:00`,
-      },
-    ];
-  });
 }
 
 export function createCategoryRows(categories, products) {
@@ -276,7 +208,9 @@ export function createMemberRows(members) {
 export function createProductRows(products) {
   return products.map((item) => {
     const sourceId = String(item.productId ?? item.id ?? item.name);
-    const stock = Number(item.stock ?? buildStockSeed(sourceId));
+    const rawStock = Number(item.stock);
+    const hasStock = Number.isFinite(rawStock) && rawStock >= 0;
+    const stock = hasStock ? rawStock : null;
 
     return {
       id: sourceId,
@@ -286,7 +220,7 @@ export function createProductRows(products) {
       image: item.imgPath ?? item.image,
       date: formatDate(item.createdAt),
       stock,
-      stockLabel: `${stock}개`,
+      stockLabel: hasStock ? `${stock}개` : '-',
       stockState: resolveStockState(stock),
       to: buildProductDetailPath(sourceId),
     };
@@ -413,6 +347,7 @@ function createCategoryChart(categoryRows) {
 
 function createStockRows(productRows) {
   return [...productRows]
+    .filter((row) => Number.isFinite(row.stock))
     .sort((left, right) => left.stock - right.stock)
     .slice(0, 5);
 }

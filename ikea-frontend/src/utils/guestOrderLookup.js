@@ -36,8 +36,8 @@ export function validateGuestOrderLookupForm(form = {}, options = {}) {
       return '주문번호를 입력해 주세요.';
     }
 
-    if (!/^[A-Za-z0-9-]{6,30}$/.test(orderNumber)) {
-      return '주문번호는 영문, 숫자, 하이픈만 입력해 주세요.';
+    if (!/^[A-Za-z0-9_-]{6,30}$/.test(orderNumber)) {
+      return '주문번호는 영문, 숫자, 하이픈, 밑줄(_)만 입력해 주세요.';
     }
 
     return '';

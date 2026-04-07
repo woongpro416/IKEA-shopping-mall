@@ -224,8 +224,17 @@ function handleKeydown(event, slide) {
   border-radius: 999px;
   background: rgba(17, 24, 39, 0.42);
   color: #ffffff;
+  opacity: 0;
+  pointer-events: none;
   transform: translateY(-50%);
+  transition: opacity 180ms ease, background-color 180ms ease, border-color 180ms ease;
   cursor: pointer;
+}
+
+.hs-hero:hover .hs-hero__nav,
+.hs-hero:focus-within .hs-hero__nav {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .hs-hero__nav svg {
@@ -282,27 +291,57 @@ function handleKeydown(event, slide) {
 
 @media (max-width: 720px) {
   .hs-hero {
-    --hs-hero-height: 520px;
+    --hs-hero-height: 400px;
   }
 
   .hs-hero__overlay {
+    top: auto;
+    bottom: 56px;
     right: 16px;
     left: 16px;
     max-width: none;
     min-height: 0;
-    padding: 18px 16px;
+    gap: 8px;
+    padding: 14px 14px;
+    transform: none;
   }
 
   .hs-hero__overlay h1 {
-    font-size: 34px;
+    font-size: 26px;
+  }
+
+  .hs-hero__description {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .hs-hero__nav {
+    display: none;
   }
 
   .hs-hero__footer {
     right: 12px;
     bottom: 12px;
     left: 12px;
-    gap: 14px;
-    padding-inline: 16px;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 12px;
+  }
+}
+
+@media (max-width: 420px) {
+  .hs-hero {
+    --hs-hero-height: 360px;
+  }
+
+  .hs-hero__overlay {
+    bottom: 52px;
+    left: 12px;
+    right: 12px;
+  }
+
+  .hs-hero__overlay h1 {
+    font-size: 23px;
   }
 }
 </style>

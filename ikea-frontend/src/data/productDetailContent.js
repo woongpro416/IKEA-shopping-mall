@@ -1,8 +1,58 @@
-import { catalogProducts, getProductDetailSeed, productDetailContentMap } from './catalog';
+import { getProductDetailSeed } from './catalog';
 import {
   buildProductOptionSummary,
   buildProductQuickFacts,
 } from '../constants/productAttributeConfig';
+
+const META_TEXT_PATTERNS = [
+  /현재 사이트의 상세 구성에 맞춰/i,
+  /현재 카탈로그 필터와 상세 요약에 맞춰/i,
+  /IKEA 공식 상세 기준 최소 정보/i,
+  /실제 리뷰 데이터 연결을 준비한 상태/i,
+  /후속 리뷰 연동 시 실제 구매 리뷰로 교체/i,
+  /대표 구매자 후기에서 먼저 보이는 반응만 최소한으로 정리/i,
+  /리뷰 데이터 연결 준비/i,
+  /대표 후기 준비 중/i,
+  /기본 안내/i,
+  /시스템 안내/i,
+  /세부 치수 데이터는 후속 API/i,
+  /API 연결을 위한 최소 상세 데이터 구성/i,
+];
+
+function sanitizeDetailText(value) {
+  const text = String(value ?? '').trim();
+
+  if (!text) {
+    return '';
+  }
+
+  if (META_TEXT_PATTERNS.some((pattern) => pattern.test(text))) {
+    return '';
+  }
+
+  return text;
+}
+
+function sanitizeTextList(values = []) {
+  return values
+    .map((value) => sanitizeDetailText(value))
+    .filter(Boolean);
+}
+
+function sanitizeReviewHighlights(items = []) {
+  return items.filter((item) => {
+    const title = sanitizeDetailText(item?.title);
+    const body = sanitizeDetailText(item?.body);
+    const meta = sanitizeDetailText(item?.meta);
+
+    return Boolean(title || body || meta);
+  }).map((item) => ({
+    ...item,
+    title: sanitizeDetailText(item?.title),
+    body: sanitizeDetailText(item?.body),
+    meta: sanitizeDetailText(item?.meta),
+  }));
+}
 
 function createMeasurementMap(measurements = []) {
   const aliasMap = {
@@ -18,6 +68,7 @@ function createMeasurementMap(measurements = []) {
     '팔걸이 높이': 'armHeight',
     '팔걸이 너비': 'armWidth',
     '가구 밑 자유공간': 'clearance',
+    '가구 밑 여유공간': 'clearance',
     '책상 하중': 'shelfLoad',
     '최대 하중': 'maxLoad',
   };
@@ -60,7 +111,7 @@ function mergeQuickFacts(primaryFacts = [], secondaryFacts = []) {
   return merged;
 }
 
-function createFallbackDetail(product) {
+function createFallbackDetail(product = {}) {
   const productLabel = product.label ?? product.categoryLabel ?? '대표 상품';
   const optionSummary = buildProductOptionSummary(product) || '기본 옵션';
   const galleryImages = Array.from(
@@ -71,97 +122,50 @@ function createFallbackDetail(product) {
     galleryImages,
     dimensionImage: null,
     useDimensionImage: false,
-    heroHook: `${productLabel}의 구성과 특징을 확인해 보세요.`,
+    heroHook: `${productLabel} 상품 정보입니다.`,
     description: [
-      `${product.name}의 디자인과 분위기를 살펴보세요.`,
-      `${optionSummary} 구성을 기준으로 상품 정보를 확인할 수 있습니다.`,
+      `${product.name} 상품 정보입니다.`,
+      `${optionSummary} 구성을 확인해 보세요.`,
     ],
     highlights: [
-      `${productLabel} 기준 구성`,
-      `선택 옵션: ${optionSummary}`,
-      '구매 전 확인하면 좋은 포인트',
+      `${productLabel} 기준 대표 상품`,
+      `현재 선택 옵션: ${optionSummary}`,
     ],
     quickFacts: buildProductQuickFacts(product),
     measurements: [],
     dimensions: {},
-    dimensionCaption: '주요 치수를 함께 확인해 보세요.',
+    dimensionCaption: '주요 치수를 확인해 보세요.',
     reviewIntro: '고객 리뷰를 확인해 보세요.',
-    reviewHighlights: [
-      {
-        title: '착석감이 편안해요',
-        body: `${product.name}의 사용감과 분위기를 확인할 수 있는 후기입니다.`,
-        rating: product.rating ?? null,
-        meta: '대표 후기',
-      },
-      {
-        title: '공간에 잘 어울려요',
-        body: `${optionSummary} 구성을 기준으로 공간 활용에 대한 후기를 확인할 수 있습니다.`,
-        rating: product.rating ?? null,
-        meta: '배치 후기',
-      },
-      {
-        title: '마감이 깔끔해요',
-        body: '색감과 소재, 전체적인 완성도에 대한 후기를 살펴볼 수 있습니다.',
-        rating: product.rating ?? null,
-        meta: '상품 후기',
-      },
-    ],
+    reviewHighlights: [],
   };
-}
-
-function findRepresentativeDetailSeed(product = {}) {
-  const currentId = String(product?.id ?? '').trim();
-  const currentCategorySlug = String(product?.categorySlug ?? '').trim();
-  const currentTypeSlug = String(product?.typeSlug ?? '').trim();
-
-  const candidate = catalogProducts.find((item) => {
-    const candidateId = String(item?.id ?? '').trim();
-
-    if (!candidateId || candidateId === currentId || !productDetailContentMap[candidateId]) {
-      return false;
-    }
-
-    if (currentCategorySlug && String(item?.categorySlug ?? '').trim() !== currentCategorySlug) {
-      return false;
-    }
-
-    if (currentTypeSlug && String(item?.typeSlug ?? '').trim() === currentTypeSlug) {
-      return true;
-    }
-
-    return Boolean(currentCategorySlug);
-  });
-
-  if (candidate) {
-    return productDetailContentMap[String(candidate.id)] ?? null;
-  }
-
-  return Object.values(productDetailContentMap)[0] ?? null;
 }
 
 export function getProductDetailContent(product) {
   const fallback = createFallbackDetail(product);
-  const override = getProductDetailSeed(product?.id);
-  const representativeSeed = !override ? findRepresentativeDetailSeed(product) : null;
+  const override = product?.detailDraft ?? getProductDetailSeed(product?.id);
 
-  if (!override && !representativeSeed) {
+  if (!override) {
     return fallback;
   }
 
-  const seed = override ?? representativeSeed;
-  const measurements = seed?.measurements ?? fallback.measurements;
+  const measurements = override.measurements ?? fallback.measurements;
 
   return {
     ...fallback,
-    ...seed,
-    galleryImages: override?.galleryImages ?? fallback.galleryImages,
-    dimensionImage: override?.dimensionImage ?? fallback.dimensionImage,
-    useDimensionImage: override?.useDimensionImage ?? false,
-    description: seed?.description ?? fallback.description,
-    highlights: seed?.highlights ?? fallback.highlights,
-    quickFacts: mergeQuickFacts(seed?.quickFacts ?? [], fallback.quickFacts),
+    ...override,
+    galleryImages: override.galleryImages ?? fallback.galleryImages,
+    dimensionImage: override.dimensionImage ?? fallback.dimensionImage,
+    useDimensionImage: override.useDimensionImage ?? false,
+    heroHook: sanitizeDetailText(override.heroHook ?? fallback.heroHook) || fallback.heroHook,
+    description: sanitizeTextList(override.description ?? fallback.description),
+    highlights: sanitizeTextList(override.highlights ?? fallback.highlights),
+    quickFacts: mergeQuickFacts(override.quickFacts ?? [], fallback.quickFacts),
     measurements,
     dimensions: createMeasurementMap(measurements),
-    reviewHighlights: seed?.reviewHighlights ?? fallback.reviewHighlights,
+    dimensionCaption: sanitizeDetailText(override.dimensionCaption ?? fallback.dimensionCaption)
+      || '주요 치수를 확인해 보세요.',
+    reviewIntro: sanitizeDetailText(override.reviewIntro ?? fallback.reviewIntro)
+      || '고객 리뷰를 확인해 보세요.',
+    reviewHighlights: sanitizeReviewHighlights(override.reviewHighlights ?? fallback.reviewHighlights),
   };
 }

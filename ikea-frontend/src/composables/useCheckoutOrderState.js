@@ -6,13 +6,13 @@ const PAYMENT_METHODS = [
   { id: 'bank', label: '무통장입금' },
 ];
 
-export function useCheckoutOrderState(route, getCheckoutSeedItems) {
+export function useCheckoutOrderState(route, getCheckoutItemsForFlow) {
   const orderItems = shallowRef([]);
   const pointAmount = shallowRef('0');
   const paymentMethod = shallowRef('kakaopay');
 
   function syncOrderItems() {
-    orderItems.value = getCheckoutSeedItems(
+    orderItems.value = getCheckoutItemsForFlow(
       String(route.query.mode ?? 'all'),
       String(route.query.itemId ?? ''),
     );

@@ -47,10 +47,6 @@ function formatInventoryTimestamp(value) {
   }).format(date);
 }
 
-function buildSeedSafeStock(index) {
-  return 4 + (index % 3);
-}
-
 function readStoredSafeStockMap() {
   if (!canUseStorage()) {
     return {};
@@ -90,12 +86,12 @@ async function loadAdminStock(productId) {
   }
 }
 
-function buildInventoryItem(product, index, safeStockMap = {}, stockPayload = null) {
+function buildInventoryItem(product, safeStockMap = {}, stockPayload = null) {
   const productId = normalizeProductId(product.productId ?? product.id);
   const stockSource = stockPayload?.data ?? stockPayload ?? {};
   const stock = normalizeInteger(stockSource.quantity, 0);
   const storedSafeStock = safeStockMap[productId];
-  const safeStock = Math.max(0, normalizeInteger(storedSafeStock, buildSeedSafeStock(index)));
+  const safeStock = Math.max(0, normalizeInteger(storedSafeStock, 0));
 
   return {
     productId,
@@ -118,7 +114,7 @@ export async function getAdminInventoryItems() {
   );
 
   return products.map((product, index) => (
-    buildInventoryItem(product, index, safeStockMap, stockPayloads[index])
+    buildInventoryItem(product, safeStockMap, stockPayloads[index])
   ));
 }
 

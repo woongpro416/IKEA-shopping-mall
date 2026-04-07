@@ -30,7 +30,7 @@ const {
 
 const inquiryPlaceholder = computed(() => (
   inquiryType.value === 'order'
-    ? '주문번호를 입력해 주세요.'
+    ? '예: ORDER_20260406_ab12cd34'
     : '휴대전화번호를 입력해 주세요.'
 ));
 const memberLoginError = computed(() => loginValidationError.value || loginError.value);
@@ -44,7 +44,7 @@ function validateLoginForm() {
   }
 
   if (!normalizedLoginId) {
-    return '아이디 또는 이메일을 입력해 주세요.';
+    return '아이디를 입력해 주세요.';
   }
 
   if (!normalizedPassword) {
@@ -179,11 +179,11 @@ watch(
             <section class="login-box login-box--member">
               <h2>회원 로그인</h2>
               <label class="login-field">
-                <span>아이디 또는 이메일</span>
+                <span>아이디</span>
                 <input
                   v-model.trim="loginForm.loginId"
                   type="text"
-                  placeholder="아이디 또는 이메일 입력"
+                  placeholder="아이디 입력"
                   autocomplete="username"
                   @input="clearLoginValidationError"
                 />
@@ -215,7 +215,7 @@ watch(
               </button>
 
               <div class="login-actions">
-                <button type="button" @click="openAccountRecoverySupport">아이디/비밀번호 찾기</button>
+                <button type="button" @click="openAccountRecoverySupport">로그인 문의</button>
                 <button type="button" @click="router.push(ROUTE_PATHS.memberJoin)">회원가입</button>
               </div>
             </section>
@@ -264,6 +264,7 @@ watch(
                   주문번호를 찾을 수 없는 경우,<br />
                   HOMiO 고객센터 1688-4945로 문의해 주세요.
                 </p>
+                <p class="login-help">주문번호에는 밑줄(_)이 포함될 수 있습니다.</p>
                 <p v-if="guestLookupError" class="login-status login-status--error">{{ guestLookupError }}</p>
               </div>
 

@@ -214,6 +214,8 @@ onMounted(loadReviews);
   color: #333333;
   font-size: 14px;
   line-height: 1.6;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 
 .admin-reviews-manager__actions {
@@ -252,6 +254,11 @@ onMounted(loadReviews);
 
   .admin-reviews-manager__head {
     display: none;
+  }
+
+  .admin-reviews-manager__row {
+    gap: 8px;
+    align-items: start;
   }
 }
 

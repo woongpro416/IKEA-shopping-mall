@@ -2,7 +2,6 @@ import httpRequester from '../libs/httpRequester';
 import { getBackendCategoryId } from '../constants/routes';
 import {
   getFallbackCatalogProductDetailContent,
-  getFallbackCatalogProductDetailSeed,
   getFallbackCatalogProducts,
 } from './catalogFallbackService';
 
@@ -48,10 +47,6 @@ export function getRecommendedProductsBySlug(categorySlug) {
 
 export function getFallbackProductList() {
   return getFallbackCatalogProducts();
-}
-
-export function getFallbackProductDetailSeed(productId) {
-  return getFallbackCatalogProductDetailSeed(productId);
 }
 
 export function getFallbackProductDetailContent(product) {

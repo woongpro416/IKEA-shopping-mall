@@ -1,6 +1,6 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import CartDeliveryGroupCards from '../components/cart/CartDeliveryGroupCards.vue';
 import CartDeliveryGroupTable from '../components/cart/CartDeliveryGroupTable.vue';
 import CartRecommendationsSection from '../components/cart/CartRecommendationsSection.vue';
@@ -16,6 +16,7 @@ import { useAccountStore } from '../stores/account';
 import { hasAuthenticatedSession } from '../utils/accessControl';
 
 const router = useRouter();
+const route = useRoute();
 const accountStore = useAccountStore();
 const noticeVisible = ref(true);
 const showShippingGuideModal = ref(false);
@@ -88,7 +89,12 @@ function closeGuestCheckoutPrompt() {
 
 function moveToMemberLogin() {
   closeGuestCheckoutPrompt();
-  router.push(ROUTE_PATHS.memberLogin);
+  router.push({
+    path: ROUTE_PATHS.memberLogin,
+    query: {
+      redirect: route.fullPath,
+    },
+  });
 }
 
 function handleCheckoutAction(mode = 'all', itemId = '') {
@@ -283,6 +289,7 @@ function continueGuestCheckout() {
         </section>
 
         <CartRecommendationsSection
+          v-if="recommendProducts.length"
           :format-price="formatPrice"
           :items="recommendProducts"
         />

@@ -62,7 +62,7 @@ function handleBannerKeydown(event) {
       <RouterLink v-if="moreTo" :to="moreTo">더보기</RouterLink>
     </div>
     <p v-if="subtitle" class="hs-section__subtitle">{{ subtitle }}</p>
-    <div class="hs-filter-row">
+    <div v-if="filters.length" class="hs-filter-row">
       <button
         v-for="filter in filters"
         :key="filter.id"

@@ -1,12 +1,11 @@
 import { defineStore } from 'pinia';
 import {
-  getCategoryList,
   getFallbackCategoryList,
+  getCategoryList,
 } from '../services/categoryService';
 import {
-  getFallbackProductDetailContent,
-  getFallbackProductDetailSeed,
   getFallbackProductList,
+  getFallbackProductDetailContent,
   getProductDetail,
   getProductList,
 } from '../services/productService';
@@ -20,8 +19,13 @@ import {
 } from '../mappers/catalogMapper';
 
 const fallbackCategories = getFallbackCategoryList();
+const fallbackProducts = getFallbackProductList();
+const normalizedFallbackCategories = normalizeCategoryCollection(fallbackCategories);
+const normalizedFallbackProducts = normalizeProductCollection(fallbackProducts);
+let categoriesRequestPromise = null;
+let productsRequestPromise = null;
 
-const DEFAULT_FALLBACK_CATEGORY = fallbackCategories[0] ?? {
+const DEFAULT_FALLBACK_CATEGORY = normalizedFallbackCategories[0] ?? {
   slug: 'sofa',
   backendCategoryId: '20128',
   label: '소파',
@@ -29,36 +33,40 @@ const DEFAULT_FALLBACK_CATEGORY = fallbackCategories[0] ?? {
 
 export const useCatalogStore = defineStore('catalog', {
   state: () => ({
-    categories: normalizeCategoryCollection(fallbackCategories),
-    products: normalizeProductCollection(getFallbackProductList()),
+    categories: normalizedFallbackCategories,
+    products: normalizedFallbackProducts,
     productDetailsById: {},
     categoriesLoadedFromApi: false,
     productsLoadedFromApi: false,
   }),
   getters: {
     backendCategories(state) {
-      return state.categories;
+      return state.categories.length ? state.categories : normalizedFallbackCategories;
     },
     catalogProducts(state) {
-      return state.products;
+      return state.products.length ? state.products : normalizedFallbackProducts;
     },
     defaultCategory(state) {
       return state.categories[0] ?? DEFAULT_FALLBACK_CATEGORY;
     },
     categoryRouteMap(state) {
-      return buildCategoryRouteMap(state.categories);
+      return buildCategoryRouteMap(state.categories.length ? state.categories : normalizedFallbackCategories);
     },
   },
   actions: {
     getCategoryBySlug(categorySlug) {
+      const categories = this.backendCategories;
+
       return (
-        this.categories.find((category) => category.slug === String(categorySlug ?? '').trim())
+        categories.find((category) => category.slug === String(categorySlug ?? '').trim())
         ?? this.defaultCategory
       );
     },
     getCategoryById(categoryId) {
+      const categories = this.backendCategories;
+
       return (
-        this.categories.find((category) => String(category.id) === String(categoryId ?? '').trim())
+        categories.find((category) => String(category.id) === String(categoryId ?? '').trim())
         ?? null
       );
     },
@@ -67,7 +75,7 @@ export const useCatalogStore = defineStore('catalog', {
     },
     getCatalogProductsByCategory(categorySlug) {
       const resolvedCategory = this.getCategoryBySlug(categorySlug);
-      return this.products.filter((product) => product.categorySlug === resolvedCategory.slug);
+      return this.catalogProducts.filter((product) => product.categorySlug === resolvedCategory.slug);
     },
     getCatalogProductsByType(categorySlug, typeSlug) {
       if (!typeSlug || typeSlug === 'all') {
@@ -75,7 +83,7 @@ export const useCatalogStore = defineStore('catalog', {
       }
 
       const resolvedCategory = this.getCategoryBySlug(categorySlug);
-      return this.products.filter(
+      return this.catalogProducts.filter(
         (product) => product.categorySlug === resolvedCategory.slug && product.typeSlug === typeSlug,
       );
     },
@@ -83,14 +91,11 @@ export const useCatalogStore = defineStore('catalog', {
       const normalizedProductId = String(productId ?? '').trim();
 
       return this.productDetailsById[normalizedProductId]
-        ?? this.products.find((product) => String(product.id) === normalizedProductId)
+        ?? this.catalogProducts.find((product) => String(product.id) === normalizedProductId)
         ?? null;
     },
     getDefaultCatalogProduct() {
-      return this.products[0] ?? null;
-    },
-    getProductDetailSeed(productId) {
-      return getFallbackProductDetailSeed(productId);
+      return this.catalogProducts[0] ?? null;
     },
     getProductDetailContent(product) {
       return getFallbackProductDetailContent(product);
@@ -106,7 +111,7 @@ export const useCatalogStore = defineStore('catalog', {
         return this.productDetailsById[normalizedProductId];
       }
 
-      const baseProduct = this.products.find((product) => String(product.id) === normalizedProductId) ?? null;
+      const baseProduct = this.findProductById(normalizedProductId);
       const response = await getProductDetail(normalizedProductId);
       const source = response?.data ?? response ?? {};
       const normalizedProduct = normalizeCatalogProduct({
@@ -137,26 +142,46 @@ export const useCatalogStore = defineStore('catalog', {
       return normalizedProduct;
     },
     async loadCategories() {
+      if (categoriesRequestPromise) {
+        return categoriesRequestPromise;
+      }
+
+      categoriesRequestPromise = (async () => {
       try {
         const response = await getCategoryList();
-        this.categories = normalizeCategoryCollection(response, fallbackCategories);
+        this.categories = normalizeCategoryCollection(response, normalizedFallbackCategories);
         this.categoriesLoadedFromApi = true;
         syncCategoryRouteMap(this.categories);
       } catch {
-        this.categories = normalizeCategoryCollection(fallbackCategories);
+        this.categories = normalizedFallbackCategories;
         this.categoriesLoadedFromApi = false;
+      } finally {
+        categoriesRequestPromise = null;
       }
+      })();
+
+      return categoriesRequestPromise;
     },
     async loadProducts() {
+      if (productsRequestPromise) {
+        return productsRequestPromise;
+      }
+
+      productsRequestPromise = (async () => {
       try {
         const response = await getProductList();
-        this.products = normalizeProductCollection(response, getFallbackProductList());
+        this.products = normalizeProductCollection(response, normalizedFallbackProducts);
         this.productsLoadedFromApi = true;
         void primeStorefrontInventory(this.products).catch(() => {});
       } catch {
-        this.products = normalizeProductCollection(getFallbackProductList());
+        this.products = normalizedFallbackProducts;
         this.productsLoadedFromApi = false;
+      } finally {
+        productsRequestPromise = null;
       }
+      })();
+
+      return productsRequestPromise;
     },
     async ensureCatalogLoaded({ force = false } = {}) {
       const tasks = [];

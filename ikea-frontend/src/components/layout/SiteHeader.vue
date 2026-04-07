@@ -41,7 +41,7 @@ const {
   handleSubmenuCategoryClick,
   handleSubmenuCardClick,
   handleHeaderTabClick,
-} = useHeaderMenu(backendCategories.value);
+} = useHeaderMenu(backendCategories);
 
 const accountActionLabel = computed(() => (loggedIn.value ? '로그아웃' : '로그인'));
 const myPageActionLabel = computed(() => (memberName.value ? `${memberName.value}님` : '마이'));
@@ -114,7 +114,7 @@ defineExpose({
 
       <nav class="hs-header__tabs">
         <button
-          v-for="tab in mainTabs"
+          v-for="tab in mainTabs ?? []"
           :key="tab.id"
           class="hs-header__tab"
           :class="{
@@ -220,7 +220,7 @@ defineExpose({
       <div class="hs-submenu__inner">
         <div class="hs-submenu__category-list">
           <button
-            v-for="category in backendCategories"
+            v-for="category in backendCategories ?? []"
             :key="category.id"
             class="hs-submenu__category"
             :class="{ 'is-active': activeCategoryId === category.id }"
@@ -235,10 +235,10 @@ defineExpose({
 
         <div
           class="hs-submenu__sofa"
-          :style="{ '--submenu-card-count': Math.min(activeCategory.cards?.length || 1, 6) }"
+          :style="{ '--submenu-card-count': Math.min(activeCategory?.cards?.length || 1, 6) }"
         >
           <button
-            v-for="item in activeCategory.cards ?? []"
+            v-for="item in activeCategory?.cards ?? []"
             :key="item.slug"
             class="hs-submenu__sofa-card"
             type="button"
@@ -532,24 +532,77 @@ defineExpose({
   }
 
   .hs-header__inner {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr) auto;
     grid-template-areas:
-      'logo'
-      'tabs'
-      'search'
-      'utils';
-    justify-items: start;
+      'logo utils'
+      'tabs tabs'
+      'search search';
+    align-items: center;
+    column-gap: 12px;
+    row-gap: 10px;
+    padding-block: 12px;
+  }
+
+  .hs-header__logo {
+    width: 132px;
+    height: 30px;
   }
 
   .hs-header__tabs,
-  .hs-header__utils {
+  .hs-header__search {
     width: 100%;
+  }
+
+  .hs-header__tabs {
     justify-content: flex-start;
     flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .hs-header__tab {
+    font-size: 15px;
+  }
+
+  .hs-header__search input {
+    height: 44px;
+  }
+
+  .hs-header__utils {
+    width: auto;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+    gap: 16px;
+  }
+
+  .hs-util {
+    gap: 3px;
+  }
+
+  .hs-util svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .hs-util > span {
+    font-size: 12px;
   }
 
   .hs-submenu__sofa {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 420px) {
+  .hs-header__tabs {
+    gap: 16px;
+  }
+
+  .hs-header__tab {
+    font-size: 14px;
+  }
+
+  .hs-header__utils {
+    gap: 12px;
   }
 }
 </style>

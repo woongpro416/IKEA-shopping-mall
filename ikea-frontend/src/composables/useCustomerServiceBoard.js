@@ -7,10 +7,11 @@ import {
 } from '../constants/customerServiceContent';
 import { resolveCustomerServiceSection } from '../constants/customerServiceNavigation';
 import { getCustomerSupportQnaRows } from '../services/customerSupportService';
+import { getCurrentMember } from '../services/memberService';
 import { getCustomerNoticeRows } from '../services/noticeService';
 import { useAccountStore } from '../stores/account';
 import { resolveLookupErrorMessage } from '../utils/apiErrorMessage';
-import { hasAuthenticatedSession } from '../utils/accessControl';
+import { hasAdminAccess, hasAuthenticatedSession } from '../utils/accessControl';
 
 const BOARD_PAGE_SIZE = 6;
 
@@ -42,6 +43,10 @@ export function useCustomerServiceBoard() {
   const qnaViewerMode = computed(() => {
     if (!hasAuthenticatedSession(accountStore)) {
       return 'guest';
+    }
+
+    if (hasAdminAccess(accountStore)) {
+      return 'admin';
     }
 
     return 'member';
@@ -143,7 +148,21 @@ export function useCustomerServiceBoard() {
     const previousRows = Array.isArray(qnaRows.value) ? [...qnaRows.value] : [];
 
     try {
-      qnaRows.value = await getCustomerSupportQnaRows();
+      try {
+        const currentMember = await getCurrentMember();
+        const memberSession = currentMember?.data ?? currentMember ?? null;
+
+        if (memberSession && typeof memberSession === 'object') {
+          accountStore.setMemberSession(memberSession);
+          accountStore.setProfileHydrated(true);
+        }
+      } catch {
+        // Keep the last known session so QnA loading can continue.
+      }
+
+      qnaRows.value = await getCustomerSupportQnaRows({}, {
+        includeAll: hasAdminAccess(accountStore),
+      });
     } catch (error) {
       qnaRows.value = previousRows;
       qnaLoadError.value = resolveLookupErrorMessage(error, '등록 내역을 불러오지 못했습니다.');

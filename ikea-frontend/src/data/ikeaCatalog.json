@@ -306,7 +306,7 @@
         "그레이"
       ],
       "image": "https://www.ikea.com/kr/ko/images/products/glostad-2-seat-sofa-knisa-dark-grey__0950864_pe800736_s5.jpg",
-      "altImage": "https://www.ikea.com/kr/ko/images/products/glostad-2-seat-sofa-knisa-dark-grey__1059523_ph180677_s5.jpg",
+      "altImage": "https://www.ikea.com/kr/ko/images/products/glostad-2-seat-sofa-knisa-dark-grey__0987393_pe817515_s5.jpg",
       "imageAlt": "GLOSTAD 글로스타드 2인용소파 - 크니사 다크그레이",
       "detailUrl": "https://www.ikea.com/kr/ko/p/glostad-2-seat-sofa-knisa-dark-grey-10489009/",
       "categoryUrl": "https://www.ikea.com/kr/ko/cat/two-seat-sofas-10668/"
@@ -1007,7 +1007,7 @@
         "화이트"
       ],
       "image": "https://www.ikea.com/kr/ko/images/products/linnmon-adils-table-white__0737165_pe740925_s5.jpg",
-      "altImage": "https://www.ikea.com/kr/ko/images/products/linnmon-adils-table-white__1327991_pe944603_s5.jpg",
+      "altImage": "https://www.ikea.com/kr/ko/images/products/linnmon-adils-table-white__1369094_pe958025_s5.jpg",
       "imageAlt": "LINNMON 린몬 / ADILS 아딜스 테이블 - 화이트 100x60 cm",
       "detailUrl": "https://www.ikea.com/kr/ko/p/linnmon-adils-table-white-s09246408/",
       "categoryUrl": "https://www.ikea.com/kr/ko/cat/desks-computer-desks-20649/"
@@ -1984,7 +1984,7 @@
       "price": 13000,
       "originalPrice": null,
       "discountRate": 0,
-      "rating": 4.0,
+      "rating": 4,
       "reviews": 5,
       "size": "25cm",
       "material": "알루미늄",
@@ -3852,7 +3852,7 @@
         "color": "화이트"
       },
       "image": "https://www.ikea.com/kr/ko/images/products/fjaellarnika-duvet-extra-warm__0788100_pe763467_s5.jpg",
-      "altImage": "https://www.ikea.com/kr/ko/images/products/fjaellarnika-duvet-extra-warm__0788099_pe763465_s5.jpg",
+      "altImage": "https://www.ikea.com/kr/ko/images/products/fjaellarnika-duvet-extra-warm__1010040_pe827852_s5.jpg",
       "imageAlt": "FJÄLLARNIKA 피엘라르니카 이불, 매우 따뜻함 150x200 cm",
       "detailUrl": "https://www.ikea.com/kr/ko/p/fjaellarnika-duvet-extra-warm-80459283/",
       "categoryUrl": "https://www.ikea.com/kr/ko/cat/bedding-tl004/"
@@ -4059,9 +4059,9 @@
     "10489009": {
       "galleryImages": [
         "https://www.ikea.com/kr/ko/images/products/glostad-2-seat-sofa-knisa-dark-grey__0950864_pe800736_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/glostad-2-seat-sofa-knisa-dark-grey__1059523_ph180677_s5.jpg",
         "https://www.ikea.com/kr/ko/images/products/glostad-2-seat-sofa-knisa-dark-grey__0987393_pe817515_s5.jpg",
         "https://www.ikea.com/kr/ko/images/products/glostad-2-seat-sofa-knisa-dark-grey__0987395_pe817517_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/glostad-2-seat-sofa-knisa-dark-grey__1059523_ph180677_s5.jpg",
         "https://www.ikea.com/kr/ko/images/products/glostad-2-seat-sofa-knisa-dark-grey__0987394_pe817516_s5.jpg",
         "https://www.ikea.com/kr/ko/images/products/glostad-2-seat-sofa-knisa-dark-grey__0987398_pe817518_s5.jpg",
         "https://www.ikea.com/kr/ko/images/products/glostad-2-seat-sofa-knisa-dark-grey__0987399_pe817519_s5.jpg",
@@ -4560,6 +4560,93 @@
         }
       ]
     },
+    "20519765": {
+      "galleryImages": [
+        "https://www.ikea.com/kr/ko/images/products/fejka-artificial-potted-plant-with-pot-in-outdoor-succulent__0614187_pe686812_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/fejka-artificial-potted-plant-with-pot-in-outdoor-succulent__0945926_pe797833_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/fejka-artificial-potted-plant-with-pot-in-outdoor-succulent__0901062_pe687829_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/fejka-artificial-potted-plant-with-pot-in-outdoor-succulent__0901059_pe687828_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/fejka-artificial-potted-plant-with-pot-in-outdoor-succulent__0928729_ph166548_s5.jpg"
+      ],
+      "dimensionImage": null,
+      "useDimensionImage": false,
+      "heroHook": "FEJKA 페이카 인조식물+화분 - 실내외겸용 다육식물 6 cm 3 개.",
+      "description": [
+        "FEJKA 페이카 인조식물+화분 - 실내외겸용 다육식물 6 cm 3 개.",
+        "살아 있는 것처럼 보이는 인조식물로 오랫동안 싱싱함을 유지하죠.",
+        "진짜 식물은 아니지만 언제든지 자연의 아름다움을 느낄 수 있습니다."
+      ],
+      "highlights": [
+        "식물/조화",
+        "현재 컬러: 그린",
+        "인조식물",
+        "IKEA 공식 상세 기준 최소 정보"
+      ],
+      "measurements": [
+        {
+          "label": "높이",
+          "value": "12 cm"
+        },
+        {
+          "label": "화분 지름",
+          "value": "6 cm"
+        }
+      ],
+      "dimensionCaption": "배치 전에 확인할 수 있도록 주요 치수만 먼저 정리했습니다.",
+      "reviewIntro": "IKEA 공식 페이지 기준 평균 평점 4.4 / 리뷰 125건을 먼저 확인할 수 있습니다.",
+      "reviewHighlights": [
+        {
+          "title": "리뷰 데이터 연결 준비",
+          "body": "IKEA 공식 페이지 기준 평점 4.4 / 리뷰 125건을 반영했습니다. 후속 리뷰 연동 시 실제 구매 후기 데이터로 교체할 수 있습니다.",
+          "rating": 4.4,
+          "meta": "시스템 안내"
+        }
+      ]
+    },
+    "20580890": {
+      "galleryImages": [
+        "https://www.ikea.com/kr/ko/images/products/hemlagad-crepe-pancake-pan-non-stick-coating-black__1275806_pe930681_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/hemlagad-crepe-pancake-pan-non-stick-coating-black__1275804_pe930683_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/hemlagad-crepe-pancake-pan-non-stick-coating-black__1366548_pe957063_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/hemlagad-crepe-pancake-pan-non-stick-coating-black__1366545_pe957065_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/hemlagad-crepe-pancake-pan-non-stick-coating-black__1366546_pe957061_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/hemlagad-crepe-pancake-pan-non-stick-coating-black__1366541_pe957056_s5.jpg"
+      ],
+      "dimensionImage": null,
+      "useDimensionImage": false,
+      "heroHook": "HEMLAGAD 헴라가드 크레이프/팬케이크 팬 - 논스틱 코팅 블랙 25 cm.",
+      "description": [
+        "HEMLAGAD 헴라가드 크레이프/팬케이크 팬 - 논스틱 코팅 블랙 25 cm.",
+        "인덕션레인지를 비롯한 모든 유형의 레인지에서 사용할 수 있습니다.",
+        "내구성이 우수한 졸겔 세라믹 논스틱 코팅이 되어 있어 음식이 타거나 눌어붙지 않습니다."
+      ],
+      "highlights": [
+        "냄비/팬",
+        "현재 컬러: 블랙",
+        "프라이팬",
+        "IKEA 공식 상세 기준 최소 정보"
+      ],
+      "measurements": [
+        {
+          "label": "지름",
+          "value": "25 cm"
+        },
+        {
+          "label": "높이",
+          "value": "2 cm"
+        }
+      ],
+      "dimensionCaption": "배치 전에 확인할 수 있도록 주요 치수만 먼저 정리했습니다.",
+      "reviewIntro": "IKEA 공식 페이지 기준 평균 평점 4.0 / 리뷰 5건을 먼저 확인할 수 있습니다.",
+      "reviewHighlights": [
+        {
+          "title": "리뷰 데이터 연결 준비",
+          "body": "IKEA 공식 페이지 기준 평점 4.0 / 리뷰 5건을 반영했습니다. 후속 리뷰 연동 시 실제 구매 후기 데이터로 교체할 수 있습니다.",
+          "rating": 4,
+          "meta": "시스템 안내"
+        }
+      ]
+    },
     "20586788": {
       "galleryImages": [
         "https://www.ikea.com/kr/ko/images/products/raskog-trolley-white__1366882_pe957173_s5.jpg",
@@ -4637,6 +4724,129 @@
           "body": "다용도실에 뒀는데 너무 튼튼해요",
           "rating": 5,
           "meta": "인증된 구매자"
+        }
+      ]
+    },
+    "20613027": {
+      "galleryImages": [
+        "https://www.ikea.com/kr/ko/images/products/ikea-365-chopping-board-black-blue-grey-blue-light-blue__1427228_pe982577_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/ikea-365-chopping-board-black-blue-grey-blue-light-blue__1435077_pe983693_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/ikea-365-chopping-board-black-blue-grey-blue-light-blue__1464212_pe994650_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/ikea-365-chopping-board-black-blue-grey-blue-light-blue__1464213_pe994649_s5.jpg"
+      ],
+      "dimensionImage": null,
+      "useDimensionImage": false,
+      "heroHook": "IKEA 365+ 이케아 365+ 도마 - 블랙블루 그레이블루/라이트블루 22x16 cm.",
+      "description": [
+        "IKEA 365+ 이케아 365+ 도마 - 블랙블루 그레이블루/라이트블루 22x16 cm.",
+        "도마로도 뚜껑으로도 사용할 수 있으며 IKEA 365+ 시리즈의 식품보관용기와 함께 사용하면 멋진 치즈돔이 됩니다.",
+        "처음 사용하기 전에 이 제품을 세척하세요."
+      ],
+      "highlights": [
+        "도마/주방칼",
+        "현재 컬러: 블루",
+        "도마",
+        "IKEA 공식 상세 기준 최소 정보"
+      ],
+      "measurements": [
+        {
+          "label": "길이",
+          "value": "22 cm"
+        },
+        {
+          "label": "폭",
+          "value": "16 cm"
+        }
+      ],
+      "dimensionCaption": "배치 전에 확인할 수 있도록 주요 치수만 먼저 정리했습니다.",
+      "reviewIntro": "IKEA 공식 페이지 기준 평균 평점 4.6 / 리뷰 14건을 먼저 확인할 수 있습니다.",
+      "reviewHighlights": [
+        {
+          "title": "리뷰 데이터 연결 준비",
+          "body": "IKEA 공식 페이지 기준 평점 4.6 / 리뷰 14건을 반영했습니다. 후속 리뷰 연동 시 실제 구매 후기 데이터로 교체할 수 있습니다.",
+          "rating": 4.6,
+          "meta": "시스템 안내"
+        }
+      ]
+    },
+    "30258324": {
+      "galleryImages": [
+        "https://www.ikea.com/kr/ko/images/products/ivrig-glass-clear-glass__0713244_pe729354_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/ivrig-glass-clear-glass__1450041_pe990203_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/ivrig-glass-clear-glass__1450042_pe990204_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/ivrig-glass-clear-glass__1450040_pe990205_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/ivrig-glass-clear-glass__1372895_pe959759_s5.jpg"
+      ],
+      "dimensionImage": null,
+      "useDimensionImage": false,
+      "heroHook": "IVRIG 이브리그 유리컵 - 유리 45 cl.",
+      "description": [
+        "IVRIG 이브리그 유리컵 - 유리 45 cl.",
+        "아래쪽이 크고 둥근 디자인으로 레드와인 잔으로도 사용할 수 있습니다.",
+        "와인의 맛과 향을 제대로 즐겨보세요."
+      ],
+      "highlights": [
+        "유리컵",
+        "현재 컬러: 화이트",
+        "유리컵",
+        "IKEA 공식 상세 기준 최소 정보"
+      ],
+      "measurements": [
+        {
+          "label": "높이",
+          "value": "11 cm"
+        },
+        {
+          "label": "부피",
+          "value": "45 cl"
+        }
+      ],
+      "dimensionCaption": "배치 전에 확인할 수 있도록 주요 치수만 먼저 정리했습니다.",
+      "reviewIntro": "IKEA 공식 페이지 기준 평균 평점 4.7 / 리뷰 1813건을 먼저 확인할 수 있습니다.",
+      "reviewHighlights": [
+        {
+          "title": "리뷰 데이터 연결 준비",
+          "body": "IKEA 공식 페이지 기준 평점 4.7 / 리뷰 1813건을 반영했습니다. 후속 리뷰 연동 시 실제 구매 후기 데이터로 교체할 수 있습니다.",
+          "rating": 4.7,
+          "meta": "시스템 안내"
+        }
+      ]
+    },
+    "30283516": {
+      "galleryImages": [
+        "https://www.ikea.com/kr/ko/images/products/ikea-365-utility-knife-stainless-steel__0710373_pe727501_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/ikea-365-utility-knife-stainless-steel__0333879_pe523341_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/ikea-365-utility-knife-stainless-steel__0333880_pe523342_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/ikea-365-utility-knife-stainless-steel__0333881_pe523343_s5.jpg"
+      ],
+      "dimensionImage": null,
+      "useDimensionImage": false,
+      "heroHook": "IKEA 365+ 이케아 365+ 다용도칼 - 스테인리스 14 cm.",
+      "description": [
+        "IKEA 365+ 이케아 365+ 다용도칼 - 스테인리스 14 cm.",
+        "요리재료를 쉽게 썰고 다듬을 수 있습니다.",
+        "스테인리스스틸 소재를 사용하여 내구성이 뛰어나고 안정적이며 쉽게 잘 닦입니다."
+      ],
+      "highlights": [
+        "도마/주방칼",
+        "현재 컬러: 그레이",
+        "주방칼",
+        "IKEA 공식 상세 기준 최소 정보"
+      ],
+      "measurements": [
+        {
+          "label": "칼날 길이",
+          "value": "14 cm"
+        }
+      ],
+      "dimensionCaption": "배치 전에 확인할 수 있도록 주요 치수만 먼저 정리했습니다.",
+      "reviewIntro": "IKEA 공식 페이지 기준 평균 평점 4.6 / 리뷰 132건을 먼저 확인할 수 있습니다.",
+      "reviewHighlights": [
+        {
+          "title": "리뷰 데이터 연결 준비",
+          "body": "IKEA 공식 페이지 기준 평점 4.6 / 리뷰 132건을 반영했습니다. 후속 리뷰 연동 시 실제 구매 후기 데이터로 교체할 수 있습니다.",
+          "rating": 4.6,
+          "meta": "시스템 안내"
         }
       ]
     },
@@ -4751,6 +4961,98 @@
           "body": "디자인도 예뿌고 손잡이 그립감도 좋고 소재도 좋아서 가격도 훌륭하고 넘므너므 좋으네요. 감사합니다.🙌😄💐👍💕",
           "rating": 5,
           "meta": "인증된 구매자"
+        }
+      ]
+    },
+    "30486651": {
+      "galleryImages": [
+        "https://www.ikea.com/kr/ko/images/products/olivblad-plant-stand-in-outdoor-black__1010784_pe828333_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/olivblad-plant-stand-in-outdoor-black__1041728_pe841133_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/olivblad-plant-stand-in-outdoor-black__1042412_pe841380_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/olivblad-plant-stand-in-outdoor-black__1010785_pe828338_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/olivblad-plant-stand-in-outdoor-black__1010786_pe828335_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/olivblad-plant-stand-in-outdoor-black__1079586_pe857617_s5.jpg"
+      ],
+      "dimensionImage": null,
+      "useDimensionImage": false,
+      "heroHook": "OLIVBLAD 올리브블라드 화분스탠드 - 실내외겸용 블랙 56 cm.",
+      "description": [
+        "OLIVBLAD 올리브블라드 화분스탠드 - 실내외겸용 블랙 56 cm.",
+        "화분스탠드에는 서로 다른 높이의 선반이 있어서 화분을 디스플레이하고 방안에 생동감을 줄 수 있어요.",
+        "실내뿐만 아니라 야외, 발코니 등에 놓을 수 있으며 파티션으로도 사용할 수 있습니다."
+      ],
+      "highlights": [
+        "화분스탠드",
+        "현재 컬러: 블랙",
+        "55x25x56cm",
+        "IKEA 공식 상세 기준 최소 정보"
+      ],
+      "measurements": [
+        {
+          "label": "길이",
+          "value": "55 cm"
+        },
+        {
+          "label": "폭",
+          "value": "25 cm"
+        },
+        {
+          "label": "높이",
+          "value": "56 cm"
+        }
+      ],
+      "dimensionCaption": "배치 전에 확인할 수 있도록 주요 치수만 먼저 정리했습니다.",
+      "reviewIntro": "IKEA 공식 페이지 기준 평균 평점 4.6 / 리뷰 601건을 먼저 확인할 수 있습니다.",
+      "reviewHighlights": [
+        {
+          "title": "리뷰 데이터 연결 준비",
+          "body": "IKEA 공식 페이지 기준 평점 4.6 / 리뷰 601건을 반영했습니다. 후속 리뷰 연동 시 실제 구매 후기 데이터로 교체할 수 있습니다.",
+          "rating": 4.6,
+          "meta": "시스템 안내"
+        }
+      ]
+    },
+    "30505485": {
+      "galleryImages": [
+        "https://www.ikea.com/kr/ko/images/products/akerbaer-watering-can-in-outdoor-galvanised__1161003_pe889249_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/akerbaer-watering-can-in-outdoor-galvanised__1177074_pe895237_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/akerbaer-watering-can-in-outdoor-galvanised__1177070_pe895233_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/akerbaer-watering-can-in-outdoor-galvanised__1177062_pe895227_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/akerbaer-watering-can-in-outdoor-galvanised__1177061_pe895224_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/akerbaer-watering-can-in-outdoor-galvanised__1161002_pe889250_s5.jpg"
+      ],
+      "dimensionImage": null,
+      "useDimensionImage": false,
+      "heroHook": "ÅKERBÄR 오케르베르 물뿌리개 - 실내외겸용 아연도금 2.5 l.",
+      "description": [
+        "ÅKERBÄR 오케르베르 물뿌리개 - 실내외겸용 아연도금 2.5 l.",
+        "아연도금 철판으로 되어 있어 녹이 쉽게 슬지 않습니다.",
+        "물이나 영양분을 담아 화분 옆에 두면 손쉽게 사용할 수 있습니다."
+      ],
+      "highlights": [
+        "물뿌리개",
+        "현재 컬러: 그레이",
+        "2.5L",
+        "IKEA 공식 상세 기준 최소 정보"
+      ],
+      "measurements": [
+        {
+          "label": "높이",
+          "value": "24 cm"
+        },
+        {
+          "label": "부피",
+          "value": "2.5 l"
+        }
+      ],
+      "dimensionCaption": "배치 전에 확인할 수 있도록 주요 치수만 먼저 정리했습니다.",
+      "reviewIntro": "IKEA 공식 페이지 기준 평균 평점 4.5 / 리뷰 56건을 먼저 확인할 수 있습니다.",
+      "reviewHighlights": [
+        {
+          "title": "리뷰 데이터 연결 준비",
+          "body": "IKEA 공식 페이지 기준 평점 4.5 / 리뷰 56건을 반영했습니다. 후속 리뷰 연동 시 실제 구매 후기 데이터로 교체할 수 있습니다.",
+          "rating": 4.5,
+          "meta": "시스템 안내"
         }
       ]
     },
@@ -5297,6 +5599,54 @@
         }
       ]
     },
+    "40612338": {
+      "galleryImages": [
+        "https://www.ikea.com/kr/ko/images/products/doftrips-growing-set-transparent-off-white__1461302_pe994148_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/doftrips-growing-set-transparent-off-white__1461303_pe994149_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/doftrips-growing-set-transparent-off-white__1481937_pe1000757_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/doftrips-growing-set-transparent-off-white__1479605_pe1000695_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/doftrips-growing-set-transparent-off-white__1508342_ph207930_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/doftrips-growing-set-transparent-off-white__1479588_pe1000697_s5.jpg"
+      ],
+      "dimensionImage": null,
+      "useDimensionImage": false,
+      "heroHook": "DOFTRIPS 도프트립스 원예세트 - 투명/오프화이트 16x16x14.5 cm.",
+      "description": [
+        "DOFTRIPS 도프트립스 원예세트 - 투명/오프화이트 16x16x14.5 cm.",
+        "씨앗이 싹을 틔우고 잘 자랄 수 있도록 도와주는 보호 돔이 있는 실용적인 미니 온실입니다.",
+        "돔 모양 뚜껑에는 공기가 원활하게 순환하고 쉽게 들 수 있도록 손잡이가 뚫려있어요."
+      ],
+      "highlights": [
+        "원예용품",
+        "현재 컬러: 화이트",
+        "원예세트",
+        "IKEA 공식 상세 기준 최소 정보"
+      ],
+      "measurements": [
+        {
+          "label": "폭",
+          "value": "16 cm"
+        },
+        {
+          "label": "깊이",
+          "value": "16 cm"
+        },
+        {
+          "label": "높이",
+          "value": "14.5 cm"
+        }
+      ],
+      "dimensionCaption": "배치 전에 확인할 수 있도록 주요 치수만 먼저 정리했습니다.",
+      "reviewIntro": "IKEA 공식 페이지 기준 평균 평점 4.5 / 리뷰 2건을 먼저 확인할 수 있습니다.",
+      "reviewHighlights": [
+        {
+          "title": "리뷰 데이터 연결 준비",
+          "body": "IKEA 공식 페이지 기준 평점 4.5 / 리뷰 2건을 반영했습니다. 후속 리뷰 연동 시 실제 구매 후기 데이터로 교체할 수 있습니다.",
+          "rating": 4.5,
+          "meta": "시스템 안내"
+        }
+      ]
+    },
     "50177727": {
       "galleryImages": [
         "https://www.ikea.com/kr/ko/images/products/variera-shelf-insert-white__81980_pe207259_s5.jpg",
@@ -5558,6 +5908,49 @@
           "body": "이케아 가성비 제품. 첫째로 디자인이 세련되고, 둘째로 가격이 저렴하며, 셋째로 손잡이 연결부도 만듬새가 튼튼해서 기본에 매우매우 충실한 제품.",
           "rating": 5,
           "meta": "인증된 구매자"
+        }
+      ]
+    },
+    "50492260": {
+      "galleryImages": [
+        "https://www.ikea.com/kr/ko/images/products/chilistran-hanging-planter-in-outdoor-white__0990165_pe820964_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/chilistran-hanging-planter-in-outdoor-white__1039814_pe840460_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/chilistran-hanging-planter-in-outdoor-white__1042951_pe841636_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/chilistran-hanging-planter-in-outdoor-white__0990167_pe820966_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/chilistran-hanging-planter-in-outdoor-white__0990166_pe820965_s5.jpg"
+      ],
+      "dimensionImage": null,
+      "useDimensionImage": false,
+      "heroHook": "CHILISTRÅN 실리스트론 걸이화분 - 실내외겸용 화이트 12 cm.",
+      "description": [
+        "CHILISTRÅN 실리스트론 걸이화분 - 실내외겸용 화이트 12 cm.",
+        "바닥의 바에 고리를 걸어서 화분을 줄줄이 연결할 수 있습니다.",
+        "고정 장치 하나에 걸려있을 경우, 하나 이상의 고정 장치가 연결되어 있을 경우, 동일한 고정 장치에 걸려있을 경우의 최대 하중은 15kg입니다."
+      ],
+      "highlights": [
+        "화분",
+        "현재 컬러: 화이트",
+        "12cm",
+        "IKEA 공식 상세 기준 최소 정보"
+      ],
+      "measurements": [
+        {
+          "label": "높이",
+          "value": "49 cm"
+        },
+        {
+          "label": "화분 지름",
+          "value": "12 cm"
+        }
+      ],
+      "dimensionCaption": "배치 전에 확인할 수 있도록 주요 치수만 먼저 정리했습니다.",
+      "reviewIntro": "IKEA 공식 페이지 기준 평균 평점 4.8 / 리뷰 394건을 먼저 확인할 수 있습니다.",
+      "reviewHighlights": [
+        {
+          "title": "리뷰 데이터 연결 준비",
+          "body": "IKEA 공식 페이지 기준 평점 4.8 / 리뷰 394건을 반영했습니다. 후속 리뷰 연동 시 실제 구매 후기 데이터로 교체할 수 있습니다.",
+          "rating": 4.8,
+          "meta": "시스템 안내"
         }
       ]
     },
@@ -5837,6 +6230,48 @@
         }
       ]
     },
+    "50611946": {
+      "galleryImages": [
+        "https://www.ikea.com/kr/ko/images/products/sojaboena-plant-pot-light-green__1461327_pe994156_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/sojaboena-plant-pot-light-green__1479896_pe1000714_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/sojaboena-plant-pot-light-green__1479897_pe1000718_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/sojaboena-plant-pot-light-green__1344339_pe949829_s5.jpg"
+      ],
+      "dimensionImage": null,
+      "useDimensionImage": false,
+      "heroHook": "SOJABÖNA 소야뵈나 화분 - 라이트그린 9 cm.",
+      "description": [
+        "SOJABÖNA 소야뵈나 화분 - 라이트그린 9 cm.",
+        "모든 봄 식물과 잘 어울리는 장식적인 화분으로, DOFTRIPS 도프트립스 컬렉션의 다양한 색상과 모양의 다른 화분과 잘 어우러져요.",
+        "어슨웨어(도자기제)는 유용하고 아름다운 제품으로 변신할 수 있는 내구성 좋은 소재예요."
+      ],
+      "highlights": [
+        "화분",
+        "현재 컬러: 그린",
+        "9cm",
+        "IKEA 공식 상세 기준 최소 정보"
+      ],
+      "measurements": [
+        {
+          "label": "높이",
+          "value": "10 cm"
+        },
+        {
+          "label": "식물최대지름",
+          "value": "9 cm"
+        }
+      ],
+      "dimensionCaption": "배치 전에 확인할 수 있도록 주요 치수만 먼저 정리했습니다.",
+      "reviewIntro": "IKEA 공식 페이지 기준 평균 평점 4.7 / 리뷰 3건을 먼저 확인할 수 있습니다.",
+      "reviewHighlights": [
+        {
+          "title": "리뷰 데이터 연결 준비",
+          "body": "IKEA 공식 페이지 기준 평점 4.7 / 리뷰 3건을 반영했습니다. 후속 리뷰 연동 시 실제 구매 후기 데이터로 교체할 수 있습니다.",
+          "rating": 4.7,
+          "meta": "시스템 안내"
+        }
+      ]
+    },
     "50612007": {
       "galleryImages": [
         "https://www.ikea.com/kr/ko/images/products/olivblad-plant-stand-in-outdoor-off-white__1461686_pe994224_s5.jpg",
@@ -5972,6 +6407,54 @@
         }
       ]
     },
+    "60426340": {
+      "galleryImages": [
+        "https://www.ikea.com/kr/ko/images/products/vaniljstang-plant-stand-pine-black__0958912_pe809507_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/vaniljstang-plant-stand-pine-black__0970621_pe811139_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/vaniljstang-plant-stand-pine-black__0970651_pe811148_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/vaniljstang-plant-stand-pine-black__0958913_pe809508_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/vaniljstang-plant-stand-pine-black__0958914_pe809509_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/vaniljstang-plant-stand-pine-black__0923947_pe788452_s5.jpg"
+      ],
+      "dimensionImage": null,
+      "useDimensionImage": false,
+      "heroHook": "VANILJSTÅNG 바닐리스통 화분스탠드 - 소나무/블랙 67 cm.",
+      "description": [
+        "VANILJSTÅNG 바닐리스통 화분스탠드 - 소나무/블랙 67 cm.",
+        "화분스탠드가 있으면 집안 곳곳을 나만의 정원으로 꾸밀 수 있어요.",
+        "실내 사용 전용."
+      ],
+      "highlights": [
+        "화분스탠드",
+        "현재 컬러: 베이지/블랙",
+        "74x27x67cm",
+        "IKEA 공식 상세 기준 최소 정보"
+      ],
+      "measurements": [
+        {
+          "label": "길이",
+          "value": "74 cm"
+        },
+        {
+          "label": "폭",
+          "value": "27 cm"
+        },
+        {
+          "label": "높이",
+          "value": "67 cm"
+        }
+      ],
+      "dimensionCaption": "배치 전에 확인할 수 있도록 주요 치수만 먼저 정리했습니다.",
+      "reviewIntro": "IKEA 공식 페이지 기준 평균 평점 4.6 / 리뷰 330건을 먼저 확인할 수 있습니다.",
+      "reviewHighlights": [
+        {
+          "title": "리뷰 데이터 연결 준비",
+          "body": "IKEA 공식 페이지 기준 평점 4.6 / 리뷰 330건을 반영했습니다. 후속 리뷰 연동 시 실제 구매 후기 데이터로 교체할 수 있습니다.",
+          "rating": 4.6,
+          "meta": "시스템 안내"
+        }
+      ]
+    },
     "60470050": {
       "galleryImages": [
         "https://www.ikea.com/kr/ko/images/products/vesteroey-pocket-sprung-mattress-extra-firm-light-blue__1150853_pe884906_s5.jpg",
@@ -6043,6 +6526,48 @@
           "body": "가격은 싸지만 매우 단단해서 이런 종류의 매트를 원하신다면 당연히 추천합니다",
           "rating": 5,
           "meta": "인증된 구매자"
+        }
+      ]
+    },
+    "60484245": {
+      "galleryImages": [
+        "https://www.ikea.com/kr/ko/images/products/ikea-365-pot-with-lid-stainless-steel__1006171_pe825756_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/ikea-365-pot-with-lid-stainless-steel__1060289_pe849964_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/ikea-365-pot-with-lid-stainless-steel__1006172_pe825757_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/ikea-365-pot-with-lid-stainless-steel__1062091_pe850656_s5.jpg"
+      ],
+      "dimensionImage": null,
+      "useDimensionImage": false,
+      "heroHook": "IKEA 365+ 이케아 365+ 냄비+뚜껑 - 스테인리스 3.0 l.",
+      "description": [
+        "IKEA 365+ 이케아 365+ 냄비+뚜껑 - 스테인리스 3.0 l.",
+        "인덕션레인지를 비롯한 모든 유형의 레인지에서 사용할 수 있습니다.",
+        "냄비 손잡이는 열전도율을 줄이도록 설계되었어요."
+      ],
+      "highlights": [
+        "냄비/팬",
+        "현재 컬러: 그레이",
+        "냄비",
+        "IKEA 공식 상세 기준 최소 정보"
+      ],
+      "measurements": [
+        {
+          "label": "높이",
+          "value": "11 cm"
+        },
+        {
+          "label": "부피",
+          "value": "3.0 l"
+        }
+      ],
+      "dimensionCaption": "배치 전에 확인할 수 있도록 주요 치수만 먼저 정리했습니다.",
+      "reviewIntro": "IKEA 공식 페이지 기준 평균 평점 4.5 / 리뷰 1483건을 먼저 확인할 수 있습니다.",
+      "reviewHighlights": [
+        {
+          "title": "리뷰 데이터 연결 준비",
+          "body": "IKEA 공식 페이지 기준 평점 4.5 / 리뷰 1483건을 반영했습니다. 후속 리뷰 연동 시 실제 구매 후기 데이터로 교체할 수 있습니다.",
+          "rating": 4.5,
+          "meta": "시스템 안내"
         }
       ]
     },
@@ -6324,6 +6849,39 @@
         }
       ]
     },
+    "60608298": {
+      "galleryImages": [
+        "https://www.ikea.com/kr/ko/images/products/tangmaerla-16-piece-cutlery-set-multicolour__1433050_pe983042_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/tangmaerla-16-piece-cutlery-set-multicolour__1433427_pe983243_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/tangmaerla-16-piece-cutlery-set-multicolour__1433426_pe983244_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/tangmaerla-16-piece-cutlery-set-multicolour__1433049_pe983043_s5.jpg"
+      ],
+      "dimensionImage": null,
+      "useDimensionImage": false,
+      "heroHook": "TÅNGMÄRLA 통멜라 식기도구16종 - 멀티컬러.",
+      "description": [
+        "TÅNGMÄRLA 통멜라 식기도구16종 - 멀티컬러.",
+        "어울리는 색상의 식기도구와 디너웨어, 액세서리를 함께 사용해보세요.",
+        "깔끔한 디자인의 식기도구로, 다양한 상차림에 잘 어울립니다."
+      ],
+      "highlights": [
+        "수저/커트러리",
+        "현재 컬러: 멀티컬러",
+        "16종 세트",
+        "IKEA 공식 상세 기준 최소 정보"
+      ],
+      "measurements": [],
+      "dimensionCaption": "배치 전에 확인할 수 있도록 주요 치수만 먼저 정리했습니다.",
+      "reviewIntro": "IKEA 공식 페이지 기준 평균 평점 3.7 / 리뷰 3건을 먼저 확인할 수 있습니다.",
+      "reviewHighlights": [
+        {
+          "title": "리뷰 데이터 연결 준비",
+          "body": "IKEA 공식 페이지 기준 평점 3.7 / 리뷰 3건을 반영했습니다. 후속 리뷰 연동 시 실제 구매 후기 데이터로 교체할 수 있습니다.",
+          "rating": 3.7,
+          "meta": "시스템 안내"
+        }
+      ]
+    },
     "60623185": {
       "galleryImages": [
         "https://www.ikea.com/kr/ko/images/products/pokal-glass-clear-glass__0713251_pe729361_s5.jpg",
@@ -6376,6 +6934,47 @@
           "body": "기존 투명색 다시 사고 싶어요.. 이 색도 나쁘진 않은데 깔끔한 투명색이 제일 좋았어요..",
           "rating": 3,
           "meta": "인증된 구매자"
+        }
+      ]
+    },
+    "70561988": {
+      "galleryImages": [
+        "https://www.ikea.com/kr/ko/images/products/vattenkrasse-watering-can-black-green-gold-colour__1227732_pe915654_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/vattenkrasse-watering-can-black-green-gold-colour__1227733_pe915653_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/vattenkrasse-watering-can-black-green-gold-colour__1227734_pe915652_s5.jpg"
+      ],
+      "dimensionImage": null,
+      "useDimensionImage": false,
+      "heroHook": "VATTENKRASSE 바텡크라세 물뿌리개 - 블랙-그린/골드 2.0 l.",
+      "description": [
+        "VATTENKRASSE 바텡크라세 물뿌리개 - 블랙-그린/골드 2.0 l.",
+        "기능뿐 아니라 장식 효과도 있는 물뿌리개는 화초의 성장을 돕는 역할을 합니다.",
+        "놀랍고 재미있는 장식으로 모두의 눈길을 사로잡아보세요."
+      ],
+      "highlights": [
+        "물뿌리개",
+        "현재 컬러: 그린",
+        "2.0L",
+        "IKEA 공식 상세 기준 최소 정보"
+      ],
+      "measurements": [
+        {
+          "label": "높이",
+          "value": "20 cm"
+        },
+        {
+          "label": "부피",
+          "value": "2.0 l"
+        }
+      ],
+      "dimensionCaption": "배치 전에 확인할 수 있도록 주요 치수만 먼저 정리했습니다.",
+      "reviewIntro": "IKEA 공식 페이지 기준 평균 평점 4.7 / 리뷰 11건을 먼저 확인할 수 있습니다.",
+      "reviewHighlights": [
+        {
+          "title": "리뷰 데이터 연결 준비",
+          "body": "IKEA 공식 페이지 기준 평점 4.7 / 리뷰 11건을 반영했습니다. 후속 리뷰 연동 시 실제 구매 후기 데이터로 교체할 수 있습니다.",
+          "rating": 4.7,
+          "meta": "시스템 안내"
         }
       ]
     },
@@ -6632,6 +7231,41 @@
         }
       ]
     },
+    "80343004": {
+      "galleryImages": [
+        "https://www.ikea.com/kr/ko/images/products/mopsig-16-piece-cutlery-set__0578532_pe669393_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/mopsig-16-piece-cutlery-set__0897208_pe669394_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/mopsig-16-piece-cutlery-set__0897221_pe669395_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/mopsig-16-piece-cutlery-set__0994534_ph177495_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/mopsig-16-piece-cutlery-set__0779352_ph161805_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/mopsig-16-piece-cutlery-set__1197159_pe903448_s5.jpg"
+      ],
+      "dimensionImage": null,
+      "useDimensionImage": false,
+      "heroHook": "MOPSIG 몹시그 식기도구16종.",
+      "description": [
+        "MOPSIG 몹시그 식기도구16종.",
+        "스테인리스 스틸로 만들어 내구성이 우수하고 세척하기 쉽습니다.",
+        "처음 사용하기 전에 이 제품을 세척하세요."
+      ],
+      "highlights": [
+        "수저/커트러리",
+        "현재 컬러: 그레이",
+        "16종 세트",
+        "IKEA 공식 상세 기준 최소 정보"
+      ],
+      "measurements": [],
+      "dimensionCaption": "배치 전에 확인할 수 있도록 주요 치수만 먼저 정리했습니다.",
+      "reviewIntro": "IKEA 공식 페이지 기준 평균 평점 4.2 / 리뷰 328건을 먼저 확인할 수 있습니다.",
+      "reviewHighlights": [
+        {
+          "title": "리뷰 데이터 연결 준비",
+          "body": "IKEA 공식 페이지 기준 평점 4.2 / 리뷰 328건을 반영했습니다. 후속 리뷰 연동 시 실제 구매 후기 데이터로 교체할 수 있습니다.",
+          "rating": 4.2,
+          "meta": "시스템 안내"
+        }
+      ]
+    },
     "80365802": {
       "galleryImages": [
         "https://www.ikea.com/kr/ko/images/products/moerbylanga-table-oak-veneer-brown-stained__0737110_pe740888_s5.jpg",
@@ -6694,12 +7328,47 @@
         }
       ]
     },
+    "80422322": {
+      "galleryImages": [
+        "https://www.ikea.com/kr/ko/images/products/ikea-365-mandoline-black__0739884_pe741892_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/ikea-365-mandoline-black__0739881_pe741891_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/ikea-365-mandoline-black__0973660_ph170784_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/ikea-365-mandoline-black__0738584_pe741490_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/ikea-365-mandoline-black__0739882_pe741894_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/ikea-365-mandoline-black__0739883_pe741893_s5.jpg"
+      ],
+      "dimensionImage": null,
+      "useDimensionImage": false,
+      "heroHook": "IKEA 365+ 이케아 365+ 만능 채칼 - 블랙.",
+      "description": [
+        "IKEA 365+ 이케아 365+ 만능 채칼 - 블랙.",
+        "3가지 두께 중에서 선택할 수 있으며 뒷면의 다이얼을 이용해 두께를 조절할 수 있습니다.",
+        "다이얼을 0으로 돌려 손을 보호할 수 있습니다."
+      ],
+      "highlights": [
+        "주방도구",
+        "현재 컬러: 블랙",
+        "채칼",
+        "IKEA 공식 상세 기준 최소 정보"
+      ],
+      "measurements": [],
+      "dimensionCaption": "배치 전에 확인할 수 있도록 주요 치수만 먼저 정리했습니다.",
+      "reviewIntro": "IKEA 공식 페이지 기준 평균 평점 4.3 / 리뷰 92건을 먼저 확인할 수 있습니다.",
+      "reviewHighlights": [
+        {
+          "title": "리뷰 데이터 연결 준비",
+          "body": "IKEA 공식 페이지 기준 평점 4.3 / 리뷰 92건을 반영했습니다. 후속 리뷰 연동 시 실제 구매 후기 데이터로 교체할 수 있습니다.",
+          "rating": 4.3,
+          "meta": "시스템 안내"
+        }
+      ]
+    },
     "80459283": {
       "galleryImages": [
         "https://www.ikea.com/kr/ko/images/products/fjaellarnika-duvet-extra-warm__0788100_pe763467_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/fjaellarnika-duvet-extra-warm__0788099_pe763465_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/fjaellarnika-duvet-extra-warm__1010040_pe827852_s5.jpg",
         "https://www.ikea.com/kr/ko/images/products/fjaellarnika-duvet-extra-warm__1257276_ph170105_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/fjaellarnika-duvet-extra-warm__1010040_pe827852_s5.jpg"
+        "https://www.ikea.com/kr/ko/images/products/fjaellarnika-duvet-extra-warm__0788099_pe763465_s5.jpg"
       ],
       "heroHook": "FJÄLLARNIKA 피엘라르니카 이불, 매우 따뜻함 150x200 cm.",
       "description": [
@@ -7253,6 +7922,45 @@
         }
       ]
     },
+    "90165968": {
+      "galleryImages": [
+        "https://www.ikea.com/kr/ko/images/products/idealisk-strainer-stainless-steel__0713138_pe729278_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/idealisk-strainer-stainless-steel__0895058_pe607891_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/idealisk-strainer-stainless-steel__0379139_pe376102_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/idealisk-strainer-stainless-steel__0934900_pe792617_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/idealisk-strainer-stainless-steel__0945665_ph131256_s5.jpg"
+      ],
+      "dimensionImage": null,
+      "useDimensionImage": false,
+      "heroHook": "IDEALISK 이데알리스크 체 - 스테인리스 20 cm.",
+      "description": [
+        "IDEALISK 이데알리스크 체 - 스테인리스 20 cm.",
+        "처음 사용하기 전에 이 제품을 세척하세요.",
+        "본 제품의 소재는 재활용이 가능합니다."
+      ],
+      "highlights": [
+        "주방도구",
+        "현재 컬러: 그레이",
+        "체",
+        "IKEA 공식 상세 기준 최소 정보"
+      ],
+      "measurements": [
+        {
+          "label": "지름",
+          "value": "20 cm"
+        }
+      ],
+      "dimensionCaption": "배치 전에 확인할 수 있도록 주요 치수만 먼저 정리했습니다.",
+      "reviewIntro": "IKEA 공식 페이지 기준 평균 평점 4.6 / 리뷰 680건을 먼저 확인할 수 있습니다.",
+      "reviewHighlights": [
+        {
+          "title": "리뷰 데이터 연결 준비",
+          "body": "IKEA 공식 페이지 기준 평점 4.6 / 리뷰 680건을 반영했습니다. 후속 리뷰 연동 시 실제 구매 후기 데이터로 교체할 수 있습니다.",
+          "rating": 4.6,
+          "meta": "시스템 안내"
+        }
+      ]
+    },
     "90191934": {
       "galleryImages": [
         "https://www.ikea.com/kr/ko/images/products/idealisk-colander-stainless-steel-black__0713133_pe729277_s5.jpg",
@@ -7726,6 +8434,46 @@
           "body": "트롤리 디자인 중에 제일 깔끔해서 구매했습니다. 바퀴도 부드럽고 소음이 없어요",
           "rating": 5,
           "meta": "인증된 구매자"
+        }
+      ]
+    },
+    "90466810": {
+      "galleryImages": [
+        "https://www.ikea.com/kr/ko/images/products/fejka-artificial-potted-plant-in-outdoor-hanging-eucalyptus__0817871_pe774216_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/fejka-artificial-potted-plant-in-outdoor-hanging-eucalyptus__0946018_pe797858_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/fejka-artificial-potted-plant-in-outdoor-hanging-eucalyptus__0945933_pe797840_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/fejka-artificial-potted-plant-in-outdoor-hanging-eucalyptus__1042859_pe841635_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/fejka-artificial-potted-plant-in-outdoor-hanging-eucalyptus__0817869_pe774214_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/fejka-artificial-potted-plant-in-outdoor-hanging-eucalyptus__0888651_pe782108_s5.jpg"
+      ],
+      "dimensionImage": null,
+      "useDimensionImage": false,
+      "heroHook": "FEJKA 페이카 인조식물 - 실내외겸용 걸이형/유칼립투스 9 cm.",
+      "description": [
+        "FEJKA 페이카 인조식물 - 실내외겸용 걸이형/유칼립투스 9 cm.",
+        "실물처럼 보이는 인조식물로 오랫동안 산뜻하게 사용할 수 있습니다.",
+        "진짜 식물은 아니지만 언제든지 자연의 아름다움을 느낄 수 있습니다."
+      ],
+      "highlights": [
+        "식물/조화",
+        "현재 컬러: 그린",
+        "인조식물",
+        "IKEA 공식 상세 기준 최소 정보"
+      ],
+      "measurements": [
+        {
+          "label": "화분 지름",
+          "value": "9 cm"
+        }
+      ],
+      "dimensionCaption": "배치 전에 확인할 수 있도록 주요 치수만 먼저 정리했습니다.",
+      "reviewIntro": "IKEA 공식 페이지 기준 평균 평점 4.8 / 리뷰 433건을 먼저 확인할 수 있습니다.",
+      "reviewHighlights": [
+        {
+          "title": "리뷰 데이터 연결 준비",
+          "body": "IKEA 공식 페이지 기준 평점 4.8 / 리뷰 433건을 반영했습니다. 후속 리뷰 연동 시 실제 구매 후기 데이터로 교체할 수 있습니다.",
+          "rating": 4.8,
+          "meta": "시스템 안내"
         }
       ]
     },
@@ -8373,9 +9121,9 @@
     "s09246408": {
       "galleryImages": [
         "https://www.ikea.com/kr/ko/images/products/linnmon-adils-table-white__0737165_pe740925_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/linnmon-adils-table-white__1327991_pe944603_s5.jpg",
         "https://www.ikea.com/kr/ko/images/products/linnmon-adils-table-white__1369094_pe958025_s5.jpg",
         "https://www.ikea.com/kr/ko/images/products/linnmon-adils-table-white__1369093_pe958026_s5.jpg",
+        "https://www.ikea.com/kr/ko/images/products/linnmon-adils-table-white__1327991_pe944603_s5.jpg",
         "https://www.ikea.com/kr/ko/images/products/linnmon-adils-table-white__0734654_pe739562_s5.jpg"
       ],
       "dimensionImage": "https://www.ikea.com/kr/ko/images/products/linnmon-adils-table-white__0734621_pe739540_s5.jpg",
@@ -9786,289 +10534,6 @@
         }
       ]
     },
-    "80422322": {
-      "galleryImages": [
-        "https://www.ikea.com/kr/ko/images/products/ikea-365-mandoline-black__0739884_pe741892_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/ikea-365-mandoline-black__0739881_pe741891_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/ikea-365-mandoline-black__0973660_ph170784_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/ikea-365-mandoline-black__0738584_pe741490_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/ikea-365-mandoline-black__0739882_pe741894_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/ikea-365-mandoline-black__0739883_pe741893_s5.jpg"
-      ],
-      "dimensionImage": null,
-      "useDimensionImage": false,
-      "heroHook": "IKEA 365+ 이케아 365+ 만능 채칼 - 블랙.",
-      "description": [
-        "IKEA 365+ 이케아 365+ 만능 채칼 - 블랙.",
-        "3가지 두께 중에서 선택할 수 있으며 뒷면의 다이얼을 이용해 두께를 조절할 수 있습니다.",
-        "다이얼을 0으로 돌려 손을 보호할 수 있습니다."
-      ],
-      "highlights": [
-        "주방도구",
-        "현재 컬러: 블랙",
-        "채칼",
-        "IKEA 공식 상세 기준 최소 정보"
-      ],
-      "measurements": [],
-      "dimensionCaption": "배치 전에 확인할 수 있도록 주요 치수만 먼저 정리했습니다.",
-      "reviewIntro": "IKEA 공식 페이지 기준 평균 평점 4.3 / 리뷰 92건을 먼저 확인할 수 있습니다.",
-      "reviewHighlights": [
-        {
-          "title": "리뷰 데이터 연결 준비",
-          "body": "IKEA 공식 페이지 기준 평점 4.3 / 리뷰 92건을 반영했습니다. 후속 리뷰 연동 시 실제 구매 후기 데이터로 교체할 수 있습니다.",
-          "rating": 4.3,
-          "meta": "시스템 안내"
-        }
-      ]
-    },
-    "90165968": {
-      "galleryImages": [
-        "https://www.ikea.com/kr/ko/images/products/idealisk-strainer-stainless-steel__0713138_pe729278_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/idealisk-strainer-stainless-steel__0895058_pe607891_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/idealisk-strainer-stainless-steel__0379139_pe376102_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/idealisk-strainer-stainless-steel__0934900_pe792617_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/idealisk-strainer-stainless-steel__0945665_ph131256_s5.jpg"
-      ],
-      "dimensionImage": null,
-      "useDimensionImage": false,
-      "heroHook": "IDEALISK 이데알리스크 체 - 스테인리스 20 cm.",
-      "description": [
-        "IDEALISK 이데알리스크 체 - 스테인리스 20 cm.",
-        "처음 사용하기 전에 이 제품을 세척하세요.",
-        "본 제품의 소재는 재활용이 가능합니다."
-      ],
-      "highlights": [
-        "주방도구",
-        "현재 컬러: 그레이",
-        "체",
-        "IKEA 공식 상세 기준 최소 정보"
-      ],
-      "measurements": [
-        {
-          "label": "지름",
-          "value": "20 cm"
-        }
-      ],
-      "dimensionCaption": "배치 전에 확인할 수 있도록 주요 치수만 먼저 정리했습니다.",
-      "reviewIntro": "IKEA 공식 페이지 기준 평균 평점 4.6 / 리뷰 680건을 먼저 확인할 수 있습니다.",
-      "reviewHighlights": [
-        {
-          "title": "리뷰 데이터 연결 준비",
-          "body": "IKEA 공식 페이지 기준 평점 4.6 / 리뷰 680건을 반영했습니다. 후속 리뷰 연동 시 실제 구매 후기 데이터로 교체할 수 있습니다.",
-          "rating": 4.6,
-          "meta": "시스템 안내"
-        }
-      ]
-    },
-    "20580890": {
-      "galleryImages": [
-        "https://www.ikea.com/kr/ko/images/products/hemlagad-crepe-pancake-pan-non-stick-coating-black__1275806_pe930681_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/hemlagad-crepe-pancake-pan-non-stick-coating-black__1275804_pe930683_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/hemlagad-crepe-pancake-pan-non-stick-coating-black__1366548_pe957063_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/hemlagad-crepe-pancake-pan-non-stick-coating-black__1366545_pe957065_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/hemlagad-crepe-pancake-pan-non-stick-coating-black__1366546_pe957061_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/hemlagad-crepe-pancake-pan-non-stick-coating-black__1366541_pe957056_s5.jpg"
-      ],
-      "dimensionImage": null,
-      "useDimensionImage": false,
-      "heroHook": "HEMLAGAD 헴라가드 크레이프/팬케이크 팬 - 논스틱 코팅 블랙 25 cm.",
-      "description": [
-        "HEMLAGAD 헴라가드 크레이프/팬케이크 팬 - 논스틱 코팅 블랙 25 cm.",
-        "인덕션레인지를 비롯한 모든 유형의 레인지에서 사용할 수 있습니다.",
-        "내구성이 우수한 졸겔 세라믹 논스틱 코팅이 되어 있어 음식이 타거나 눌어붙지 않습니다."
-      ],
-      "highlights": [
-        "냄비/팬",
-        "현재 컬러: 블랙",
-        "프라이팬",
-        "IKEA 공식 상세 기준 최소 정보"
-      ],
-      "measurements": [
-        {
-          "label": "지름",
-          "value": "25 cm"
-        },
-        {
-          "label": "높이",
-          "value": "2 cm"
-        }
-      ],
-      "dimensionCaption": "배치 전에 확인할 수 있도록 주요 치수만 먼저 정리했습니다.",
-      "reviewIntro": "IKEA 공식 페이지 기준 평균 평점 4.0 / 리뷰 5건을 먼저 확인할 수 있습니다.",
-      "reviewHighlights": [
-        {
-          "title": "리뷰 데이터 연결 준비",
-          "body": "IKEA 공식 페이지 기준 평점 4.0 / 리뷰 5건을 반영했습니다. 후속 리뷰 연동 시 실제 구매 후기 데이터로 교체할 수 있습니다.",
-          "rating": 4.0,
-          "meta": "시스템 안내"
-        }
-      ]
-    },
-    "60484245": {
-      "galleryImages": [
-        "https://www.ikea.com/kr/ko/images/products/ikea-365-pot-with-lid-stainless-steel__1006171_pe825756_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/ikea-365-pot-with-lid-stainless-steel__1060289_pe849964_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/ikea-365-pot-with-lid-stainless-steel__1006172_pe825757_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/ikea-365-pot-with-lid-stainless-steel__1062091_pe850656_s5.jpg"
-      ],
-      "dimensionImage": null,
-      "useDimensionImage": false,
-      "heroHook": "IKEA 365+ 이케아 365+ 냄비+뚜껑 - 스테인리스 3.0 l.",
-      "description": [
-        "IKEA 365+ 이케아 365+ 냄비+뚜껑 - 스테인리스 3.0 l.",
-        "인덕션레인지를 비롯한 모든 유형의 레인지에서 사용할 수 있습니다.",
-        "냄비 손잡이는 열전도율을 줄이도록 설계되었어요."
-      ],
-      "highlights": [
-        "냄비/팬",
-        "현재 컬러: 그레이",
-        "냄비",
-        "IKEA 공식 상세 기준 최소 정보"
-      ],
-      "measurements": [
-        {
-          "label": "높이",
-          "value": "11 cm"
-        },
-        {
-          "label": "부피",
-          "value": "3.0 l"
-        }
-      ],
-      "dimensionCaption": "배치 전에 확인할 수 있도록 주요 치수만 먼저 정리했습니다.",
-      "reviewIntro": "IKEA 공식 페이지 기준 평균 평점 4.5 / 리뷰 1483건을 먼저 확인할 수 있습니다.",
-      "reviewHighlights": [
-        {
-          "title": "리뷰 데이터 연결 준비",
-          "body": "IKEA 공식 페이지 기준 평점 4.5 / 리뷰 1483건을 반영했습니다. 후속 리뷰 연동 시 실제 구매 후기 데이터로 교체할 수 있습니다.",
-          "rating": 4.5,
-          "meta": "시스템 안내"
-        }
-      ]
-    },
-    "30283516": {
-      "galleryImages": [
-        "https://www.ikea.com/kr/ko/images/products/ikea-365-utility-knife-stainless-steel__0710373_pe727501_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/ikea-365-utility-knife-stainless-steel__0333879_pe523341_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/ikea-365-utility-knife-stainless-steel__0333880_pe523342_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/ikea-365-utility-knife-stainless-steel__0333881_pe523343_s5.jpg"
-      ],
-      "dimensionImage": null,
-      "useDimensionImage": false,
-      "heroHook": "IKEA 365+ 이케아 365+ 다용도칼 - 스테인리스 14 cm.",
-      "description": [
-        "IKEA 365+ 이케아 365+ 다용도칼 - 스테인리스 14 cm.",
-        "요리재료를 쉽게 썰고 다듬을 수 있습니다.",
-        "스테인리스스틸 소재를 사용하여 내구성이 뛰어나고 안정적이며 쉽게 잘 닦입니다."
-      ],
-      "highlights": [
-        "도마/주방칼",
-        "현재 컬러: 그레이",
-        "주방칼",
-        "IKEA 공식 상세 기준 최소 정보"
-      ],
-      "measurements": [
-        {
-          "label": "칼날 길이",
-          "value": "14 cm"
-        }
-      ],
-      "dimensionCaption": "배치 전에 확인할 수 있도록 주요 치수만 먼저 정리했습니다.",
-      "reviewIntro": "IKEA 공식 페이지 기준 평균 평점 4.6 / 리뷰 132건을 먼저 확인할 수 있습니다.",
-      "reviewHighlights": [
-        {
-          "title": "리뷰 데이터 연결 준비",
-          "body": "IKEA 공식 페이지 기준 평점 4.6 / 리뷰 132건을 반영했습니다. 후속 리뷰 연동 시 실제 구매 후기 데이터로 교체할 수 있습니다.",
-          "rating": 4.6,
-          "meta": "시스템 안내"
-        }
-      ]
-    },
-    "20613027": {
-      "galleryImages": [
-        "https://www.ikea.com/kr/ko/images/products/ikea-365-chopping-board-black-blue-grey-blue-light-blue__1427228_pe982577_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/ikea-365-chopping-board-black-blue-grey-blue-light-blue__1435077_pe983693_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/ikea-365-chopping-board-black-blue-grey-blue-light-blue__1464212_pe994650_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/ikea-365-chopping-board-black-blue-grey-blue-light-blue__1464213_pe994649_s5.jpg"
-      ],
-      "dimensionImage": null,
-      "useDimensionImage": false,
-      "heroHook": "IKEA 365+ 이케아 365+ 도마 - 블랙블루 그레이블루/라이트블루 22x16 cm.",
-      "description": [
-        "IKEA 365+ 이케아 365+ 도마 - 블랙블루 그레이블루/라이트블루 22x16 cm.",
-        "도마로도 뚜껑으로도 사용할 수 있으며 IKEA 365+ 시리즈의 식품보관용기와 함께 사용하면 멋진 치즈돔이 됩니다.",
-        "처음 사용하기 전에 이 제품을 세척하세요."
-      ],
-      "highlights": [
-        "도마/주방칼",
-        "현재 컬러: 블루",
-        "도마",
-        "IKEA 공식 상세 기준 최소 정보"
-      ],
-      "measurements": [
-        {
-          "label": "길이",
-          "value": "22 cm"
-        },
-        {
-          "label": "폭",
-          "value": "16 cm"
-        }
-      ],
-      "dimensionCaption": "배치 전에 확인할 수 있도록 주요 치수만 먼저 정리했습니다.",
-      "reviewIntro": "IKEA 공식 페이지 기준 평균 평점 4.6 / 리뷰 14건을 먼저 확인할 수 있습니다.",
-      "reviewHighlights": [
-        {
-          "title": "리뷰 데이터 연결 준비",
-          "body": "IKEA 공식 페이지 기준 평점 4.6 / 리뷰 14건을 반영했습니다. 후속 리뷰 연동 시 실제 구매 후기 데이터로 교체할 수 있습니다.",
-          "rating": 4.6,
-          "meta": "시스템 안내"
-        }
-      ]
-    },
-    "30258324": {
-      "galleryImages": [
-        "https://www.ikea.com/kr/ko/images/products/ivrig-glass-clear-glass__0713244_pe729354_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/ivrig-glass-clear-glass__1450041_pe990203_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/ivrig-glass-clear-glass__1450042_pe990204_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/ivrig-glass-clear-glass__1450040_pe990205_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/ivrig-glass-clear-glass__1372895_pe959759_s5.jpg"
-      ],
-      "dimensionImage": null,
-      "useDimensionImage": false,
-      "heroHook": "IVRIG 이브리그 유리컵 - 유리 45 cl.",
-      "description": [
-        "IVRIG 이브리그 유리컵 - 유리 45 cl.",
-        "아래쪽이 크고 둥근 디자인으로 레드와인 잔으로도 사용할 수 있습니다.",
-        "와인의 맛과 향을 제대로 즐겨보세요."
-      ],
-      "highlights": [
-        "유리컵",
-        "현재 컬러: 화이트",
-        "유리컵",
-        "IKEA 공식 상세 기준 최소 정보"
-      ],
-      "measurements": [
-        {
-          "label": "높이",
-          "value": "11 cm"
-        },
-        {
-          "label": "부피",
-          "value": "45 cl"
-        }
-      ],
-      "dimensionCaption": "배치 전에 확인할 수 있도록 주요 치수만 먼저 정리했습니다.",
-      "reviewIntro": "IKEA 공식 페이지 기준 평균 평점 4.7 / 리뷰 1813건을 먼저 확인할 수 있습니다.",
-      "reviewHighlights": [
-        {
-          "title": "리뷰 데이터 연결 준비",
-          "body": "IKEA 공식 페이지 기준 평점 4.7 / 리뷰 1813건을 반영했습니다. 후속 리뷰 연동 시 실제 구매 후기 데이터로 교체할 수 있습니다.",
-          "rating": 4.7,
-          "meta": "시스템 안내"
-        }
-      ]
-    },
     "00581490": {
       "galleryImages": [
         "https://www.ikea.com/kr/ko/images/products/pokal-espresso-glass-clear-glass__1335438_pe947073_s5.jpg",
@@ -10107,338 +10572,6 @@
           "title": "리뷰 데이터 연결 준비",
           "body": "IKEA 공식 페이지 기준 평점 4.8 / 리뷰 21건을 반영했습니다. 후속 리뷰 연동 시 실제 구매 후기 데이터로 교체할 수 있습니다.",
           "rating": 4.8,
-          "meta": "시스템 안내"
-        }
-      ]
-    },
-    "80343004": {
-      "galleryImages": [
-        "https://www.ikea.com/kr/ko/images/products/mopsig-16-piece-cutlery-set__0578532_pe669393_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/mopsig-16-piece-cutlery-set__0897208_pe669394_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/mopsig-16-piece-cutlery-set__0897221_pe669395_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/mopsig-16-piece-cutlery-set__0994534_ph177495_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/mopsig-16-piece-cutlery-set__0779352_ph161805_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/mopsig-16-piece-cutlery-set__1197159_pe903448_s5.jpg"
-      ],
-      "dimensionImage": null,
-      "useDimensionImage": false,
-      "heroHook": "MOPSIG 몹시그 식기도구16종.",
-      "description": [
-        "MOPSIG 몹시그 식기도구16종.",
-        "스테인리스 스틸로 만들어 내구성이 우수하고 세척하기 쉽습니다.",
-        "처음 사용하기 전에 이 제품을 세척하세요."
-      ],
-      "highlights": [
-        "수저/커트러리",
-        "현재 컬러: 그레이",
-        "16종 세트",
-        "IKEA 공식 상세 기준 최소 정보"
-      ],
-      "measurements": [],
-      "dimensionCaption": "배치 전에 확인할 수 있도록 주요 치수만 먼저 정리했습니다.",
-      "reviewIntro": "IKEA 공식 페이지 기준 평균 평점 4.2 / 리뷰 328건을 먼저 확인할 수 있습니다.",
-      "reviewHighlights": [
-        {
-          "title": "리뷰 데이터 연결 준비",
-          "body": "IKEA 공식 페이지 기준 평점 4.2 / 리뷰 328건을 반영했습니다. 후속 리뷰 연동 시 실제 구매 후기 데이터로 교체할 수 있습니다.",
-          "rating": 4.2,
-          "meta": "시스템 안내"
-        }
-      ]
-    },
-    "60608298": {
-      "galleryImages": [
-        "https://www.ikea.com/kr/ko/images/products/tangmaerla-16-piece-cutlery-set-multicolour__1433050_pe983042_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/tangmaerla-16-piece-cutlery-set-multicolour__1433427_pe983243_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/tangmaerla-16-piece-cutlery-set-multicolour__1433426_pe983244_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/tangmaerla-16-piece-cutlery-set-multicolour__1433049_pe983043_s5.jpg"
-      ],
-      "dimensionImage": null,
-      "useDimensionImage": false,
-      "heroHook": "TÅNGMÄRLA 통멜라 식기도구16종 - 멀티컬러.",
-      "description": [
-        "TÅNGMÄRLA 통멜라 식기도구16종 - 멀티컬러.",
-        "어울리는 색상의 식기도구와 디너웨어, 액세서리를 함께 사용해보세요.",
-        "깔끔한 디자인의 식기도구로, 다양한 상차림에 잘 어울립니다."
-      ],
-      "highlights": [
-        "수저/커트러리",
-        "현재 컬러: 멀티컬러",
-        "16종 세트",
-        "IKEA 공식 상세 기준 최소 정보"
-      ],
-      "measurements": [],
-      "dimensionCaption": "배치 전에 확인할 수 있도록 주요 치수만 먼저 정리했습니다.",
-      "reviewIntro": "IKEA 공식 페이지 기준 평균 평점 3.7 / 리뷰 3건을 먼저 확인할 수 있습니다.",
-      "reviewHighlights": [
-        {
-          "title": "리뷰 데이터 연결 준비",
-          "body": "IKEA 공식 페이지 기준 평점 3.7 / 리뷰 3건을 반영했습니다. 후속 리뷰 연동 시 실제 구매 후기 데이터로 교체할 수 있습니다.",
-          "rating": 3.7,
-          "meta": "시스템 안내"
-        }
-      ]
-    },
-    "90466810": {
-      "galleryImages": [
-        "https://www.ikea.com/kr/ko/images/products/fejka-artificial-potted-plant-in-outdoor-hanging-eucalyptus__0817871_pe774216_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/fejka-artificial-potted-plant-in-outdoor-hanging-eucalyptus__0946018_pe797858_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/fejka-artificial-potted-plant-in-outdoor-hanging-eucalyptus__0945933_pe797840_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/fejka-artificial-potted-plant-in-outdoor-hanging-eucalyptus__1042859_pe841635_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/fejka-artificial-potted-plant-in-outdoor-hanging-eucalyptus__0817869_pe774214_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/fejka-artificial-potted-plant-in-outdoor-hanging-eucalyptus__0888651_pe782108_s5.jpg"
-      ],
-      "dimensionImage": null,
-      "useDimensionImage": false,
-      "heroHook": "FEJKA 페이카 인조식물 - 실내외겸용 걸이형/유칼립투스 9 cm.",
-      "description": [
-        "FEJKA 페이카 인조식물 - 실내외겸용 걸이형/유칼립투스 9 cm.",
-        "실물처럼 보이는 인조식물로 오랫동안 산뜻하게 사용할 수 있습니다.",
-        "진짜 식물은 아니지만 언제든지 자연의 아름다움을 느낄 수 있습니다."
-      ],
-      "highlights": [
-        "식물/조화",
-        "현재 컬러: 그린",
-        "인조식물",
-        "IKEA 공식 상세 기준 최소 정보"
-      ],
-      "measurements": [
-        {
-          "label": "화분 지름",
-          "value": "9 cm"
-        }
-      ],
-      "dimensionCaption": "배치 전에 확인할 수 있도록 주요 치수만 먼저 정리했습니다.",
-      "reviewIntro": "IKEA 공식 페이지 기준 평균 평점 4.8 / 리뷰 433건을 먼저 확인할 수 있습니다.",
-      "reviewHighlights": [
-        {
-          "title": "리뷰 데이터 연결 준비",
-          "body": "IKEA 공식 페이지 기준 평점 4.8 / 리뷰 433건을 반영했습니다. 후속 리뷰 연동 시 실제 구매 후기 데이터로 교체할 수 있습니다.",
-          "rating": 4.8,
-          "meta": "시스템 안내"
-        }
-      ]
-    },
-    "20519765": {
-      "galleryImages": [
-        "https://www.ikea.com/kr/ko/images/products/fejka-artificial-potted-plant-with-pot-in-outdoor-succulent__0614187_pe686812_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/fejka-artificial-potted-plant-with-pot-in-outdoor-succulent__0945926_pe797833_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/fejka-artificial-potted-plant-with-pot-in-outdoor-succulent__0901062_pe687829_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/fejka-artificial-potted-plant-with-pot-in-outdoor-succulent__0901059_pe687828_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/fejka-artificial-potted-plant-with-pot-in-outdoor-succulent__0928729_ph166548_s5.jpg"
-      ],
-      "dimensionImage": null,
-      "useDimensionImage": false,
-      "heroHook": "FEJKA 페이카 인조식물+화분 - 실내외겸용 다육식물 6 cm 3 개.",
-      "description": [
-        "FEJKA 페이카 인조식물+화분 - 실내외겸용 다육식물 6 cm 3 개.",
-        "살아 있는 것처럼 보이는 인조식물로 오랫동안 싱싱함을 유지하죠.",
-        "진짜 식물은 아니지만 언제든지 자연의 아름다움을 느낄 수 있습니다."
-      ],
-      "highlights": [
-        "식물/조화",
-        "현재 컬러: 그린",
-        "인조식물",
-        "IKEA 공식 상세 기준 최소 정보"
-      ],
-      "measurements": [
-        {
-          "label": "높이",
-          "value": "12 cm"
-        },
-        {
-          "label": "화분 지름",
-          "value": "6 cm"
-        }
-      ],
-      "dimensionCaption": "배치 전에 확인할 수 있도록 주요 치수만 먼저 정리했습니다.",
-      "reviewIntro": "IKEA 공식 페이지 기준 평균 평점 4.4 / 리뷰 125건을 먼저 확인할 수 있습니다.",
-      "reviewHighlights": [
-        {
-          "title": "리뷰 데이터 연결 준비",
-          "body": "IKEA 공식 페이지 기준 평점 4.4 / 리뷰 125건을 반영했습니다. 후속 리뷰 연동 시 실제 구매 후기 데이터로 교체할 수 있습니다.",
-          "rating": 4.4,
-          "meta": "시스템 안내"
-        }
-      ]
-    },
-    "50492260": {
-      "galleryImages": [
-        "https://www.ikea.com/kr/ko/images/products/chilistran-hanging-planter-in-outdoor-white__0990165_pe820964_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/chilistran-hanging-planter-in-outdoor-white__1039814_pe840460_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/chilistran-hanging-planter-in-outdoor-white__1042951_pe841636_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/chilistran-hanging-planter-in-outdoor-white__0990167_pe820966_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/chilistran-hanging-planter-in-outdoor-white__0990166_pe820965_s5.jpg"
-      ],
-      "dimensionImage": null,
-      "useDimensionImage": false,
-      "heroHook": "CHILISTRÅN 실리스트론 걸이화분 - 실내외겸용 화이트 12 cm.",
-      "description": [
-        "CHILISTRÅN 실리스트론 걸이화분 - 실내외겸용 화이트 12 cm.",
-        "바닥의 바에 고리를 걸어서 화분을 줄줄이 연결할 수 있습니다.",
-        "고정 장치 하나에 걸려있을 경우, 하나 이상의 고정 장치가 연결되어 있을 경우, 동일한 고정 장치에 걸려있을 경우의 최대 하중은 15kg입니다."
-      ],
-      "highlights": [
-        "화분",
-        "현재 컬러: 화이트",
-        "12cm",
-        "IKEA 공식 상세 기준 최소 정보"
-      ],
-      "measurements": [
-        {
-          "label": "높이",
-          "value": "49 cm"
-        },
-        {
-          "label": "화분 지름",
-          "value": "12 cm"
-        }
-      ],
-      "dimensionCaption": "배치 전에 확인할 수 있도록 주요 치수만 먼저 정리했습니다.",
-      "reviewIntro": "IKEA 공식 페이지 기준 평균 평점 4.8 / 리뷰 394건을 먼저 확인할 수 있습니다.",
-      "reviewHighlights": [
-        {
-          "title": "리뷰 데이터 연결 준비",
-          "body": "IKEA 공식 페이지 기준 평점 4.8 / 리뷰 394건을 반영했습니다. 후속 리뷰 연동 시 실제 구매 후기 데이터로 교체할 수 있습니다.",
-          "rating": 4.8,
-          "meta": "시스템 안내"
-        }
-      ]
-    },
-    "50611946": {
-      "galleryImages": [
-        "https://www.ikea.com/kr/ko/images/products/sojaboena-plant-pot-light-green__1461327_pe994156_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/sojaboena-plant-pot-light-green__1479896_pe1000714_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/sojaboena-plant-pot-light-green__1479897_pe1000718_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/sojaboena-plant-pot-light-green__1344339_pe949829_s5.jpg"
-      ],
-      "dimensionImage": null,
-      "useDimensionImage": false,
-      "heroHook": "SOJABÖNA 소야뵈나 화분 - 라이트그린 9 cm.",
-      "description": [
-        "SOJABÖNA 소야뵈나 화분 - 라이트그린 9 cm.",
-        "모든 봄 식물과 잘 어울리는 장식적인 화분으로, DOFTRIPS 도프트립스 컬렉션의 다양한 색상과 모양의 다른 화분과 잘 어우러져요.",
-        "어슨웨어(도자기제)는 유용하고 아름다운 제품으로 변신할 수 있는 내구성 좋은 소재예요."
-      ],
-      "highlights": [
-        "화분",
-        "현재 컬러: 그린",
-        "9cm",
-        "IKEA 공식 상세 기준 최소 정보"
-      ],
-      "measurements": [
-        {
-          "label": "높이",
-          "value": "10 cm"
-        },
-        {
-          "label": "식물최대지름",
-          "value": "9 cm"
-        }
-      ],
-      "dimensionCaption": "배치 전에 확인할 수 있도록 주요 치수만 먼저 정리했습니다.",
-      "reviewIntro": "IKEA 공식 페이지 기준 평균 평점 4.7 / 리뷰 3건을 먼저 확인할 수 있습니다.",
-      "reviewHighlights": [
-        {
-          "title": "리뷰 데이터 연결 준비",
-          "body": "IKEA 공식 페이지 기준 평점 4.7 / 리뷰 3건을 반영했습니다. 후속 리뷰 연동 시 실제 구매 후기 데이터로 교체할 수 있습니다.",
-          "rating": 4.7,
-          "meta": "시스템 안내"
-        }
-      ]
-    },
-    "30486651": {
-      "galleryImages": [
-        "https://www.ikea.com/kr/ko/images/products/olivblad-plant-stand-in-outdoor-black__1010784_pe828333_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/olivblad-plant-stand-in-outdoor-black__1041728_pe841133_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/olivblad-plant-stand-in-outdoor-black__1042412_pe841380_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/olivblad-plant-stand-in-outdoor-black__1010785_pe828338_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/olivblad-plant-stand-in-outdoor-black__1010786_pe828335_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/olivblad-plant-stand-in-outdoor-black__1079586_pe857617_s5.jpg"
-      ],
-      "dimensionImage": null,
-      "useDimensionImage": false,
-      "heroHook": "OLIVBLAD 올리브블라드 화분스탠드 - 실내외겸용 블랙 56 cm.",
-      "description": [
-        "OLIVBLAD 올리브블라드 화분스탠드 - 실내외겸용 블랙 56 cm.",
-        "화분스탠드에는 서로 다른 높이의 선반이 있어서 화분을 디스플레이하고 방안에 생동감을 줄 수 있어요.",
-        "실내뿐만 아니라 야외, 발코니 등에 놓을 수 있으며 파티션으로도 사용할 수 있습니다."
-      ],
-      "highlights": [
-        "화분스탠드",
-        "현재 컬러: 블랙",
-        "55x25x56cm",
-        "IKEA 공식 상세 기준 최소 정보"
-      ],
-      "measurements": [
-        {
-          "label": "길이",
-          "value": "55 cm"
-        },
-        {
-          "label": "폭",
-          "value": "25 cm"
-        },
-        {
-          "label": "높이",
-          "value": "56 cm"
-        }
-      ],
-      "dimensionCaption": "배치 전에 확인할 수 있도록 주요 치수만 먼저 정리했습니다.",
-      "reviewIntro": "IKEA 공식 페이지 기준 평균 평점 4.6 / 리뷰 601건을 먼저 확인할 수 있습니다.",
-      "reviewHighlights": [
-        {
-          "title": "리뷰 데이터 연결 준비",
-          "body": "IKEA 공식 페이지 기준 평점 4.6 / 리뷰 601건을 반영했습니다. 후속 리뷰 연동 시 실제 구매 후기 데이터로 교체할 수 있습니다.",
-          "rating": 4.6,
-          "meta": "시스템 안내"
-        }
-      ]
-    },
-    "60426340": {
-      "galleryImages": [
-        "https://www.ikea.com/kr/ko/images/products/vaniljstang-plant-stand-pine-black__0958912_pe809507_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/vaniljstang-plant-stand-pine-black__0970621_pe811139_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/vaniljstang-plant-stand-pine-black__0970651_pe811148_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/vaniljstang-plant-stand-pine-black__0958913_pe809508_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/vaniljstang-plant-stand-pine-black__0958914_pe809509_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/vaniljstang-plant-stand-pine-black__0923947_pe788452_s5.jpg"
-      ],
-      "dimensionImage": null,
-      "useDimensionImage": false,
-      "heroHook": "VANILJSTÅNG 바닐리스통 화분스탠드 - 소나무/블랙 67 cm.",
-      "description": [
-        "VANILJSTÅNG 바닐리스통 화분스탠드 - 소나무/블랙 67 cm.",
-        "화분스탠드가 있으면 집안 곳곳을 나만의 정원으로 꾸밀 수 있어요.",
-        "실내 사용 전용."
-      ],
-      "highlights": [
-        "화분스탠드",
-        "현재 컬러: 베이지/블랙",
-        "74x27x67cm",
-        "IKEA 공식 상세 기준 최소 정보"
-      ],
-      "measurements": [
-        {
-          "label": "길이",
-          "value": "74 cm"
-        },
-        {
-          "label": "폭",
-          "value": "27 cm"
-        },
-        {
-          "label": "높이",
-          "value": "67 cm"
-        }
-      ],
-      "dimensionCaption": "배치 전에 확인할 수 있도록 주요 치수만 먼저 정리했습니다.",
-      "reviewIntro": "IKEA 공식 페이지 기준 평균 평점 4.6 / 리뷰 330건을 먼저 확인할 수 있습니다.",
-      "reviewHighlights": [
-        {
-          "title": "리뷰 데이터 연결 준비",
-          "body": "IKEA 공식 페이지 기준 평점 4.6 / 리뷰 330건을 반영했습니다. 후속 리뷰 연동 시 실제 구매 후기 데이터로 교체할 수 있습니다.",
-          "rating": 4.6,
           "meta": "시스템 안내"
         }
       ]
@@ -10487,139 +10620,6 @@
           "title": "리뷰 데이터 연결 준비",
           "body": "IKEA 공식 페이지 기준 평점 4.3 / 리뷰 557건을 반영했습니다. 후속 리뷰 연동 시 실제 구매 후기 데이터로 교체할 수 있습니다.",
           "rating": 4.3,
-          "meta": "시스템 안내"
-        }
-      ]
-    },
-    "40612338": {
-      "galleryImages": [
-        "https://www.ikea.com/kr/ko/images/products/doftrips-growing-set-transparent-off-white__1461302_pe994148_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/doftrips-growing-set-transparent-off-white__1461303_pe994149_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/doftrips-growing-set-transparent-off-white__1481937_pe1000757_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/doftrips-growing-set-transparent-off-white__1479605_pe1000695_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/doftrips-growing-set-transparent-off-white__1508342_ph207930_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/doftrips-growing-set-transparent-off-white__1479588_pe1000697_s5.jpg"
-      ],
-      "dimensionImage": null,
-      "useDimensionImage": false,
-      "heroHook": "DOFTRIPS 도프트립스 원예세트 - 투명/오프화이트 16x16x14.5 cm.",
-      "description": [
-        "DOFTRIPS 도프트립스 원예세트 - 투명/오프화이트 16x16x14.5 cm.",
-        "씨앗이 싹을 틔우고 잘 자랄 수 있도록 도와주는 보호 돔이 있는 실용적인 미니 온실입니다.",
-        "돔 모양 뚜껑에는 공기가 원활하게 순환하고 쉽게 들 수 있도록 손잡이가 뚫려있어요."
-      ],
-      "highlights": [
-        "원예용품",
-        "현재 컬러: 화이트",
-        "원예세트",
-        "IKEA 공식 상세 기준 최소 정보"
-      ],
-      "measurements": [
-        {
-          "label": "폭",
-          "value": "16 cm"
-        },
-        {
-          "label": "깊이",
-          "value": "16 cm"
-        },
-        {
-          "label": "높이",
-          "value": "14.5 cm"
-        }
-      ],
-      "dimensionCaption": "배치 전에 확인할 수 있도록 주요 치수만 먼저 정리했습니다.",
-      "reviewIntro": "IKEA 공식 페이지 기준 평균 평점 4.5 / 리뷰 2건을 먼저 확인할 수 있습니다.",
-      "reviewHighlights": [
-        {
-          "title": "리뷰 데이터 연결 준비",
-          "body": "IKEA 공식 페이지 기준 평점 4.5 / 리뷰 2건을 반영했습니다. 후속 리뷰 연동 시 실제 구매 후기 데이터로 교체할 수 있습니다.",
-          "rating": 4.5,
-          "meta": "시스템 안내"
-        }
-      ]
-    },
-    "30505485": {
-      "galleryImages": [
-        "https://www.ikea.com/kr/ko/images/products/akerbaer-watering-can-in-outdoor-galvanised__1161003_pe889249_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/akerbaer-watering-can-in-outdoor-galvanised__1177074_pe895237_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/akerbaer-watering-can-in-outdoor-galvanised__1177070_pe895233_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/akerbaer-watering-can-in-outdoor-galvanised__1177062_pe895227_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/akerbaer-watering-can-in-outdoor-galvanised__1177061_pe895224_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/akerbaer-watering-can-in-outdoor-galvanised__1161002_pe889250_s5.jpg"
-      ],
-      "dimensionImage": null,
-      "useDimensionImage": false,
-      "heroHook": "ÅKERBÄR 오케르베르 물뿌리개 - 실내외겸용 아연도금 2.5 l.",
-      "description": [
-        "ÅKERBÄR 오케르베르 물뿌리개 - 실내외겸용 아연도금 2.5 l.",
-        "아연도금 철판으로 되어 있어 녹이 쉽게 슬지 않습니다.",
-        "물이나 영양분을 담아 화분 옆에 두면 손쉽게 사용할 수 있습니다."
-      ],
-      "highlights": [
-        "물뿌리개",
-        "현재 컬러: 그레이",
-        "2.5L",
-        "IKEA 공식 상세 기준 최소 정보"
-      ],
-      "measurements": [
-        {
-          "label": "높이",
-          "value": "24 cm"
-        },
-        {
-          "label": "부피",
-          "value": "2.5 l"
-        }
-      ],
-      "dimensionCaption": "배치 전에 확인할 수 있도록 주요 치수만 먼저 정리했습니다.",
-      "reviewIntro": "IKEA 공식 페이지 기준 평균 평점 4.5 / 리뷰 56건을 먼저 확인할 수 있습니다.",
-      "reviewHighlights": [
-        {
-          "title": "리뷰 데이터 연결 준비",
-          "body": "IKEA 공식 페이지 기준 평점 4.5 / 리뷰 56건을 반영했습니다. 후속 리뷰 연동 시 실제 구매 후기 데이터로 교체할 수 있습니다.",
-          "rating": 4.5,
-          "meta": "시스템 안내"
-        }
-      ]
-    },
-    "70561988": {
-      "galleryImages": [
-        "https://www.ikea.com/kr/ko/images/products/vattenkrasse-watering-can-black-green-gold-colour__1227732_pe915654_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/vattenkrasse-watering-can-black-green-gold-colour__1227733_pe915653_s5.jpg",
-        "https://www.ikea.com/kr/ko/images/products/vattenkrasse-watering-can-black-green-gold-colour__1227734_pe915652_s5.jpg"
-      ],
-      "dimensionImage": null,
-      "useDimensionImage": false,
-      "heroHook": "VATTENKRASSE 바텡크라세 물뿌리개 - 블랙-그린/골드 2.0 l.",
-      "description": [
-        "VATTENKRASSE 바텡크라세 물뿌리개 - 블랙-그린/골드 2.0 l.",
-        "기능뿐 아니라 장식 효과도 있는 물뿌리개는 화초의 성장을 돕는 역할을 합니다.",
-        "놀랍고 재미있는 장식으로 모두의 눈길을 사로잡아보세요."
-      ],
-      "highlights": [
-        "물뿌리개",
-        "현재 컬러: 그린",
-        "2.0L",
-        "IKEA 공식 상세 기준 최소 정보"
-      ],
-      "measurements": [
-        {
-          "label": "높이",
-          "value": "20 cm"
-        },
-        {
-          "label": "부피",
-          "value": "2.0 l"
-        }
-      ],
-      "dimensionCaption": "배치 전에 확인할 수 있도록 주요 치수만 먼저 정리했습니다.",
-      "reviewIntro": "IKEA 공식 페이지 기준 평균 평점 4.7 / 리뷰 11건을 먼저 확인할 수 있습니다.",
-      "reviewHighlights": [
-        {
-          "title": "리뷰 데이터 연결 준비",
-          "body": "IKEA 공식 페이지 기준 평점 4.7 / 리뷰 11건을 반영했습니다. 후속 리뷰 연동 시 실제 구매 후기 데이터로 교체할 수 있습니다.",
-          "rating": 4.7,
           "meta": "시스템 안내"
         }
       ]

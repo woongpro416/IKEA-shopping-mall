@@ -11,11 +11,9 @@ import CommonStatePanel from '../common/CommonStatePanel.vue';
 import {
   createAdminProduct,
   deleteAdminProduct,
-  getFallbackAdminCategories,
   getProductCatalog,
   updateAdminProduct,
 } from '../../services/adminService';
-import { getFallbackProductDetailContent } from '../../services/productService';
 import {
   formatAdminCurrency,
   formatAdminDate,
@@ -36,8 +34,8 @@ import {
 import { useFeedback } from '../../composables/useFeedback';
 import { resolveAdminActionErrorMessage } from '../../utils/apiErrorMessage';
 
-const categories = getFallbackAdminCategories();
 const catalogStore = useCatalogStore();
+const categories = computed(() => catalogStore.backendCategories ?? []);
 const products = shallowRef([]);
 const isLoading = shallowRef(false);
 const isSubmitting = shallowRef(false);
@@ -48,6 +46,7 @@ const activeProductId = shallowRef('');
 const selectedMainFiles = shallowRef([]);
 const selectedGalleryFiles = shallowRef([]);
 const selectedDimensionFiles = shallowRef([]);
+const productFormRef = shallowRef(null);
 const statusMessage = shallowRef('');
 const loadErrorMessage = shallowRef('');
 const { requestConfirm } = useFeedback();
@@ -111,7 +110,7 @@ const selectedProduct = computed(
   () => products.value.find((product) => String(product.productId) === String(activeProductId.value)) ?? null,
 );
 const selectedCategory = computed(
-  () => categories.find((item) => String(item.backendCategoryId) === String(formState.categoryId)) ?? categories[0] ?? null,
+  () => categories.value.find((item) => String(item.backendCategoryId) === String(formState.categoryId)) ?? categories.value[0] ?? null,
 );
 const subtypeOptions = computed(() => getCategorySubtypeOptions(selectedCategory.value));
 const selectedSubtypeOption = computed(
@@ -201,19 +200,29 @@ function resetFileSelections() {
 }
 
 function resolveDetailDraft(product) {
-  const fallbackContent = getFallbackProductDetailContent(product) ?? {};
   const draft = product.detailDraft ?? {};
+  const productDescription = String(product.description ?? '').trim();
+  const productFeatures = Array.isArray(product.features) ? product.features.filter(Boolean) : [];
 
   return {
-    heroHook: draft.heroHook ?? fallbackContent.heroHook ?? product.description ?? '',
-    descriptionText: formatMultilineText(draft.description ?? fallbackContent.description ?? []),
-    highlightsText: formatMultilineText(draft.highlights ?? fallbackContent.highlights ?? []),
-    measurementsText: formatMeasurementsText(draft.measurements ?? fallbackContent.measurements ?? []),
+    heroHook: draft.heroHook ?? productDescription,
+    descriptionText: formatMultilineText(
+      Array.isArray(draft.description) && draft.description.length
+        ? draft.description
+        : productDescription
+          ? [productDescription]
+          : [],
+    ),
+    highlightsText: formatMultilineText(
+      Array.isArray(draft.highlights) && draft.highlights.length
+        ? draft.highlights
+        : productFeatures,
+    ),
+    measurementsText: formatMeasurementsText(draft.measurements ?? []),
     galleryImages:
       draft.galleryImages
-      ?? fallbackContent.galleryImages
       ?? [product.image, product.altImage].filter(Boolean),
-    dimensionImage: draft.dimensionImage ?? fallbackContent.dimensionImage ?? '',
+    dimensionImage: draft.dimensionImage ?? '',
   };
 }
 
@@ -240,7 +249,9 @@ function clearFormFields() {
   formState.typeSlug = '';
   formState.price = '';
   formState.originalPrice = '';
-  formState.categoryId = categories[0]?.backendCategoryId ? String(categories[0].backendCategoryId) : '';
+  formState.categoryId = categories.value[0]?.backendCategoryId
+    ? String(categories.value[0].backendCategoryId)
+    : '';
   replaceAttributeValues();
   formState.heroHook = '';
   formState.descriptionText = '';
@@ -259,7 +270,7 @@ function beginCreateMode({ clearStatus = true } = {}) {
 }
 
 function beginEditMode(product) {
-  const normalizedProduct = normalizeAdminProduct(product, categories);
+  const normalizedProduct = normalizeAdminProduct(product, categories.value);
   const detailDraft = resolveDetailDraft(normalizedProduct);
 
   activeProductId.value = normalizedProduct.productId;
@@ -269,7 +280,7 @@ function beginEditMode(product) {
   formState.price = normalizedProduct.price ? String(normalizedProduct.price) : '';
   formState.originalPrice = normalizedProduct.originalPrice ? String(normalizedProduct.originalPrice) : '';
   formState.categoryId = String(
-    normalizedProduct.categoryId || selectedCategory.value?.backendCategoryId || categories[0]?.backendCategoryId || '',
+    normalizedProduct.categoryId || selectedCategory.value?.backendCategoryId || categories.value[0]?.backendCategoryId || '',
   );
   formState.typeSlug = normalizedProduct.typeSlug || '';
   syncSubtypeSelection();
@@ -285,12 +296,18 @@ function beginEditMode(product) {
   formState.highlightsText = detailDraft.highlightsText;
   formState.measurementsText = detailDraft.measurementsText;
   resetFileSelections();
-  statusMessage.value = '';
+  statusMessage.value = `"${normalizedProduct.name}" 상품 수정 중입니다.`;
+  requestAnimationFrame(() => {
+    productFormRef.value?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
+  });
 }
 
 function applyProducts(items) {
   const normalizedItems = items
-    .map((item) => normalizeAdminProduct(item, categories))
+    .map((item) => normalizeAdminProduct(item, categories.value))
     .filter((item) => item.productId);
 
   products.value = normalizedItems;
@@ -463,6 +480,7 @@ watch(
 );
 
 onMounted(async () => {
+  await catalogStore.loadCategories().catch(() => {});
   await loadProducts();
   beginCreateMode();
 });
@@ -533,7 +551,7 @@ onMounted(async () => {
         </button>
       </template>
 
-      <form class="admin-products-manager__form" @submit.prevent="submitProduct">
+      <form ref="productFormRef" class="admin-products-manager__form" @submit.prevent="submitProduct">
         <AdminProductBasicSection
           :form-state="formState"
           :categories="categories"
@@ -633,7 +651,7 @@ onMounted(async () => {
   width: 76px;
   height: 76px;
   border: 1px solid var(--border-subtle);
-  object-fit: cover;
+  object-fit: contain;
   background: var(--surface-soft);
 }
 
@@ -642,6 +660,8 @@ onMounted(async () => {
   color: var(--text-strong);
   font-size: 15px;
   line-height: 1.4;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 
 .admin-products-manager__product span {
@@ -649,6 +669,8 @@ onMounted(async () => {
   margin-top: 6px;
   color: var(--text-muted);
   font-size: 13px;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 
 .admin-products-manager__row-actions {
@@ -730,11 +752,36 @@ onMounted(async () => {
   .admin-products-manager__head {
     display: none;
   }
+
+  .admin-products-manager__row {
+    gap: 8px;
+    align-items: start;
+  }
+
+  .admin-products-manager__row-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 720px) {
   .admin-products-manager__search {
     width: 100%;
+  }
+
+  .admin-products-manager__product {
+    grid-template-columns: 64px minmax(0, 1fr);
+    gap: 12px;
+    align-items: start;
+  }
+
+  .admin-products-manager__product img {
+    width: 64px;
+    height: 64px;
+  }
+
+  .admin-products-manager__row-actions {
+    grid-template-columns: 1fr;
   }
 
   .admin-products-manager__form-actions {

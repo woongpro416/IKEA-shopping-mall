@@ -439,11 +439,15 @@ onMounted(loadOrders);
 
 .admin-orders-manager__row strong {
   color: #111111;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 
 .admin-orders-manager__row span {
   color: #444444;
   font-size: 14px;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 
 .admin-orders-manager__detail {
@@ -578,6 +582,11 @@ onMounted(loadOrders);
     display: none;
   }
 
+  .admin-orders-manager__row {
+    gap: 8px;
+    align-items: start;
+  }
+
   .admin-orders-manager__summary {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -595,6 +604,10 @@ onMounted(loadOrders);
 
   .admin-orders-manager__editor label {
     min-width: 0;
+  }
+
+  .admin-orders-manager__primary {
+    width: 100%;
   }
 
   .admin-orders-manager__items li {

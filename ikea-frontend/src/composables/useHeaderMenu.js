@@ -1,15 +1,16 @@
-import { computed, onBeforeUnmount, ref, watch } from 'vue';
+import { computed, onBeforeUnmount, ref, unref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { buildProductCategoryPath, ROUTE_PATHS } from '../constants/routes';
 
-export function useHeaderMenu(categories, options = {}) {
+export function useHeaderMenu(categoriesSource, options = {}) {
   const router = useRouter();
   const route = useRoute();
+  const categories = computed(() => unref(categoriesSource) ?? []);
   const resolvedDefaultTab = options.defaultTab ?? (route.path.startsWith('/customer-service') ? 'customer-service' : 'furniture');
   const routeCategorySlug = typeof route.params.categorySlug === 'string' ? route.params.categorySlug : '';
-  const resolvedInitialCategory = categories.find(
+  const resolvedInitialCategory = categories.value.find(
     (category) => category.slug === routeCategorySlug || category.id === options.defaultCategoryId,
-  ) ?? categories[0];
+  ) ?? categories.value[0];
 
   const activeTab = ref(resolvedDefaultTab);
   const activeCategoryId = ref(resolvedInitialCategory?.id ?? '');
@@ -18,7 +19,7 @@ export function useHeaderMenu(categories, options = {}) {
   let closeTimerId;
 
   const activeCategory = computed(
-    () => categories.find((category) => category.id === activeCategoryId.value) ?? categories[0],
+    () => categories.value.find((category) => category.id === activeCategoryId.value) ?? categories.value[0] ?? null,
   );
 
   function clearCloseTimer() {
@@ -62,9 +63,9 @@ export function useHeaderMenu(categories, options = {}) {
   }
 
   function goToCategory(categoryValue, typeSlug) {
-    const resolvedCategory = categories.find(
+    const resolvedCategory = categories.value.find(
       (category) => category.slug === categoryValue || category.id === categoryValue,
-    ) ?? categories[0];
+    ) ?? categories.value[0];
 
     if (!resolvedCategory) {
       return;
@@ -121,9 +122,25 @@ export function useHeaderMenu(categories, options = {}) {
         return;
       }
 
-      const matchedCategory = categories.find((category) => category.slug === categorySlug);
+      const matchedCategory = categories.value.find((category) => category.slug === categorySlug);
       if (matchedCategory) {
         activeCategoryId.value = matchedCategory.id;
+      }
+    },
+    { immediate: true },
+  );
+
+  watch(
+    categories,
+    (nextCategories) => {
+      if (!nextCategories.length) {
+        activeCategoryId.value = '';
+        return;
+      }
+
+      const hasActiveCategory = nextCategories.some((category) => category.id === activeCategoryId.value);
+      if (!hasActiveCategory) {
+        activeCategoryId.value = nextCategories[0].id;
       }
     },
     { immediate: true },

@@ -355,7 +355,7 @@ watch(
 .admin-inventory-manager__product img {
   width: 72px;
   height: 72px;
-  object-fit: cover;
+  object-fit: contain;
   border: 1px solid #ececec;
   background: #f7f9fb;
 }
@@ -365,6 +365,8 @@ watch(
   color: #111111;
   font-size: 15px;
   line-height: 1.4;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 
 .admin-inventory-manager__product span {
@@ -372,6 +374,8 @@ watch(
   margin-top: 6px;
   color: #7a7a7a;
   font-size: 13px;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 
 .admin-inventory-manager__state {
@@ -511,6 +515,11 @@ watch(
   .admin-inventory-manager__head {
     display: none;
   }
+
+  .admin-inventory-manager__row {
+    gap: 8px;
+    align-items: start;
+  }
 }
 
 @media (max-width: 720px) {
@@ -518,8 +527,23 @@ watch(
     width: 100%;
   }
 
+  .admin-inventory-manager__product {
+    grid-template-columns: 64px minmax(0, 1fr);
+    gap: 12px;
+    align-items: start;
+  }
+
+  .admin-inventory-manager__product img {
+    width: 64px;
+    height: 64px;
+  }
+
   .admin-inventory-manager__actions {
     justify-content: stretch;
+  }
+
+  .admin-inventory-manager__actions button {
+    width: 100%;
   }
 }
 </style>

@@ -19,10 +19,11 @@ function handleKeydown(event, payload, eventName) {
 <template>
   <section class="hs-editorial">
     <div class="hs-section__title-wrap hs-section__title-wrap--simple">
-      <h2>{{ spotlight.title }}</h2>
+      <h2>{{ spotlight?.title || '공간별 추천 셀렉션' }}</h2>
     </div>
     <div class="hs-editorial__grid">
       <article
+        v-if="spotlight?.featured"
         class="hs-editorial__featured"
         role="button"
         tabindex="0"
@@ -43,7 +44,7 @@ function handleKeydown(event, payload, eventName) {
       </article>
       <div class="hs-editorial__side">
         <article
-          v-for="item in spotlight.items"
+          v-for="item in spotlight?.items ?? []"
           :key="item.id"
           class="hs-mini-product"
           :class="{ 'is-soldout': item.isSoldOut }"
@@ -108,6 +109,7 @@ function handleKeydown(event, payload, eventName) {
   display: grid;
   grid-template-columns: minmax(0, 1.25fr) minmax(360px, 0.75fr);
   gap: 18px;
+  align-items: stretch;
 }
 
 .hs-editorial__featured,
@@ -119,7 +121,8 @@ function handleKeydown(event, payload, eventName) {
 .hs-editorial__featured {
   position: relative;
   overflow: hidden;
-  min-height: 420px;
+  min-height: 380px;
+  height: 100%;
   cursor: pointer;
 }
 
@@ -170,7 +173,11 @@ function handleKeydown(event, payload, eventName) {
 
 .hs-editorial__side {
   display: grid;
+  grid-template-rows: repeat(2, minmax(0, 1fr));
   gap: 14px;
+  align-content: stretch;
+  align-self: stretch;
+  min-height: 0;
 }
 
 .hs-mini-product {
@@ -178,6 +185,8 @@ function handleKeydown(event, payload, eventName) {
   grid-template-columns: 118px minmax(0, 1fr);
   align-items: stretch;
   gap: 14px;
+  min-height: 0;
+  height: 100%;
   padding: 14px;
   cursor: pointer;
 }
@@ -273,6 +282,10 @@ function handleKeydown(event, payload, eventName) {
 
   .hs-editorial__grid {
     grid-template-columns: 1fr;
+  }
+
+  .hs-editorial__side {
+    grid-template-rows: none;
   }
 }
 

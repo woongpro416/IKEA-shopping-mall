@@ -1,4 +1,4 @@
-import {
+﻿import {
   backendCategories as fallbackCategories,
   catalogProducts as fallbackProducts,
 } from '../data/catalog';
@@ -9,6 +9,89 @@ function cloneArray(items = []) {
 
 function normalizeLookupValue(value) {
   return String(value ?? '').trim().toLowerCase();
+}
+
+function parseSerializedJson(value) {
+  if (Array.isArray(value) || (value && typeof value === 'object')) {
+    return value;
+  }
+
+  const text = String(value ?? '').trim();
+
+  if (!text) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(text);
+  } catch {
+    return null;
+  }
+}
+
+function normalizeStringArray(value) {
+  if (Array.isArray(value)) {
+    return value
+      .map((item) => String(item ?? '').trim())
+      .filter(Boolean);
+  }
+
+  const text = String(value ?? '').trim();
+
+  if (!text) {
+    return [];
+  }
+
+  return text
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function normalizeObject(value) {
+  if (value && typeof value === 'object' && !Array.isArray(value)) {
+    return value;
+  }
+
+  return {};
+}
+
+function normalizeDetailDraft(product = {}, fallbackProduct = null) {
+  const parsedDraft = normalizeObject(parseSerializedJson(product.detailContent));
+  const parsedGalleryImages = normalizeStringArray(
+    parseSerializedJson(product.galleryImages) ?? product.galleryImages,
+  );
+  const fallbackGalleryImages = Array.isArray(fallbackProduct?.detailDraft?.galleryImages)
+    ? fallbackProduct.detailDraft.galleryImages
+    : [];
+  const galleryImages = parsedGalleryImages.length
+    ? parsedGalleryImages
+    : normalizeStringArray(parsedDraft.galleryImages).length
+      ? normalizeStringArray(parsedDraft.galleryImages)
+      : fallbackGalleryImages;
+  const dimensionImage = String(
+    product.dimensionImagePath
+    ?? parsedDraft.dimensionImage
+    ?? fallbackProduct?.detailDraft?.dimensionImage
+    ?? '',
+  ).trim();
+
+  if (
+    !Object.keys(parsedDraft).length
+    && !galleryImages.length
+    && !dimensionImage
+  ) {
+    return fallbackProduct?.detailDraft ?? null;
+  }
+
+  return {
+    ...parsedDraft,
+    galleryImages,
+    dimensionImage,
+    useDimensionImage: Boolean(
+      parsedDraft.useDimensionImage ?? dimensionImage,
+    ),
+  };
 }
 
 const fallbackCategoryByBackendId = new Map(
@@ -46,16 +129,17 @@ function normalizeCatalogCategory(category = {}) {
     category.backendCategoryId ?? category.id ?? fallbackCategory?.backendCategoryId ?? '',
   ).trim();
   const label = category.label ?? category.categoryName ?? category.name ?? fallbackCategory?.label ?? '';
-  const cards = Array.isArray(category.cards) ? category.cards : fallbackCategory?.cards ?? [];
+  const cards = Array.isArray(category.cards) && category.cards.length
+    ? category.cards
+    : cloneArray(fallbackCategory?.cards ?? []);
 
   return {
-    ...fallbackCategory,
     ...category,
-    id: String(fallbackCategory?.id ?? category.id ?? backendCategoryId),
+    id: String(category.id ?? fallbackCategory?.id ?? backendCategoryId),
     backendCategoryId,
     slug: category.slug ?? fallbackCategory?.slug ?? backendCategoryId.toLowerCase(),
     label,
-    name: category.name ?? fallbackCategory?.name ?? label,
+    name: category.name ?? category.categoryName ?? fallbackCategory?.name ?? label,
     cards: cloneArray(cards),
   };
 }
@@ -100,13 +184,13 @@ function resolveProductCategory(product = {}, fallbackProduct = null) {
 export function normalizeCatalogProduct(product = {}) {
   const fallbackProduct = resolveFallbackProduct(product);
   const resolvedCategory = resolveProductCategory(product, fallbackProduct);
-  const price = Number(product.price ?? fallbackProduct?.price ?? 0);
-  const originalPrice = product.originalPrice
+  const parsedAttributes = normalizeObject(parseSerializedJson(product.attributes));
+  const detailDraft = normalizeDetailDraft(product, fallbackProduct);
+  const price = Number(product.price ?? 0);
+  const originalPrice = product.originalPrice != null
     ? Number(product.originalPrice)
-    : fallbackProduct?.originalPrice
-      ? Number(fallbackProduct.originalPrice)
-      : null;
-  const providedDiscountRate = Number(product.discountRate ?? fallbackProduct?.discountRate ?? 0);
+    : null;
+  const providedDiscountRate = Number(product.discountRate ?? 0);
   const calculatedDiscountRate = (
     originalPrice && originalPrice > price
       ? Math.round(((originalPrice - price) / originalPrice) * 100)
@@ -114,25 +198,34 @@ export function normalizeCatalogProduct(product = {}) {
   );
   const id = String(product.id ?? product.productId ?? fallbackProduct?.id ?? fallbackProduct?.productId ?? '');
   const productId = String(product.productId ?? product.id ?? fallbackProduct?.productId ?? fallbackProduct?.id ?? '');
-  const image = product.image ?? product.imgPath ?? fallbackProduct?.image ?? fallbackProduct?.imgPath ?? '';
+  const resolvedImage = product.image ?? product.imgPath ?? '';
   const categoryLabel = product.categoryLabel
     ?? product.categoryName
-    ?? fallbackProduct?.categoryLabel
     ?? resolvedCategory?.label
     ?? '';
   const categorySlug = product.categorySlug ?? fallbackProduct?.categorySlug ?? resolvedCategory?.slug ?? '';
+  const reviews = Number(product.reviews ?? product.reviewCount ?? 0);
+  const rating = Number(product.rating ?? product.reviewAverage ?? 0);
+  const resolvedDescription = product.description
+    ?? parsedAttributes.summary
+    ?? detailDraft?.shortDescription
+    ?? '';
+  const resolvedFeatures = Array.isArray(product.features)
+    ? product.features
+    : Array.isArray(parsedAttributes.features)
+      ? parsedAttributes.features
+      : [];
 
   return {
-    ...fallbackProduct,
     ...product,
     id,
     productId,
     price,
     originalPrice,
     discountRate: providedDiscountRate > 0 ? providedDiscountRate : calculatedDiscountRate,
-    image,
-    imgPath: product.imgPath ?? product.image ?? fallbackProduct?.imgPath ?? fallbackProduct?.image ?? '',
-    imageAlt: product.imageAlt ?? fallbackProduct?.imageAlt ?? product.name ?? fallbackProduct?.name ?? '',
+    image: resolvedImage,
+    imgPath: product.imgPath ?? product.image ?? '',
+    imageAlt: product.imageAlt ?? product.name ?? fallbackProduct?.name ?? '',
     altImage: product.altImage ?? fallbackProduct?.altImage ?? '',
     categorySlug,
     categoryLabel,
@@ -140,14 +233,29 @@ export function normalizeCatalogProduct(product = {}) {
     backendCategoryId: String(
       product.backendCategoryId ?? product.categoryId ?? resolvedCategory?.backendCategoryId ?? '',
     ).trim(),
-    label: product.label ?? fallbackProduct?.label ?? categoryLabel,
-    badge: product.badge ?? fallbackProduct?.badge ?? '',
-    brand: product.brand ?? fallbackProduct?.brand ?? 'HOMiO',
-    description: product.description ?? fallbackProduct?.description ?? '',
-    typeSlug: product.typeSlug ?? fallbackProduct?.typeSlug ?? 'all',
-    features: Array.isArray(product.features) ? product.features : fallbackProduct?.features ?? [],
-    reviews: Number(product.reviews ?? fallbackProduct?.reviews ?? 0),
-    rating: Number(product.rating ?? fallbackProduct?.rating ?? 0),
+    label: product.label ?? categoryLabel,
+    badge: product.badge ?? '',
+    brand: product.brand ?? 'HOMiO',
+    description: resolvedDescription,
+    typeSlug: product.typeSlug ?? 'all',
+    features: resolvedFeatures,
+    color: product.color ?? parsedAttributes.color ?? '',
+    material: product.material ?? parsedAttributes.material ?? '',
+    size: product.size ?? parsedAttributes.size ?? '',
+    firmness: product.firmness ?? parsedAttributes.firmness ?? '',
+    function: product.function ?? parsedAttributes.function ?? '',
+    warmth: product.warmth ?? parsedAttributes.warmth ?? '',
+    seatCount: product.seatCount ?? parsedAttributes.seatCount ?? '',
+    shape: product.shape ?? parsedAttributes.shape ?? '',
+    installation: product.installation ?? parsedAttributes.installation ?? '',
+    configuration: product.configuration ?? parsedAttributes.configuration ?? '',
+    use: product.use ?? parsedAttributes.use ?? '',
+    attributes: Object.keys(parsedAttributes).length
+      ? parsedAttributes
+      : normalizeObject(fallbackProduct?.attributes),
+    detailDraft,
+    reviews,
+    rating,
   };
 }
 
@@ -193,3 +301,4 @@ export function buildCategoryRouteMap(categories = []) {
     ]),
   );
 }
+

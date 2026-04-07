@@ -998,7 +998,7 @@ a {
   gap: 8px;
 }
 
-button:hover:not(.wishlist-toggle-button):not(.hs-header__search-button),
+button:hover:not(.wishlist-toggle-button):not(.hs-header__search-button):not(.hs-hero__nav),
 a.reference-card:hover,
 .theme-button:hover,
 .page-button:hover,

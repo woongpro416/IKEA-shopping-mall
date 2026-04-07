@@ -33,8 +33,6 @@ const {
   newItemCollections,
   newItemFilters,
   pickSection,
-  remoteBestProducts,
-  remoteNewProducts,
   topShortcutBoxes,
   weeklyDeals,
 } = storeToRefs(homeStore);
@@ -154,17 +152,10 @@ function takeCategoryProducts(products, categorySlug, limit = 4, mode = 'popular
   return orderedProducts.slice(0, limit);
 }
 
-const preferredBestProducts = computed(() => (
-  remoteBestProducts.value.length ? remoteBestProducts.value : catalogProducts.value
-));
-const preferredNewProducts = computed(() => (
-  remoteNewProducts.value.length ? remoteNewProducts.value : catalogProducts.value
-));
-
 const derivedWeeklyDeals = computed(() => {
   const preferredCategories = ['sofa', 'bed-mattress', 'dining', 'kitchenware'];
   const cards = preferredCategories
-    .map((categorySlug) => takeCategoryProducts(preferredBestProducts.value, categorySlug, 1)[0] ?? null)
+    .map((categorySlug) => takeCategoryProducts(catalogProducts.value, categorySlug, 1)[0] ?? null)
     .filter(Boolean)
     .map((product) => createHomeProductCard(product, {
       badge: product.categoryLabel ?? product.label ?? '',
@@ -177,7 +168,7 @@ const derivedWeeklyDeals = computed(() => {
 const derivedCategoryDealCollections = computed(() => Object.fromEntries(
   categoryDealFilters.value.map((filter) => [
     filter.id,
-    takeCategoryProducts(preferredBestProducts.value, filter.id, 4)
+    takeCategoryProducts(catalogProducts.value, filter.id, 4)
       .map((product) => createHomeProductCard(product, {
         badge: product.label ?? filter.label,
       }))
@@ -188,7 +179,7 @@ const derivedCategoryDealCollections = computed(() => Object.fromEntries(
 const derivedNewItemCollections = computed(() => Object.fromEntries(
   newItemFilters.value.map((filter) => [
     filter.id,
-    takeCategoryProducts(preferredNewProducts.value, filter.id, 4, 'latest')
+    takeCategoryProducts(catalogProducts.value, filter.id, 4, 'latest')
       .map((product) => createHomeProductCard(product, {
         badge: product.label ?? filter.label,
       }))
@@ -203,21 +194,14 @@ const derivedPickItems = computed(() => {
     { slug: 'desk', accent: 'yellow', id: 'pick-desk' },
     { slug: 'plant', accent: 'blue', id: 'pick-plant' },
   ];
-  const curatedPickMap = new Map(
-    (pickSection.value?.items ?? []).map((item) => [item.id, item]),
-  );
 
   return picks
     .map((item) => {
       const product = takeCategoryProducts(catalogProducts.value, item.slug, 1)[0] ?? null;
-      const curatedItem = curatedPickMap.get(item.id) ?? null;
 
       return createHomePickCard(product, {
         id: item.id,
-        accent: curatedItem?.accent ?? item.accent,
-        image: curatedItem?.image ?? undefined,
-        badge: curatedItem?.badge ?? undefined,
-        tags: curatedItem?.tags ?? undefined,
+        accent: item.accent,
       });
     })
     .filter(Boolean);
@@ -257,7 +241,6 @@ const activeNewItemMorePath = computed(() => buildProductCategoryPath(activeNewI
 
 onMounted(() => {
   void catalogStore.ensureCatalogLoaded();
-  void homeStore.loadRemoteHomeProducts();
   wishlistStore.ensureHydrated();
 });
 
@@ -312,7 +295,6 @@ function handleFeaturedClick(featured) {
     router.push(buildProductCategoryPath(featured.categorySlug));
   }
 }
-
 </script>
 
 <template>
@@ -369,12 +351,6 @@ function handleFeaturedClick(featured) {
         @toggle-wishlist="toggleProductWishlist"
       />
 
-      <HomePickSection
-        :title="pickSection.title"
-        :items="decoratedPickSection.items"
-        @product-activate="handleProductCardClick"
-      />
-
       <HomeProductGridSection
         id="new-arrivals"
         title="카테고리 둘러보기"
@@ -390,6 +366,11 @@ function handleFeaturedClick(featured) {
         @toggle-wishlist="toggleProductWishlist"
       />
 
+      <HomePickSection
+        :title="pickSection.title"
+        :items="decoratedPickSection.items"
+        @product-activate="handleProductCardClick"
+      />
     </main>
   </SiteChrome>
 </template>

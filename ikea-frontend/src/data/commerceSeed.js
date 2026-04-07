@@ -1,16 +1,16 @@
 import {
   catalogProducts,
   findCatalogProductById,
-  getProductDetailSeed,
 } from './catalog';
+import { useCatalogStore } from '../stores/catalog';
 
-const DEFAULT_CART_PRODUCT_IDS = ['10489009', '90592738'];
-const DEFAULT_RECOMMENDATION_PRODUCT_IDS = ['60470050', 's29416857', '40568019', '80586356'];
 const RECOMMENDATION_LIMIT = 4;
 const RECOMMENDATION_SESSION_KEY = 'homio-cart-recommendation-seed';
 
 function resolveProduct(productId) {
-  const product = findCatalogProductById(productId);
+  const normalizedProductId = String(productId ?? '').trim();
+  const catalogStore = resolveCatalogStore();
+  const product = catalogStore?.findProductById?.(normalizedProductId) ?? findCatalogProductById(normalizedProductId);
 
   if (!product) {
     throw new Error(`Unknown commerce seed product: ${productId}`);
@@ -19,10 +19,23 @@ function resolveProduct(productId) {
   return product;
 }
 
-function getPrimaryImage(product) {
-  const detailSeed = getProductDetailSeed(product.id);
+function resolveCatalogStore() {
+  try {
+    return useCatalogStore();
+  } catch {
+    return null;
+  }
+}
 
-  return detailSeed?.galleryImages?.[0] ?? product.image;
+function resolveCatalogProducts() {
+  const catalogStore = resolveCatalogStore();
+  const runtimeProducts = Array.isArray(catalogStore?.products) ? catalogStore.products : [];
+
+  return runtimeProducts.length ? runtimeProducts : catalogProducts;
+}
+
+function getPrimaryImage(product) {
+  return product.image ?? product.imgPath ?? '';
 }
 
 function getOptionSummary(product) {
@@ -162,10 +175,7 @@ function shuffleWithSeed(items, seed) {
 }
 
 export function createCommerceCartSeed() {
-  return [
-    createCommerceCartItem(DEFAULT_CART_PRODUCT_IDS[0]),
-    createCommerceCartItem(DEFAULT_CART_PRODUCT_IDS[1], { quantity: 2 }),
-  ];
+  return [];
 }
 
 export function createCommerceRecommendations(excludeIds = []) {
@@ -179,15 +189,14 @@ export function createCommerceRecommendations(excludeIds = []) {
   const recommendationSeed = `${sessionSeed}:${cartSeed}`;
 
   const randomizedCatalogIds = shuffleWithSeed(
-    catalogProducts
+    resolveCatalogProducts()
       .filter((product) => !blocked.has(String(product.id)))
       .filter((product) => String(product.image ?? '').trim())
       .map((product) => String(product.id)),
     recommendationSeed,
   );
 
-  const fallbackIds = DEFAULT_RECOMMENDATION_PRODUCT_IDS.filter((productId) => !blocked.has(String(productId)));
-  const candidateIds = [...randomizedCatalogIds, ...fallbackIds];
+  const candidateIds = [...randomizedCatalogIds];
   const dedupedIds = [...new Set(candidateIds)].slice(0, RECOMMENDATION_LIMIT);
 
   return dedupedIds.map((productId) => buildRecommendation(productId));

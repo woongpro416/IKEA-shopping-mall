@@ -9,7 +9,7 @@ import CommonStatePanel from '../components/common/CommonStatePanel.vue';
 import SiteChrome from '../components/layout/SiteChrome.vue';
 import {
   completeCheckout,
-  getCheckoutSeedItems,
+  getCheckoutItemsForFlow,
   startExternalCheckout,
   useCommerceCart,
 } from '../composables/useCommerceCart';
@@ -86,7 +86,7 @@ async function syncOrderItems() {
     // Keep the current checkout snapshot when the cart sync is temporarily unavailable.
   }
 
-  orderItems.value = getCheckoutSeedItems(
+  orderItems.value = getCheckoutItemsForFlow(
     String(route.query.mode ?? 'all'),
     String(route.query.itemId ?? ''),
   );
@@ -932,6 +932,8 @@ async function submitOrder() {
   color: #6b7280;
   font-size: 13px;
   line-height: 1.6;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 
 .checkout-item {
@@ -966,10 +968,16 @@ async function submitOrder() {
   font-size: 13px;
 }
 
+.checkout-item__copy {
+  min-width: 0;
+}
+
 .checkout-item__copy h2 {
   margin: 8px 0 6px;
   font-size: 18px;
   line-height: 1.45;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 
 .checkout-item__copy a {
@@ -1452,13 +1460,16 @@ async function submitOrder() {
 }
 
 @media (max-width: 980px) {
-  .checkout-board__head,
   .checkout-item,
   .checkout-total-strip,
   .checkout-payment-grid,
   .checkout-form-row,
   .checkout-form-row__content--inline {
     grid-template-columns: 1fr;
+  }
+
+  .checkout-board__head {
+    display: none;
   }
 
   .checkout-board__head span,

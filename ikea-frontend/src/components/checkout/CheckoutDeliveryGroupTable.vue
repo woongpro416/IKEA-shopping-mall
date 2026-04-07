@@ -124,10 +124,16 @@ defineProps({
   font-size: 13px;
 }
 
+.checkout-item__copy {
+  min-width: 0;
+}
+
 .checkout-item__copy h2 {
   margin: 8px 0 6px;
   font-size: 18px;
   line-height: 1.45;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 
 .checkout-item__copy a {
@@ -139,6 +145,8 @@ defineProps({
   color: #6b7280;
   font-size: 13px;
   line-height: 1.6;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 
 .checkout-item__qty,

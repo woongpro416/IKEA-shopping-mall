@@ -7,7 +7,6 @@ import {
   getAdminProductCount,
   getAdminQnas,
   getAdminReviews,
-  getFallbackAdminCategories,
   getProductCatalog,
 } from '../services/adminService';
 import {
@@ -42,9 +41,33 @@ function normalizeMembers(payload) {
   }));
 }
 
+function deriveCategoriesFromProducts(products = []) {
+  const categoryMap = new Map();
+
+  products.forEach((product) => {
+    const slug = String(product.categorySlug ?? '').trim();
+    const label = String(product.categoryLabel ?? product.categoryName ?? '').trim();
+
+    if (!slug && !label) {
+      return;
+    }
+
+    const key = slug || label;
+
+    if (!categoryMap.has(key)) {
+      categoryMap.set(key, {
+        slug: slug || key,
+        label: label || slug || key,
+      });
+    }
+  });
+
+  return Array.from(categoryMap.values());
+}
+
 function createEmptyDashboard() {
   return buildAdminDashboard({
-    categories: getFallbackAdminCategories(),
+    categories: [],
     products: [],
     orders: [],
     payments: [],
@@ -138,6 +161,7 @@ export const useAdminDashboardStore = defineStore('adminDashboard', {
         const orderCount = orderCountResult.status === 'fulfilled'
           ? Number(orderCountResult.value)
           : 0;
+        const categories = deriveCategoriesFromProducts(products);
 
         const hasRejectedRequest = [
           productCountResult,
@@ -155,7 +179,7 @@ export const useAdminDashboardStore = defineStore('adminDashboard', {
         }
 
         this.dashboard = buildAdminDashboard({
-          categories: getFallbackAdminCategories(),
+          categories,
           products,
           orders,
           payments,

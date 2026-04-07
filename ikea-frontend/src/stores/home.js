@@ -3,6 +3,9 @@ import { normalizeProductCollection } from '../mappers/catalogMapper';
 import { getBestProducts, getNewProducts } from '../services/productService';
 import { getHomeContent } from '../services/homeService';
 
+let bestProductsRequestPromise = null;
+let newProductsRequestPromise = null;
+
 export const useHomeStore = defineStore('home', {
   state: () => ({
     ...getHomeContent(),
@@ -17,6 +20,11 @@ export const useHomeStore = defineStore('home', {
         return this.remoteBestProducts;
       }
 
+      if (!force && bestProductsRequestPromise) {
+        return bestProductsRequestPromise;
+      }
+
+      bestProductsRequestPromise = (async () => {
       try {
         const response = await getBestProducts();
         this.remoteBestProducts = normalizeProductCollection(response, []);
@@ -24,15 +32,24 @@ export const useHomeStore = defineStore('home', {
       } catch {
         this.remoteBestProducts = [];
         this.remoteBestProductsLoaded = false;
+      } finally {
+        bestProductsRequestPromise = null;
       }
-
       return this.remoteBestProducts;
+      })();
+
+      return bestProductsRequestPromise;
     },
     async loadRemoteNewProducts({ force = false } = {}) {
       if (!force && this.remoteNewProductsLoaded) {
         return this.remoteNewProducts;
       }
 
+      if (!force && newProductsRequestPromise) {
+        return newProductsRequestPromise;
+      }
+
+      newProductsRequestPromise = (async () => {
       try {
         const response = await getNewProducts();
         this.remoteNewProducts = normalizeProductCollection(response, []);
@@ -40,9 +57,13 @@ export const useHomeStore = defineStore('home', {
       } catch {
         this.remoteNewProducts = [];
         this.remoteNewProductsLoaded = false;
+      } finally {
+        newProductsRequestPromise = null;
       }
-
       return this.remoteNewProducts;
+      })();
+
+      return newProductsRequestPromise;
     },
     async loadRemoteHomeProducts(options = {}) {
       await Promise.all([

@@ -67,7 +67,7 @@ export function useCommerceCart() {
   };
 }
 
-export function getCheckoutSeedItems(mode = 'all', itemId = '') {
+export function getCheckoutItemsForFlow(mode = 'all', itemId = '') {
   return useCartStore().resolveCheckoutItems(mode, itemId);
 }
 
