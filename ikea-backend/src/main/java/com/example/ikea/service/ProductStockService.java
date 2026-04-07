@@ -22,7 +22,7 @@ public class ProductStockService {
         return new ProductStockResponseDto(stock);
     }
 
-
+    @Transactional
     public ProductStockResponseDto updateStock(Long productId, ProductStockRequestDto dto) {
         ProductStock stock = productStockRepository.findByProduct_ProductId(productId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 상품의 재고 정보가 없습니다."));
@@ -30,6 +30,25 @@ public class ProductStockService {
         stock.setQuantity(dto.getQuantity());
 
         return new ProductStockResponseDto(stock);
+    }
+
+    //재고 차감
+    @Transactional
+    public void decreaseStock(Long productId, Integer quantity) {
+        ProductStock stock = productStockRepository.findByProduct_ProductId(productId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 상품의 재고 정보가 없습니다."));
+        if (stock.getQuantity() < quantity) {
+            throw new IllegalArgumentException("재고가 부족합니다.");
+        }
+        stock.setQuantity(stock.getQuantity() - quantity);
+    }
+
+    //재고 추가
+    @Transactional
+    public void increaseStock(Long productId, Integer quantity) {
+        ProductStock stock = productStockRepository.findByProduct_ProductId(productId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 상품의 재고 정보가 없습니다."));
+        stock.setQuantity(stock.getQuantity() + quantity);
     }
 
 }

@@ -17,6 +17,7 @@ public class RefreshTokenService {
     public void saveRefreshToken(String loginId, String refreshToken, String memberRole) {
         // 기존 토큰 있으면 삭제 후 새로 저장
         refreshTokenRepository.deleteByLoginId(loginId);
+        refreshTokenRepository.flush();
         refreshTokenRepository.save(RefreshToken.builder()
                         .loginId(loginId)
                         .refreshToken(refreshToken)

@@ -50,6 +50,7 @@ public class Order {
     private List<OrderItem> orderItemList = new ArrayList<>();
 
     //비회원
+
     @Column(length = 50)
     private String guestName;
 

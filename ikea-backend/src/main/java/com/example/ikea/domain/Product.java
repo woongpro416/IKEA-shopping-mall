@@ -19,14 +19,41 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productId;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 255)
     private String name;
 
     @Column(nullable = false)
     private Integer price;
 
+    @Column
+    private Integer originalPrice;
+
     @Column(nullable = false, columnDefinition = "TEXT")
     private String imgPath;
+
+    @Column(length = 100)
+    private String brand;
+
+    @Column(length = 100)
+    private String badge;
+
+    @Column(length = 100)
+    private String label;
+
+    @Column(length = 100)
+    private String typeSlug;
+
+    @Column(columnDefinition = "TEXT")
+    private String attributes;
+
+    @Column(columnDefinition = "TEXT")
+    private String detailContent;
+
+    @Column(columnDefinition = "TEXT")
+    private String galleryImages;
+
+    @Column(length = 500)
+    private String dimensionImagePath;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

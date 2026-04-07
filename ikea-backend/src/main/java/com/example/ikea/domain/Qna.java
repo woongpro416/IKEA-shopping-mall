@@ -33,6 +33,12 @@ public class Qna {
     @Column(nullable = false)
     private String writer;
 
+    private Long memberId;
+
+    private String phoneNumber;
+
+    private String email;
+
     @Builder.Default
     private int viewCount = 0;
 

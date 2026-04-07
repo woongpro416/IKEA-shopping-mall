@@ -44,31 +44,28 @@ public class MemberController {
         return ResponseEntity.ok(new TokenResponseDto(accessToken, refreshToken));
     }
 
-    //마이페이지
-    @GetMapping("/{memberId}")
-    public ResponseEntity<MemberResponseDto> detail(@PathVariable Long memberId) {
+    // 내 정보 조회
+    @GetMapping("/me")
+    public ResponseEntity<MemberResponseDto> getMe(
+            @AuthenticationPrincipal UserDetails userDetails) {
+        Long memberId = memberService.getMemberIdByLoginId(userDetails.getUsername());
         return ResponseEntity.ok(memberService.detailMember(memberId));
     }
 
     //회원 정보 수정
-    @PutMapping("/{memberId}")
-    public ResponseEntity<MemberResponseDto> update(@PathVariable Long memberId,
-                                                    @Valid @RequestBody MemberUpdateDto dto) {
-        return ResponseEntity.ok(memberService.update(dto, memberId));
+    @PutMapping("/me")
+    public ResponseEntity<MemberResponseDto> update(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @Valid @RequestBody MemberUpdateDto dto) {
+        return ResponseEntity.ok(memberService.update(dto, userDetails.getUsername()));
     }
 
     // 회원탈퇴
-    @DeleteMapping("/{memberId}")
-    public ResponseEntity<Void> deleteMember(@PathVariable Long memberId) {
+    @DeleteMapping("/me")
+    public ResponseEntity<Void> deleteMember(
+            @AuthenticationPrincipal UserDetails userDetails) {
+        Long memberId = memberService.getMemberIdByLoginId(userDetails.getUsername());
         memberService.deleteMember(memberId);
         return ResponseEntity.ok().build();
-    }
-
-
-    // 내 정보 조회 (로그인한 회원 본인)
-    @GetMapping("/me")
-    public ResponseEntity<MemberResponseDto> getMe(
-            @AuthenticationPrincipal UserDetails userDetails) {
-        return ResponseEntity.ok(memberService.getMemberByLoginId(userDetails.getUsername()));
     }
 }

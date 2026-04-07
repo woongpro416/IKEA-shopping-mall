@@ -2,6 +2,7 @@ package com.example.ikea.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +16,7 @@ public class JwtTokenProvider {
     @Value("${jwt.secret}")
     private String secretKey;
 
+
     // Access Token 만료시간 (30분)
     private final long ACCESS_TOKEN_EXPIRE = 1000 * 60 * 30;
 
@@ -24,6 +26,7 @@ public class JwtTokenProvider {
     // 서명용 Key 객체 생성
     private Key getSignKey() {
         byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
+        System.out.println("JWT Secret 길이: " + keyBytes.length + "바이트 / " + (keyBytes.length * 8) + "비트");
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
@@ -79,4 +82,7 @@ public class JwtTokenProvider {
                 .parseClaimsJws(token)
                 .getBody();
     }
+
+
+
 }

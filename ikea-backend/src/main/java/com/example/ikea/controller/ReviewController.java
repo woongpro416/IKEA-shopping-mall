@@ -47,16 +47,22 @@ public class ReviewController {
     
     //리뷰 수정
     @PutMapping("/{reviewId}")
-    public ResponseEntity<Void> updateReview(@PathVariable Long reviewId,
-                                             @RequestBody @Valid ReviewRequestDto dto) {
-        reviewService.updateReview(reviewId, dto);
+    public ResponseEntity<Void> updateReview(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long reviewId,
+            @RequestBody @Valid ReviewRequestDto dto) {
+        Long memberId = memberService.getMemberIdByLoginId(userDetails.getUsername());
+        reviewService.updateReview(reviewId, memberId, dto);
         return ResponseEntity.ok().build();
     }
     
     //리뷰 삭제
     @DeleteMapping("/{reviewId}")
-    public ResponseEntity<Void> deleteReview(@PathVariable Long reviewId) {
-        reviewService.deleteReview(reviewId);
+    public ResponseEntity<Void> deleteReview(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long reviewId) {
+        Long memberId = memberService.getMemberIdByLoginId(userDetails.getUsername());
+        reviewService.deleteReview(memberId, reviewId);
         return ResponseEntity.ok().build();
     }
 

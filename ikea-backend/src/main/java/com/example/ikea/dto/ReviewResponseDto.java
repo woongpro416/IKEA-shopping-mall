@@ -19,7 +19,8 @@ public class ReviewResponseDto {
 
     public ReviewResponseDto(Review review) {
         this.reviewId = review.getReviewId();
-        this.memberName = review.getMember().getName();
+        this.memberName = (review.getMember() == null || review.getMember().isDeleted())
+                ? "익명" : review.getMember().getName();
         this.productName = review.getProduct().getName();
         this.content = review.getContent();
         this.rating = review.getRating();

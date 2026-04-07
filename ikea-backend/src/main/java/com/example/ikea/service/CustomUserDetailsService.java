@@ -21,6 +21,10 @@ public class CustomUserDetailsService implements UserDetailsService {
         Member member = memberRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 회원입니다."));
 
+        if (member.isDeleted()) {
+            throw new UsernameNotFoundException("탈퇴한 회원입니다.");
+        }
+
         // User는 Spring Security 제공 클래스 (우리 Member Entity와 다름)
         return User.builder()
                 .username(member.getLoginId())

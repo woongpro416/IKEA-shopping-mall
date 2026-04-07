@@ -18,4 +18,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     // 토스/카카오에서 orderNo로 조회
     Optional<Order> findByOrderNo(String orderNo);
+
+    boolean existsByMember_MemberIdAndOrderStatusIn(Long memberId, List<OrderStatus> statuses);
 }

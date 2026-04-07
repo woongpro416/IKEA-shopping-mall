@@ -23,7 +23,7 @@ public class OrderResponseDto {
 
     private String orderNo;
 
-    private String payment;
+//    private String payment;
 
     private String address;
 

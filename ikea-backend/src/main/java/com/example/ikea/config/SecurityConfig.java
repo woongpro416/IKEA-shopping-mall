@@ -2,6 +2,7 @@ package com.example.ikea.config;
 
 import com.example.ikea.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,54 +25,54 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    @Value("${app.cors.allowed-origins}")
+    private String allowedOriginsRaw;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                // CSRF 비활성화 (JWT 방식에선 불필요)
                 .csrf(csrf -> csrf.disable())
-
-                // CORS 설정 (Vue 연동)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-
-                // 세션 사용 안함 (JWT는 Stateless)
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-                // URL 별 권한 설정
                 .authorizeHttpRequests(auth -> auth
-                    // 누구나 접근 가능
-                                .requestMatchers(
-                                        "/api/auth/**",
-                                        "/api/member/join",
-                                        "/api/member/login",
-                                        "/api/auth/refresh",
-                                        "/api/product/**",
-                                        "/api/category/**",
-                                        "/api/qna/**",
-                                        "/api/review/**",
-                                        "/api/notice/**"
-                                ).permitAll()
-                                //결제시 로그인 필요
-                                .requestMatchers("/api/payment/**").authenticated()
-                                //관리자만 접근 가능
-                                .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                                //나머지는 로그인 필요
-                                .anyRequest().authenticated()
-                         )
+                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/member/join").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/member/login").permitAll()
+                        .requestMatchers(
+                                "/api/auth/**",
+                                "/api/product/**",
+                                "/api/product_stocks/**",
+                                "/api/category/**",
+                                "/api/notice/**"
+                        ).permitAll()
+                        .requestMatchers("/api/cart/guest/**").permitAll()
+                        .requestMatchers("/api/order/guest/**").permitAll()
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/qna/**").authenticated()
+                        .requestMatchers("/api/review/**").authenticated()
+                        .requestMatchers("/api/cart/**").authenticated()
+                        .requestMatchers("/api/order/**").authenticated()
+                        .requestMatchers("/api/payment/**").authenticated()
+                        .anyRequest().authenticated()
+                )
 
-                // JWT 필터 등록
                 .addFilterBefore(jwtAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 
-
-    // CORS 설정
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOrigins(List.of("http://localhost:5173")); //Vue 기본 포트
+        List<String> allowedOrigins = java.util.Arrays.stream(allowedOriginsRaw.split(","))
+                .map(String::trim)
+                .toList();
+
+        config.setAllowedOrigins(allowedOrigins);
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
@@ -83,7 +84,7 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration configuration) throws  Exception {
+            AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
 }

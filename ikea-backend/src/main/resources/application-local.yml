@@ -1,9 +1,18 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5440/ikea
+    username: postgres
+    password: 1234
+  jpa:
+    hibernate:
+      ddl-auto: update
+
 jwt:
-  secret: ikea-shopping-mall-secret-key-2026-spring-boot
+  secret: 여기에_로컬_시크릿 sdfsdfsdfawebsdfbdbzdfbrdf
 
 payment:
   toss:
-    secret-key: test_sk_여기에실제키입력
-    client-key: test_ck_여기에실제키입력
+    secret-key: 여기에_로컬_토스_키
+    client-key: 여기에_로컬_토스_클라이언트키
   kakao:
-    admin-key: 여기에실제키입력
+    admin-key: 여기에_로컬_카카오_키

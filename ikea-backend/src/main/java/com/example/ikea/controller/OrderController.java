@@ -1,6 +1,8 @@
 package com.example.ikea.controller;
 
-import com.example.ikea.dto.OrderRequestDto;
+import com.example.ikea.dto.GuestOrderCreateResponseDto;
+import com.example.ikea.dto.GuestOrderRequestDto;
+import com.example.ikea.dto.MemberOrderRequestDto;
 import com.example.ikea.dto.OrderResponseDto;
 import com.example.ikea.service.MemberService;
 import com.example.ikea.service.OrderService;
@@ -32,23 +34,34 @@ public class OrderController {
     //주문 상세 조회
     @GetMapping("/detail/{orderId}")
     public ResponseEntity<OrderResponseDto> getDetailOrder(
-            @PathVariable Long orderId) {
-        return ResponseEntity.ok(orderService.getDetailOrder(orderId));
-    }
-
-    //주문 생성 (장바구니 -> 주문)
-    @PostMapping
-    public ResponseEntity<Long> createOrder(
             @AuthenticationPrincipal UserDetails userDetails,
-            @RequestBody @Valid OrderRequestDto dto) {
+            @PathVariable Long orderId) {
         Long memberId = memberService.getMemberIdByLoginId(userDetails.getUsername());
-        return ResponseEntity.ok(orderService.createOrder(memberId, dto));
+        return ResponseEntity.ok(orderService.getDetailOrder(orderId, memberId));
     }
 
+    //주문 생성 (회원)
+    @PostMapping
+    public ResponseEntity<Long> createMemberOrder(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody @Valid MemberOrderRequestDto dto) {
+        Long memberId = memberService.getMemberIdByLoginId(userDetails.getUsername());
+        return ResponseEntity.ok(orderService.createMemberOrder(memberId, dto));
+    }
+
+    // 주문 생성(비회원 전용)
+    @PostMapping("/guest")
+    public ResponseEntity<GuestOrderCreateResponseDto> createGuestOrder(
+            @RequestBody @Valid GuestOrderRequestDto dto) {
+        return ResponseEntity.ok(orderService.createGuestOrder(dto));
+    }
     //주문 취소
     @DeleteMapping("/{orderId}")
-    public ResponseEntity<Void> cancelOrder(@PathVariable Long orderId) {
-        orderService.cancelOrder(orderId);
+    public ResponseEntity<Void> cancelOrder(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long orderId) {
+        Long memberId = memberService.getMemberIdByLoginId(userDetails.getUsername());
+        orderService.cancelOrder(orderId, memberId);
         return ResponseEntity.ok().build();
     }
 }

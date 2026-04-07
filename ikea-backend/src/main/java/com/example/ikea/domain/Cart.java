@@ -20,10 +20,13 @@ public class Cart {
     private Long cartId;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false, unique = true)
+    @JoinColumn(name = "member_id")
     private Member member;
 
+    @Column(unique = true, length = 100)
+    private String guestCartKey;
+
     @Builder.Default
-    @OneToMany(mappedBy = "cart")
-    private List<CartItem> cartItemList = new ArrayList<>();
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CartItem> cartItems = new ArrayList<>();
 }

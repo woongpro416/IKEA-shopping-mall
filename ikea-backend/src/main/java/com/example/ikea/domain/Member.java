@@ -50,5 +50,9 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private MemberRole memberRole;
 
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean deleted = false;
+
 
 }

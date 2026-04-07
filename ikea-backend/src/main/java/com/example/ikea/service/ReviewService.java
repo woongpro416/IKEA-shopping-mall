@@ -9,6 +9,7 @@ import com.example.ikea.repository.ProductRepository;
 import com.example.ikea.repository.ReviewRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -92,18 +93,28 @@ public class ReviewService {
 
     // 리뷰 수정
     @Transactional
-    public void updateReview(Long reviewId, ReviewRequestDto dto) {
+    public void updateReview(Long reviewId, Long memberId, ReviewRequestDto dto) {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new IllegalArgumentException("리뷰가 존재하지 않습니다."));
+
+        if (!review.getMember().getMemberId().equals(memberId)) {
+            throw new AccessDeniedException("본인 리뷰만 수정할 수 있습니다.");
+        }
+
         review.setContent(dto.getContent());
         review.setRating(dto.getRating());
     }
 
     // 리뷰 삭제 (회원 + 관리자 공통)
     @Transactional
-    public void deleteReview(Long reviewId) {
-        reviewRepository.findById(reviewId)
+    public void deleteReview(Long reviewId, Long memberId) {
+        Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new IllegalArgumentException("리뷰가 존재하지 않습니다."));
+
+        if (!review.getMember().getMemberId().equals(memberId)) {
+            throw new AccessDeniedException("본인 리뷰만 삭제할 수 있습니다.");
+        }
+
         reviewRepository.deleteById(reviewId);
 
     }
@@ -118,5 +129,11 @@ public class ReviewService {
                 .collect(Collectors.toList());
     }
     
-    //관리자 리뷰 삭제는 회원 메서드 그대로 사용
+    //리뷰 삭제
+    @Transactional
+    public void deleteReviewByAdmin(Long reviewId) {
+        reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new IllegalArgumentException("리뷰가 존재하지 않습니다."));
+        reviewRepository.deleteById(reviewId);
+    }
 }

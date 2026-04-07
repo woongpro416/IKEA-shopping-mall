@@ -8,9 +8,7 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Setter
 @Getter
-@RequiredArgsConstructor
 public class MemberResponseDto {
 
     private Long memberId;
@@ -33,6 +31,8 @@ public class MemberResponseDto {
 
     private MemberRole memberRole;
 
+    private boolean deleted;
+
 
     public MemberResponseDto(Member member) {
         this.memberId = member.getMemberId();
@@ -45,5 +45,6 @@ public class MemberResponseDto {
         this.addressDetail = member.getAddressDetail();
         this.createdAt = member.getCreatedAt();
         this.memberRole = member.getMemberRole();
+        this.deleted = member.isDeleted();
     }
 }
