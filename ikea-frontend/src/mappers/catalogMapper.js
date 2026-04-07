@@ -11,6 +11,89 @@ function normalizeLookupValue(value) {
   return String(value ?? '').trim().toLowerCase();
 }
 
+function parseSerializedJson(value) {
+  if (Array.isArray(value) || (value && typeof value === 'object')) {
+    return value;
+  }
+
+  const text = String(value ?? '').trim();
+
+  if (!text) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(text);
+  } catch {
+    return null;
+  }
+}
+
+function normalizeStringArray(value) {
+  if (Array.isArray(value)) {
+    return value
+      .map((item) => String(item ?? '').trim())
+      .filter(Boolean);
+  }
+
+  const text = String(value ?? '').trim();
+
+  if (!text) {
+    return [];
+  }
+
+  return text
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function normalizeObject(value) {
+  if (value && typeof value === 'object' && !Array.isArray(value)) {
+    return value;
+  }
+
+  return {};
+}
+
+function normalizeDetailDraft(product = {}, fallbackProduct = null) {
+  const parsedDraft = normalizeObject(parseSerializedJson(product.detailContent));
+  const parsedGalleryImages = normalizeStringArray(
+    parseSerializedJson(product.galleryImages) ?? product.galleryImages,
+  );
+  const fallbackGalleryImages = Array.isArray(fallbackProduct?.detailDraft?.galleryImages)
+    ? fallbackProduct.detailDraft.galleryImages
+    : [];
+  const galleryImages = parsedGalleryImages.length
+    ? parsedGalleryImages
+    : normalizeStringArray(parsedDraft.galleryImages).length
+      ? normalizeStringArray(parsedDraft.galleryImages)
+      : fallbackGalleryImages;
+  const dimensionImage = String(
+    product.dimensionImagePath
+    ?? parsedDraft.dimensionImage
+    ?? fallbackProduct?.detailDraft?.dimensionImage
+    ?? '',
+  ).trim();
+
+  if (
+    !Object.keys(parsedDraft).length
+    && !galleryImages.length
+    && !dimensionImage
+  ) {
+    return fallbackProduct?.detailDraft ?? null;
+  }
+
+  return {
+    ...parsedDraft,
+    galleryImages,
+    dimensionImage,
+    useDimensionImage: Boolean(
+      parsedDraft.useDimensionImage ?? dimensionImage,
+    ),
+  };
+}
+
 const fallbackCategoryByBackendId = new Map(
   fallbackCategories.map((category) => [normalizeLookupValue(category.backendCategoryId), category]),
 );
@@ -101,6 +184,8 @@ function resolveProductCategory(product = {}, fallbackProduct = null) {
 export function normalizeCatalogProduct(product = {}) {
   const fallbackProduct = resolveFallbackProduct(product);
   const resolvedCategory = resolveProductCategory(product, fallbackProduct);
+  const parsedAttributes = normalizeObject(parseSerializedJson(product.attributes));
+  const detailDraft = normalizeDetailDraft(product, fallbackProduct);
   const price = Number(product.price ?? 0);
   const originalPrice = product.originalPrice != null
     ? Number(product.originalPrice)
@@ -121,6 +206,15 @@ export function normalizeCatalogProduct(product = {}) {
   const categorySlug = product.categorySlug ?? fallbackProduct?.categorySlug ?? resolvedCategory?.slug ?? '';
   const reviews = Number(product.reviews ?? product.reviewCount ?? 0);
   const rating = Number(product.rating ?? product.reviewAverage ?? 0);
+  const resolvedDescription = product.description
+    ?? parsedAttributes.summary
+    ?? detailDraft?.shortDescription
+    ?? '';
+  const resolvedFeatures = Array.isArray(product.features)
+    ? product.features
+    : Array.isArray(parsedAttributes.features)
+      ? parsedAttributes.features
+      : [];
 
   return {
     ...product,
@@ -142,9 +236,24 @@ export function normalizeCatalogProduct(product = {}) {
     label: product.label ?? categoryLabel,
     badge: product.badge ?? '',
     brand: product.brand ?? 'HOMiO',
-    description: product.description ?? '',
+    description: resolvedDescription,
     typeSlug: product.typeSlug ?? 'all',
-    features: Array.isArray(product.features) ? product.features : [],
+    features: resolvedFeatures,
+    color: product.color ?? parsedAttributes.color ?? '',
+    material: product.material ?? parsedAttributes.material ?? '',
+    size: product.size ?? parsedAttributes.size ?? '',
+    firmness: product.firmness ?? parsedAttributes.firmness ?? '',
+    function: product.function ?? parsedAttributes.function ?? '',
+    warmth: product.warmth ?? parsedAttributes.warmth ?? '',
+    seatCount: product.seatCount ?? parsedAttributes.seatCount ?? '',
+    shape: product.shape ?? parsedAttributes.shape ?? '',
+    installation: product.installation ?? parsedAttributes.installation ?? '',
+    configuration: product.configuration ?? parsedAttributes.configuration ?? '',
+    use: product.use ?? parsedAttributes.use ?? '',
+    attributes: Object.keys(parsedAttributes).length
+      ? parsedAttributes
+      : normalizeObject(fallbackProduct?.attributes),
+    detailDraft,
     reviews,
     rating,
   };

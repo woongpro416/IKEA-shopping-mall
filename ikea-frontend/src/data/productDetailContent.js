@@ -4,6 +4,56 @@ import {
   buildProductQuickFacts,
 } from '../constants/productAttributeConfig';
 
+const META_TEXT_PATTERNS = [
+  /현재 사이트의 상세 구성에 맞춰/i,
+  /현재 카탈로그 필터와 상세 요약에 맞춰/i,
+  /IKEA 공식 상세 기준 최소 정보/i,
+  /실제 리뷰 데이터 연결을 준비한 상태/i,
+  /후속 리뷰 연동 시 실제 구매 리뷰로 교체/i,
+  /대표 구매자 후기에서 먼저 보이는 반응만 최소한으로 정리/i,
+  /리뷰 데이터 연결 준비/i,
+  /대표 후기 준비 중/i,
+  /기본 안내/i,
+  /시스템 안내/i,
+  /세부 치수 데이터는 후속 API/i,
+  /API 연결을 위한 최소 상세 데이터 구성/i,
+];
+
+function sanitizeDetailText(value) {
+  const text = String(value ?? '').trim();
+
+  if (!text) {
+    return '';
+  }
+
+  if (META_TEXT_PATTERNS.some((pattern) => pattern.test(text))) {
+    return '';
+  }
+
+  return text;
+}
+
+function sanitizeTextList(values = []) {
+  return values
+    .map((value) => sanitizeDetailText(value))
+    .filter(Boolean);
+}
+
+function sanitizeReviewHighlights(items = []) {
+  return items.filter((item) => {
+    const title = sanitizeDetailText(item?.title);
+    const body = sanitizeDetailText(item?.body);
+    const meta = sanitizeDetailText(item?.meta);
+
+    return Boolean(title || body || meta);
+  }).map((item) => ({
+    ...item,
+    title: sanitizeDetailText(item?.title),
+    body: sanitizeDetailText(item?.body),
+    meta: sanitizeDetailText(item?.meta),
+  }));
+}
+
 function createMeasurementMap(measurements = []) {
   const aliasMap = {
     너비: 'width',
@@ -72,21 +122,20 @@ function createFallbackDetail(product = {}) {
     galleryImages,
     dimensionImage: null,
     useDimensionImage: false,
-    heroHook: `${productLabel} 기준으로 빠르게 확인할 수 있는 최소 상세 정보입니다.`,
+    heroHook: `${productLabel} 상품 정보입니다.`,
     description: [
-      `${product.name} 상품의 핵심 정보만 먼저 확인할 수 있도록 정리한 상세 페이지입니다.`,
-      `${optionSummary} 구성을 기준으로 연결되어 있으며, 실데이터 연동 시 추가 설명이 보강될 예정입니다.`,
+      `${product.name} 상품 정보입니다.`,
+      `${optionSummary} 구성을 확인해 보세요.`,
     ],
     highlights: [
       `${productLabel} 기준 대표 상품`,
       `현재 선택 옵션: ${optionSummary}`,
-      'API 연결을 위한 최소 상세 데이터 구성',
     ],
     quickFacts: buildProductQuickFacts(product),
     measurements: [],
     dimensions: {},
-    dimensionCaption: '세부 치수 데이터는 후속 API 또는 추가 수집 단계에서 연결 예정입니다.',
-    reviewIntro: null,
+    dimensionCaption: '주요 치수를 확인해 보세요.',
+    reviewIntro: '고객 리뷰를 확인해 보세요.',
     reviewHighlights: [],
   };
 }
@@ -107,12 +156,16 @@ export function getProductDetailContent(product) {
     galleryImages: override.galleryImages ?? fallback.galleryImages,
     dimensionImage: override.dimensionImage ?? fallback.dimensionImage,
     useDimensionImage: override.useDimensionImage ?? false,
-    description: override.description ?? fallback.description,
-    highlights: override.highlights ?? fallback.highlights,
+    heroHook: sanitizeDetailText(override.heroHook ?? fallback.heroHook) || fallback.heroHook,
+    description: sanitizeTextList(override.description ?? fallback.description),
+    highlights: sanitizeTextList(override.highlights ?? fallback.highlights),
     quickFacts: mergeQuickFacts(override.quickFacts ?? [], fallback.quickFacts),
     measurements,
     dimensions: createMeasurementMap(measurements),
-    reviewIntro: null,
-    reviewHighlights: [],
+    dimensionCaption: sanitizeDetailText(override.dimensionCaption ?? fallback.dimensionCaption)
+      || '주요 치수를 확인해 보세요.',
+    reviewIntro: sanitizeDetailText(override.reviewIntro ?? fallback.reviewIntro)
+      || '고객 리뷰를 확인해 보세요.',
+    reviewHighlights: sanitizeReviewHighlights(override.reviewHighlights ?? fallback.reviewHighlights),
   };
 }

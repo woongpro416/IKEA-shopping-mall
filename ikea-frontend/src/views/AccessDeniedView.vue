@@ -3,28 +3,80 @@ import { computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import SiteChrome from '../components/layout/SiteChrome.vue';
 import { ROUTE_PATHS } from '../constants/routes';
+import { useAccountStore } from '../stores/account';
+import { hasAdminAccess, hasAuthenticatedSession } from '../utils/accessControl';
 
 const route = useRoute();
 const router = useRouter();
+const accountStore = useAccountStore();
+
+accountStore.hydrate();
 
 const attemptedPath = computed(() => String(route.query.from ?? '').trim());
+const accessDeniedReason = computed(() => String(route.query.reason ?? '').trim());
+const isAuthenticated = computed(() => hasAuthenticatedSession(accountStore));
+const isAdmin = computed(() => hasAdminAccess(accountStore));
 const title = computed(() => {
-  if (String(route.query.reason ?? '').trim() === 'admin-required') {
+  if (accessDeniedReason.value === 'admin-required') {
     return '접근 권한이 없습니다.';
   }
 
   return '요청한 페이지로 이동할 수 없습니다.';
 });
 const description = computed(() => {
-  if (String(route.query.reason ?? '').trim() === 'admin-required') {
+  if (accessDeniedReason.value === 'admin-required') {
     return '이 화면은 관리자 계정만 사용할 수 있습니다. 현재 계정으로는 접근할 수 없습니다.';
   }
 
   return '권한 또는 경로를 다시 확인해 주세요.';
 });
 
+const primaryActionLabel = computed(() => {
+  if (accessDeniedReason.value === 'admin-required') {
+    if (isAdmin.value) {
+      return '관리자 홈';
+    }
+
+    if (isAuthenticated.value) {
+      return '마이페이지';
+    }
+  }
+
+  if (!isAuthenticated.value) {
+    return '로그인';
+  }
+
+  return '홈으로 이동';
+});
+
 function goHome() {
   router.push(ROUTE_PATHS.home);
+}
+
+function goPrimary() {
+  if (accessDeniedReason.value === 'admin-required') {
+    if (isAdmin.value) {
+      router.push(ROUTE_PATHS.adminDashboard);
+      return;
+    }
+
+    if (isAuthenticated.value) {
+      router.push(ROUTE_PATHS.memberMyPage);
+      return;
+    }
+  }
+
+  if (!isAuthenticated.value) {
+    router.push({
+      path: ROUTE_PATHS.memberLogin,
+      query: {
+        redirect: attemptedPath.value || ROUTE_PATHS.home,
+      },
+    });
+    return;
+  }
+
+  goHome();
 }
 
 function goBack() {
@@ -53,9 +105,9 @@ function goBack() {
             <button
               type="button"
               class="access-denied-card__button access-denied-card__button--primary"
-              @click="goHome"
+              @click="goPrimary"
             >
-              홈으로 이동
+              {{ primaryActionLabel }}
             </button>
             <button type="button" class="access-denied-card__button" @click="goBack">
               이전 페이지

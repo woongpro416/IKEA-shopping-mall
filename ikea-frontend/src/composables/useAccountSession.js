@@ -68,9 +68,13 @@ function buildFallbackMemberSession(tokens, loginIdValue) {
   };
 }
 
-function resolveRedirectPath(redirectPath) {
+function resolveRedirectPath(redirectPath, role = '') {
   if (typeof redirectPath === 'string' && redirectPath.startsWith('/')) {
     return redirectPath;
+  }
+
+  if (String(role ?? '').trim().toUpperCase() === 'ADMIN') {
+    return ROUTE_PATHS.adminDashboard;
   }
 
   return ROUTE_PATHS.home;
@@ -164,7 +168,7 @@ export function useAccountSession() {
 
       await hydrateCurrentMember({ force: true, silent: true });
 
-      router.push(resolveRedirectPath(redirectPath));
+      router.push(resolveRedirectPath(redirectPath, accountStore.role));
       return response;
     } catch (error) {
       loginError.value = resolveLoginErrorMessage(error);

@@ -71,6 +71,53 @@ let latestResolveToken = 0;
 
 const requestedProductId = computed(() => String(route.params.productId ?? '').trim());
 
+function normalizeLookupValue(value) {
+  return String(value ?? '').trim().toLowerCase();
+}
+
+function pickNumericProductId(...candidates) {
+  for (const candidate of candidates) {
+    const normalizedCandidate = String(candidate ?? '').trim();
+
+    if (/^\d+$/.test(normalizedCandidate)) {
+      return normalizedCandidate;
+    }
+  }
+
+  return '';
+}
+
+function resolveReviewProductId(product = EMPTY_PRODUCT) {
+  const directProductId = pickNumericProductId(
+    product.reviewProductId,
+    product.productId,
+    product.id,
+  );
+
+  if (directProductId) {
+    return directProductId;
+  }
+
+  const normalizedProductName = normalizeLookupValue(product.name);
+
+  if (normalizedProductName) {
+    const matchedCatalogProduct = catalogProducts.value.find((catalogProduct) => (
+      normalizeLookupValue(catalogProduct.name) === normalizedProductName
+    ));
+    const matchedProductId = pickNumericProductId(
+      matchedCatalogProduct?.reviewProductId,
+      matchedCatalogProduct?.productId,
+      matchedCatalogProduct?.id,
+    );
+
+    if (matchedProductId) {
+      return matchedProductId;
+    }
+  }
+
+  return pickNumericProductId(requestedProductId.value);
+}
+
 function syncRecentViewHistory(productId = '') {
   const normalizedProductId = String(productId ?? '').trim();
   const sessionKey = resolveRecentViewSessionKey(accountStore);
@@ -136,9 +183,7 @@ const currentProduct = computed(() => (
   catalogStore.findProductById(requestedProductId.value) ?? EMPTY_PRODUCT
 ));
 const hasCurrentProduct = computed(() => Boolean(String(currentProduct.value?.id ?? '').trim()));
-const currentReviewProductId = computed(() => (
-  String(currentProduct.value?.productId ?? currentProduct.value?.id ?? requestedProductId.value).trim()
-));
+const currentReviewProductId = computed(() => resolveReviewProductId(currentProduct.value));
 
 const detailContent = computed(() => catalogStore.getProductDetailContent(currentProduct.value));
 const {
@@ -170,7 +215,11 @@ const resolvedRatingValue = computed(() => {
   }
 
   const rating = Number(currentProduct.value.rating ?? 0);
-  return rating > 0 ? rating : null;
+  if (rating > 0) {
+    return rating;
+  }
+
+  return fallbackAverageRating.value;
 });
 
 const ratingLabel = computed(() => (
@@ -178,7 +227,12 @@ const ratingLabel = computed(() => (
 ));
 
 const resolvedReviewCount = computed(() => (
-  reviewItems.value.length ? reviewCount.value : Number(currentProduct.value.reviews ?? 0)
+  reviewItems.value.length
+    ? reviewCount.value
+    : Math.max(
+      Number(currentProduct.value.reviews ?? 0),
+      fallbackReviewHighlights.value.length,
+    )
 ));
 
 const reviewCountLabel = computed(() => (
@@ -199,6 +253,17 @@ const measurementItems = computed(() => detailContent.value.measurements ?? []);
 const fallbackReviewHighlights = computed(() => detailContent.value.reviewHighlights ?? []);
 const dimensionImage = computed(() => detailContent.value.dimensionImage ?? '');
 const shouldUseDimensionImage = computed(() => Boolean(detailContent.value.useDimensionImage && dimensionImage.value));
+const fallbackAverageRating = computed(() => {
+  const ratings = fallbackReviewHighlights.value
+    .map((item) => Number(item?.rating ?? item?.ratingLabel ?? 0))
+    .filter((value) => value > 0);
+
+  if (!ratings.length) {
+    return null;
+  }
+
+  return ratings.reduce((sum, value) => sum + value, 0) / ratings.length;
+});
 const reviewSummaryMessage = computed(() => {
   if (reviewItems.value.length) {
     if (reviewCount.value === 1) {
@@ -211,18 +276,6 @@ const reviewSummaryMessage = computed(() => {
   return detailContent.value.reviewIntro ?? '고객 리뷰를 확인해 보세요.';
 });
 const reviewStatusNote = computed(() => {
-  if (isLoadingReviews.value && !reviewItems.value.length) {
-    return '상품 리뷰를 불러오고 있습니다.';
-  }
-
-  if (reviewLoadErrorMessage.value) {
-    return reviewLoadErrorMessage.value;
-  }
-
-  if (hasLoadedReviews.value && !reviewItems.value.length) {
-    return '아직 등록된 리뷰가 없습니다.';
-  }
-
   return '';
 });
 const displayedReviewItems = computed(() => (
@@ -358,7 +411,12 @@ function closeGuestCheckoutPrompt() {
 
 function moveToMemberLogin() {
   closeGuestCheckoutPrompt();
-  router.push(ROUTE_PATHS.memberLogin);
+  router.push({
+    path: ROUTE_PATHS.memberLogin,
+    query: {
+      redirect: route.fullPath,
+    },
+  });
 }
 
 async function handleBuyNow() {
@@ -497,8 +555,6 @@ function handleDialogProductSelect(productId) {
               {{ soldOutMessage }}
             </p>
 
-            <p class="detail-summary__hook">{{ detailContent.heroHook }}</p>
-
             <div class="detail-summary__delivery">
               <span>배송정보</span>
               <p>{{ deliveryMessage }}</p>
@@ -583,7 +639,6 @@ function handleDialogProductSelect(productId) {
         <section id="description" class="detail-section detail-section--lined">
           <div class="detail-section__head">
             <h2>제품 설명</h2>
-            <p>현재 사이트의 상세 구성에 맞춰 핵심 설명만 정리했습니다.</p>
           </div>
 
           <div class="detail-section__content detail-section__content--split">
@@ -605,7 +660,6 @@ function handleDialogProductSelect(productId) {
         <section id="dimensions" class="detail-section detail-section--lined">
           <div class="detail-section__head">
             <h2>치수</h2>
-            <p>배치 전에 확인할 수 있도록 주요 치수를 한 번에 볼 수 있게 정리했습니다.</p>
           </div>
 
             <div class="detail-section__content detail-section__content--split detail-section__content--measure">
@@ -621,7 +675,6 @@ function handleDialogProductSelect(productId) {
                 v-else
                 :measurements="measurementItems"
               />
-              <p v-if="detailContent.dimensionCaption" class="detail-dimension-panel__caption">{{ detailContent.dimensionCaption }}</p>
             </div>
 
             <div class="detail-measure-list">
@@ -649,7 +702,6 @@ function handleDialogProductSelect(productId) {
             </div>
             <div class="detail-review-summary__copy">
               <strong>리뷰 {{ reviewCountLabel }}개 기준 요약</strong>
-              <p>{{ reviewSummaryMessage }}</p>
             </div>
           </div>
 
@@ -684,7 +736,6 @@ function handleDialogProductSelect(productId) {
         <section v-if="relatedProducts.length" class="detail-related detail-section--lined">
           <div class="detail-section__head">
             <h2>다른 사람들이 함께 본 상품</h2>
-            <p>현재 {{ currentProduct.categoryLabel }} 카탈로그 안에서 자연스럽게 이어질 수 있는 상품을 먼저 연결했습니다.</p>
           </div>
 
           <div class="detail-related__grid">

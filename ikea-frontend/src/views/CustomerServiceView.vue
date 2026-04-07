@@ -257,7 +257,7 @@ async function removeQna(item) {
       <div class="cs-qna-actions">
         <div class="cs-qna-actions__buttons">
           <button v-if="qnaViewerMode === 'member'" type="button" @click="openQnaWrite">작성하기</button>
-          <button v-else-if="qnaViewerMode === 'guest'" type="button" class="is-light" @click="openQnaLogin">로그인 후 보기</button>
+          <button v-else-if="qnaViewerMode === 'guest'" type="button" class="is-light" @click="openQnaLogin">로그인 후 이용</button>
         </div>
       </div>
 
