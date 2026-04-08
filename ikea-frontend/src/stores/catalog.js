@@ -170,9 +170,24 @@ export const useCatalogStore = defineStore('catalog', {
       productsRequestPromise = (async () => {
       try {
         const response = await getProductList();
-        this.products = normalizeProductCollection(response, normalizedFallbackProducts);
-        this.productsLoadedFromApi = true;
-        void primeStorefrontInventory(this.products).catch(() => {});
+        const source = Array.isArray(response)
+          ? response
+          : Array.isArray(response?.data)
+            ? response.data
+            : Array.isArray(response?.content)
+              ? response.content
+              : Array.isArray(response?.items)
+                ? response.items
+                : [];
+
+        if (source.length) {
+          this.products = normalizeProductCollection(source, normalizedFallbackProducts);
+          this.productsLoadedFromApi = true;
+          void primeStorefrontInventory(this.products).catch(() => {});
+        } else {
+          this.products = normalizedFallbackProducts;
+          this.productsLoadedFromApi = false;
+        }
       } catch {
         this.products = normalizedFallbackProducts;
         this.productsLoadedFromApi = false;

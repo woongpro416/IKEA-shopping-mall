@@ -1,6 +1,7 @@
 import { computed, ref, watch } from 'vue';
 import { defineStore } from 'pinia';
 import { useAccountStore } from './account';
+import { useCatalogStore } from './catalog';
 import { COMMERCE_SESSION_KEYS } from '../constants/commerce';
 import { buildProductDetailPath } from '../constants/routes';
 import { createCommerceCartItem } from '../data/commerceSeed';
@@ -55,9 +56,96 @@ function normalizeIdentifier(value) {
   return String(value ?? '').trim();
 }
 
+function normalizeLookupValue(value) {
+  return normalizeIdentifier(value).toLowerCase();
+}
+
 function normalizeInteger(value, fallback = 0) {
   const parsed = Number.parseInt(value, 10);
   return Number.isFinite(parsed) ? parsed : fallback;
+}
+
+function pickNumericProductId(...candidates) {
+  for (const candidate of candidates) {
+    const normalizedCandidate = normalizeIdentifier(candidate);
+
+    if (/^\d+$/.test(normalizedCandidate)) {
+      return normalizedCandidate;
+    }
+  }
+
+  return '';
+}
+
+function resolveCatalogStore() {
+  try {
+    return useCatalogStore();
+  } catch {
+    return null;
+  }
+}
+
+function resolveCatalogProductByName(productName = '') {
+  const normalizedProductName = normalizeLookupValue(productName);
+
+  if (!normalizedProductName) {
+    return null;
+  }
+
+  const catalogStore = resolveCatalogStore();
+  const runtimeProducts = Array.isArray(catalogStore?.catalogProducts)
+    ? catalogStore.catalogProducts
+    : Array.isArray(catalogStore?.products)
+      ? catalogStore.products
+      : [];
+
+  return runtimeProducts.find((product) => (
+    normalizeLookupValue(product?.name) === normalizedProductName
+  )) ?? null;
+}
+
+function resolveRuntimeProduct(productId = '', options = {}) {
+  const catalogStore = resolveCatalogStore();
+  const normalizedProductId = normalizeIdentifier(productId);
+
+  if (catalogStore && normalizedProductId) {
+    const matchedProduct = catalogStore.findProductById?.(normalizedProductId);
+
+    if (matchedProduct) {
+      return matchedProduct;
+    }
+  }
+
+  return resolveCatalogProductByName(options.productName ?? options.name);
+}
+
+function resolveBackendProductId(productId = '', options = {}) {
+  const normalizedProductId = normalizeIdentifier(productId);
+  const runtimeProduct = resolveRuntimeProduct(normalizedProductId, options);
+  const normalizedProductName = normalizeLookupValue(options.productName ?? options.name);
+  const shouldTrustDirectNumericId = !normalizedProductName || Boolean(runtimeProduct);
+
+  return pickNumericProductId(
+    options.backendProductId,
+    options.reviewProductId,
+    options.productId,
+    options.id,
+    runtimeProduct?.backendProductId,
+    runtimeProduct?.reviewProductId,
+    runtimeProduct?.productId,
+    runtimeProduct?.id,
+    shouldTrustDirectNumericId ? normalizedProductId : '',
+  );
+}
+
+function requireBackendProductId(productId = '', options = {}) {
+  const resolvedBackendProductId = resolveBackendProductId(productId, options);
+
+  if (resolvedBackendProductId) {
+    return resolvedBackendProductId;
+  }
+
+  throw new Error('선택한 상품 정보를 다시 확인해 주세요.');
 }
 
 function unwrapArrayPayload(payload) {
@@ -112,10 +200,15 @@ function buildStorefrontCartItem(productId, overrides = {}) {
   const cartItemId = normalizeIdentifier(
     overrides.cartItemId ?? overrides.id ?? `cart-${normalizedProductId || 'item'}`,
   );
+  const resolvedBackendProductId = normalizeIdentifier(
+    overrides.backendProductId
+    ?? resolveBackendProductId(normalizedProductId, overrides),
+  );
   const seededOverrides = {
     id: cartItemId,
     cartItemId,
     productId: normalizedProductId,
+    backendProductId: resolvedBackendProductId,
     quantity: Math.max(1, normalizeInteger(overrides.quantity, 1)),
     selected: overrides.selected ?? true,
   };
@@ -140,6 +233,7 @@ function buildStorefrontCartItem(productId, overrides = {}) {
       id: cartItemId,
       cartItemId,
       productId: normalizedProductId,
+      backendProductId: resolvedBackendProductId,
       selected: overrides.selected ?? true,
       brand: overrides.brand ?? 'HOMiO',
       seller: overrides.seller ?? 'HOMiO',
@@ -168,11 +262,16 @@ function mapRemoteCartItem(source = {}) {
   const productId = normalizeIdentifier(source.productId);
   const quantity = Math.max(1, normalizeInteger(source.quantity, 1));
   const cartItemId = normalizeIdentifier(source.cartItemId ?? source.id ?? `cart-${productId}`);
+  const backendProductId = pickNumericProductId(
+    source.backendProductId,
+    source.productId,
+  );
   const hasPrice = Number.isFinite(Number(source.price));
   const baseItem = buildStorefrontCartItem(productId, {
     id: cartItemId,
     cartItemId,
     productId,
+    backendProductId,
     quantity,
     selected: true,
   });
@@ -186,6 +285,7 @@ function mapRemoteCartItem(source = {}) {
     id: cartItemId || baseItem.id,
     cartItemId: cartItemId || baseItem.cartItemId || baseItem.id,
     productId: productId || normalizeIdentifier(baseItem.productId),
+    backendProductId: backendProductId || normalizeIdentifier(baseItem.backendProductId),
     name: source.productName ?? source.name ?? baseItem.name,
     image: source.imgPath ?? source.image ?? baseItem.image,
     quantity,
@@ -760,19 +860,35 @@ export const useCartStore = defineStore('cart', () => {
     return cartItems.value.find((item) => String(item.id) === String(itemId)) ?? null;
   }
 
-  async function addCartItem(productId, { quantity = 1, selected = true } = {}) {
+  async function addCartItem(productId, {
+    quantity = 1,
+    selected = true,
+    backendProductId = '',
+    productName = '',
+  } = {}) {
     const normalizedProductId = normalizeIdentifier(productId);
     const normalizedQuantity = Math.max(1, normalizeInteger(quantity, 1));
+    const resolvedBackendProductId = resolveBackendProductId(normalizedProductId, {
+      backendProductId,
+      productName,
+    });
+    const availabilityProductId = resolvedBackendProductId || normalizedProductId;
 
     if (!normalizedProductId) {
       return null;
     }
 
-    let availability = resolveStorefrontAvailability({ productId: normalizedProductId });
+    let availability = resolveStorefrontAvailability({
+      productId: availabilityProductId,
+      backendProductId: resolvedBackendProductId,
+    });
 
     if (!availability.isTracked) {
-      await primeStorefrontInventory([{ productId: normalizedProductId }]).catch(() => {});
-      availability = resolveStorefrontAvailability({ productId: normalizedProductId });
+      await primeStorefrontInventory([{ productId: availabilityProductId }]).catch(() => {});
+      availability = resolveStorefrontAvailability({
+        productId: availabilityProductId,
+        backendProductId: resolvedBackendProductId,
+      });
     }
 
     if (availability.isSoldOut) {
@@ -780,14 +896,23 @@ export const useCartStore = defineStore('cart', () => {
     }
 
     if (isLoggedIn()) {
+      const remoteProductId = requireBackendProductId(normalizedProductId, {
+        backendProductId: resolvedBackendProductId,
+        productName,
+      });
+
       await addCartItemRequest({
-        productId: Number(normalizedProductId),
+        productId: Number(remoteProductId),
         quantity: normalizedQuantity,
       });
       await syncRemoteCart();
 
       return cartItems.value.find(
-        (item) => normalizeIdentifier(item.productId) === normalizedProductId,
+        (item) => (
+          normalizeIdentifier(item.productId) === remoteProductId
+          || normalizeIdentifier(item.backendProductId) === remoteProductId
+          || normalizeIdentifier(item.productId) === normalizedProductId
+        ),
       ) ?? null;
     }
 
@@ -800,6 +925,9 @@ export const useCartStore = defineStore('cart', () => {
         normalizeIdentifier(item.productId) === normalizedProductId
           ? {
             ...item,
+            backendProductId: normalizeIdentifier(
+              item.backendProductId ?? resolvedBackendProductId,
+            ),
             quantity: item.quantity + normalizedQuantity,
             selected,
           }
@@ -814,6 +942,7 @@ export const useCartStore = defineStore('cart', () => {
     const createdItem = createCommerceCartItem(normalizedProductId, {
       quantity: normalizedQuantity,
       selected,
+      backendProductId: resolvedBackendProductId,
     });
 
     cartItems.value = syncCartItemsWithAvailability([createdItem, ...cartItems.value]);
@@ -868,6 +997,7 @@ export const useCartStore = defineStore('cart', () => {
       id: `checkout-${normalizeIdentifier(itemId)}`,
       cartItemId: '',
       productId: normalizeIdentifier(itemId),
+      backendProductId: resolveBackendProductId(normalizeIdentifier(itemId)),
       quantity: 1,
       selected: true,
     });
@@ -885,9 +1015,13 @@ export const useCartStore = defineStore('cart', () => {
     let guestCartKey = '';
 
     for (const item of checkoutCartItems) {
+      const remoteProductId = requireBackendProductId(item.productId, {
+        backendProductId: item.backendProductId,
+        productName: item.name,
+      });
       const createResponse = await addGuestCartItemRequest(
         {
-          productId: Number(normalizeIdentifier(item.productId)),
+          productId: Number(remoteProductId),
           quantity: Math.max(1, normalizeInteger(item.quantity, 1)),
         },
         guestCartKey,
@@ -959,6 +1093,36 @@ export const useCartStore = defineStore('cart', () => {
   }
 
   async function createMemberCompletedOrderSnapshot(payload) {
+    const checkoutMode = normalizeIdentifier(payload.mode).toLowerCase();
+    const checkoutItemId = normalizeIdentifier(payload.itemId);
+
+    if (checkoutMode === 'single' && checkoutItemId) {
+      const selectedItem = (payload.orderItems ?? []).find(
+        (item) => (
+          normalizeIdentifier(item.productId) === checkoutItemId
+          || normalizeIdentifier(item.backendProductId) === checkoutItemId
+        ),
+      );
+      const remoteProductId = requireBackendProductId(checkoutItemId, {
+        backendProductId: selectedItem?.backendProductId,
+        productName: selectedItem?.name,
+      });
+      const hasRemoteItem = cartItems.value.some(
+        (item) => (
+          normalizeIdentifier(item.productId) === remoteProductId
+          || normalizeIdentifier(item.backendProductId) === remoteProductId
+        ),
+      );
+
+      if (!hasRemoteItem) {
+        await addCartItemRequest({
+          productId: Number(remoteProductId),
+          quantity: Math.max(1, normalizeInteger(selectedItem?.quantity, 1)),
+        });
+        await syncRemoteCart();
+      }
+    }
+
     const orderSnapshot = {
       ...buildCompletedOrderSnapshot(payload),
       isGuestOrder: false,

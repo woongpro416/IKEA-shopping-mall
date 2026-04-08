@@ -68,6 +68,7 @@ const isGuestCheckoutPromptOpen = ref(false);
 const isResolvingProduct = ref(true);
 const didFailToResolveProduct = ref(false);
 let latestResolveToken = 0;
+const LOW_STOCK_THRESHOLD = 5;
 
 const requestedProductId = computed(() => String(route.params.productId ?? '').trim());
 
@@ -87,9 +88,10 @@ function pickNumericProductId(...candidates) {
   return '';
 }
 
-function resolveReviewProductId(product = EMPTY_PRODUCT) {
+function resolveCatalogNumericProductId(product = EMPTY_PRODUCT, { includeReviewProductId = true } = {}) {
   const directProductId = pickNumericProductId(
-    product.reviewProductId,
+    product.backendProductId,
+    includeReviewProductId ? product.reviewProductId : '',
     product.productId,
     product.id,
   );
@@ -105,6 +107,7 @@ function resolveReviewProductId(product = EMPTY_PRODUCT) {
       normalizeLookupValue(catalogProduct.name) === normalizedProductName
     ));
     const matchedProductId = pickNumericProductId(
+      matchedCatalogProduct?.backendProductId,
       matchedCatalogProduct?.reviewProductId,
       matchedCatalogProduct?.productId,
       matchedCatalogProduct?.id,
@@ -156,7 +159,20 @@ async function resolveCurrentProduct() {
   const hasPreviewProduct = Boolean(catalogStore.findProductById(normalizedProductId));
   isResolvingProduct.value = !hasPreviewProduct;
 
-  void catalogStore.ensureCatalogLoaded().catch(() => {});
+  await catalogStore.ensureCatalogLoaded().catch(() => {});
+
+  if (!catalogStore.productsLoadedFromApi) {
+    if (resolveToken !== latestResolveToken) {
+      return;
+    }
+
+    if (catalogStore.findProductById(normalizedProductId)) {
+      syncRecentViewHistory(normalizedProductId);
+    }
+
+    isResolvingProduct.value = false;
+    return;
+  }
 
   try {
     await catalogStore.loadProductDetail(normalizedProductId);
@@ -183,7 +199,10 @@ const currentProduct = computed(() => (
   catalogStore.findProductById(requestedProductId.value) ?? EMPTY_PRODUCT
 ));
 const hasCurrentProduct = computed(() => Boolean(String(currentProduct.value?.id ?? '').trim()));
-const currentReviewProductId = computed(() => resolveReviewProductId(currentProduct.value));
+const currentBackendProductId = computed(() => resolveCatalogNumericProductId(currentProduct.value, {
+  includeReviewProductId: false,
+}));
+const currentReviewProductId = computed(() => resolveCatalogNumericProductId(currentProduct.value));
 
 const detailContent = computed(() => catalogStore.getProductDetailContent(currentProduct.value));
 const {
@@ -284,9 +303,33 @@ const displayedReviewItems = computed(() => (
 
 const deliveryMessage = computed(() => buildProductDeliveryMessage(currentProduct.value));
 const purchaseOptionCopy = computed(() => buildProductOptionSummary(currentProduct.value));
-const availability = computed(() => resolveStorefrontAvailability(currentProduct.value));
+const availability = computed(() => resolveStorefrontAvailability({
+  ...currentProduct.value,
+  backendProductId: currentBackendProductId.value,
+}));
 const isSoldOut = computed(() => availability.value.isSoldOut);
 const soldOutMessage = computed(() => availability.value.stockMessage);
+const availableStockCount = computed(() => {
+  if (!availability.value.isTracked) {
+    return null;
+  }
+
+  const stock = Number(availability.value.availableStock);
+  return Number.isFinite(stock) ? stock : null;
+});
+const isLowStock = computed(() => (
+  !isSoldOut.value
+  && availability.value.isTracked
+  && availableStockCount.value !== null
+  && availableStockCount.value > 0
+  && availableStockCount.value <= LOW_STOCK_THRESHOLD
+));
+const lowStockLabel = computed(() => {
+  if (!isLowStock.value) {
+    return '';
+  }
+  return `[품절임박] 잔여 ${availableStockCount.value}개`;
+});
 
 const relatedProducts = computed(() => {
   const currentId = currentProduct.value.id;
@@ -359,6 +402,8 @@ async function syncCurrentProductToCart() {
   try {
     return await cartStore.addCartItem(currentProduct.value?.id, {
       quantity: quantity.value,
+      backendProductId: currentBackendProductId.value,
+      productName: currentProduct.value?.name,
     });
   } catch (error) {
     showError(resolveCartActionErrorMessage(error, '장바구니 처리 중 오류가 발생했습니다.'));
@@ -549,6 +594,9 @@ function handleDialogProductSelect(productId) {
 
             <div class="detail-summary__price">
               <strong>{{ formatPrice(currentProduct.price) }}</strong>
+              <span v-if="isLowStock" class="detail-summary__low-stock">
+                {{ lowStockLabel }}
+              </span>
             </div>
 
             <p v-if="isSoldOut" class="detail-summary__soldout">
@@ -792,6 +840,22 @@ function handleDialogProductSelect(productId) {
 </template>
 
 <style scoped>
+.detail-summary__price {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.detail-summary__low-stock {
+  display: inline-flex;
+  align-items: center;
+  color: #b45a2b;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
 .detail-empty-state {
   padding-top: 24px;
 }
@@ -845,6 +909,14 @@ function handleDialogProductSelect(productId) {
 }
 
 @media (max-width: 720px) {
+  .detail-summary__price {
+    gap: 8px;
+  }
+
+  .detail-summary__low-stock {
+    font-size: 12px;
+  }
+
   .detail-review-feedback {
     flex-direction: column;
     align-items: flex-start;
