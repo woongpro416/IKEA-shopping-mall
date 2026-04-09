@@ -1,11 +1,22 @@
 package com.example.ikea.service;
 
-import com.example.ikea.domain.*;
+import com.example.ikea.domain.Cart;
+import com.example.ikea.domain.CartItem;
+import com.example.ikea.domain.Member;
+import com.example.ikea.domain.Order;
+import com.example.ikea.domain.OrderItem;
+import com.example.ikea.domain.OrderStatus;
+import com.example.ikea.domain.Product;
 import com.example.ikea.dto.GuestOrderCreateResponseDto;
 import com.example.ikea.dto.GuestOrderRequestDto;
+import com.example.ikea.dto.MemberOrderItemRequestDto;
 import com.example.ikea.dto.MemberOrderRequestDto;
 import com.example.ikea.dto.OrderResponseDto;
-import com.example.ikea.repository.*;
+import com.example.ikea.repository.CartItemRepository;
+import com.example.ikea.repository.CartRepository;
+import com.example.ikea.repository.MemberRepository;
+import com.example.ikea.repository.OrderItemRepository;
+import com.example.ikea.repository.OrderRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -13,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -28,7 +40,7 @@ public class OrderService {
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
     private final ProductStockService productStockService;
-    private final ProductRepository productRepository;
+    private final ProductService productService;
 
     // 주문 목록 조회(내 주문 내역)
     public List<OrderResponseDto> getOrderList(Long memberId) {
@@ -49,23 +61,26 @@ public class OrderService {
         return new OrderResponseDto(order);
     }
 
-    // 주문 생성 (장바구니 -> 주문)
+    // 주문 생성 (회원)
     @Transactional
     public Long createMemberOrder(Long memberId, MemberOrderRequestDto dto) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalStateException("존재하지 않는 회원입니다."));
 
-        Cart cart = cartRepository.findByMember_MemberId(memberId)
-                .orElseThrow(() -> new IllegalStateException("존재하지 않는 장바구니입니다."));
+        List<OrderLine> orderLines;
 
-        List<CartItem> cartItems = cartItemRepository.findByCart_CartId(cart.getCartId());
-
-        if (cartItems.isEmpty()) {
-            throw new IllegalArgumentException("장바구니가 비어있습니다.");
+        if (dto.getOrderItems() != null && !dto.getOrderItems().isEmpty()) {
+            orderLines = buildOrderLinesFromRequest(dto.getOrderItems());
+        } else {
+            orderLines = buildOrderLinesFromCart(memberId);
         }
 
-        int totalPrice = cartItems.stream()
-                .mapToInt(cartItem -> cartItem.getProduct().getPrice() * cartItem.getQuantity())
+        if (orderLines.isEmpty()) {
+            throw new IllegalArgumentException("주문 항목이 없습니다.");
+        }
+
+        int totalPrice = orderLines.stream()
+                .mapToInt(line -> line.product().getPrice() * line.quantity())
                 .sum();
 
         String orderNo = "ORDER_"
@@ -85,20 +100,68 @@ public class OrderService {
 
         order = orderRepository.save(order);
 
-        for (CartItem cartItem : cartItems) {
+        for (OrderLine line : orderLines) {
+            productStockService.decreaseStock(line.product().getProductId(), line.quantity());
+
             OrderItem orderItem = OrderItem.builder()
                     .order(order)
-                    .product(cartItem.getProduct())
-                    .quantity(cartItem.getQuantity())
-                    .orderPrice(cartItem.getProduct().getPrice())
+                    .product(line.product())
+                    .quantity(line.quantity())
+                    .orderPrice(line.product().getPrice())
                     .build();
 
             orderItemRepository.save(orderItem);
         }
 
-        cartItemRepository.deleteByCart_CartId(cart.getCartId());
+        if (dto.getOrderItems() == null || dto.getOrderItems().isEmpty()) {
+            Cart cart = cartRepository.findByMember_MemberId(memberId)
+                    .orElseThrow(() -> new IllegalStateException("존재하지 않는 장바구니입니다."));
+            cartItemRepository.deleteByCart_CartId(cart.getCartId());
+        }
 
         return order.getOrderId();
+    }
+
+    private List<OrderLine> buildOrderLinesFromCart(Long memberId) {
+        Cart cart = cartRepository.findByMember_MemberId(memberId)
+                .orElseThrow(() -> new IllegalStateException("존재하지 않는 장바구니입니다."));
+
+        List<CartItem> cartItems = cartItemRepository.findByCart_CartId(cart.getCartId());
+
+        if (cartItems.isEmpty()) {
+            throw new IllegalArgumentException("장바구니가 비어있습니다.");
+        }
+
+        List<OrderLine> lines = new ArrayList<>();
+        for (CartItem cartItem : cartItems) {
+            if (cartItem.getQuantity() == null || cartItem.getQuantity() < 1) {
+                throw new IllegalArgumentException("주문 수량은 1개 이상이어야 합니다.");
+            }
+            lines.add(new OrderLine(cartItem.getProduct(), cartItem.getQuantity()));
+        }
+        return lines;
+    }
+
+    private List<OrderLine> buildOrderLinesFromRequest(List<MemberOrderItemRequestDto> items) {
+        List<OrderLine> lines = new ArrayList<>();
+
+        for (MemberOrderItemRequestDto item : items) {
+            if (item.getQuantity() == null || item.getQuantity() < 1) {
+                throw new IllegalArgumentException("주문 수량은 1개 이상이어야 합니다.");
+            }
+
+            Product product = productService.findProductEntityByRequest(
+                    item.getProductId(),
+                    item.getProductCode()
+            );
+
+            lines.add(new OrderLine(product, item.getQuantity()));
+        }
+
+        return lines;
+    }
+
+    private record OrderLine(Product product, Integer quantity) {
     }
 
     // 주문 취소 (미결제 주문만)
@@ -124,21 +187,18 @@ public class OrderService {
 
     // ====================== 관리자 ===================
 
-    // 전체 주문 목록
     public List<OrderResponseDto> getAllOrderList() {
         return orderRepository.findAll().stream()
                 .map(OrderResponseDto::new)
                 .collect(Collectors.toList());
     }
 
-    // 상태별 주문 목록 (판매 관리)
     public List<OrderResponseDto> getOrderListByStatus(OrderStatus status) {
         return orderRepository.findByOrderStatus(status).stream()
                 .map(OrderResponseDto::new)
                 .collect(Collectors.toList());
     }
 
-    // 주문 상태 변경 (배송 관리)
     @Transactional
     public void updateOrderStatus(OrderStatus status, Long orderId) {
         Order order = orderRepository.findById(orderId)
@@ -148,7 +208,6 @@ public class OrderService {
         order.setOrderStatus(status);
     }
 
-    // 대시보드용 주문 수
     public Long getOrderCount() {
         return orderRepository.count();
     }
@@ -188,6 +247,8 @@ public class OrderService {
         order = orderRepository.save(order);
 
         for (CartItem cartItem : cartItems) {
+            productStockService.decreaseStock(cartItem.getProduct().getProductId(), cartItem.getQuantity());
+
             OrderItem orderItem = OrderItem.builder()
                     .order(order)
                     .product(cartItem.getProduct())

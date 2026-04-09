@@ -23,7 +23,6 @@ public class OrderController {
     private final OrderService orderService;
     private final MemberService memberService;
 
-    //주문 목록 조회(내 주문 내역)
     @GetMapping
     public ResponseEntity<List<OrderResponseDto>> getOrderList(
             @AuthenticationPrincipal UserDetails userDetails) {
@@ -31,7 +30,6 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getOrderList(memberId));
     }
 
-    //주문 상세 조회
     @GetMapping("/detail/{orderId}")
     public ResponseEntity<OrderResponseDto> getDetailOrder(
             @AuthenticationPrincipal UserDetails userDetails,
@@ -40,7 +38,6 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getDetailOrder(orderId, memberId));
     }
 
-    //주문 생성 (회원)
     @PostMapping
     public ResponseEntity<Long> createMemberOrder(
             @AuthenticationPrincipal UserDetails userDetails,
@@ -49,13 +46,12 @@ public class OrderController {
         return ResponseEntity.ok(orderService.createMemberOrder(memberId, dto));
     }
 
-    // 주문 생성(비회원 전용)
     @PostMapping("/guest")
     public ResponseEntity<GuestOrderCreateResponseDto> createGuestOrder(
             @RequestBody @Valid GuestOrderRequestDto dto) {
         return ResponseEntity.ok(orderService.createGuestOrder(dto));
     }
-    //주문 취소
+
     @DeleteMapping("/{orderId}")
     public ResponseEntity<Void> cancelOrder(
             @AuthenticationPrincipal UserDetails userDetails,

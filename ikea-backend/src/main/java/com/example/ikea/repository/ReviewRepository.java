@@ -15,4 +15,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     //한 제품에 대한 리뷰 중복 방지
     boolean existsByOrder_OrderIdAndProduct_ProductId(Long orderId, Long productId);
+
+    List<Review> findByProduct_ProductIdOrderByCreatedAtDesc(Long productId);
 }

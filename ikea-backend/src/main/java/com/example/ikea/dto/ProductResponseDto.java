@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 public class ProductResponseDto {
 
     private Long productId;
+    private String productCode;
     private String name;
     private Integer price;
     private Integer originalPrice;
@@ -28,6 +29,7 @@ public class ProductResponseDto {
 
     public ProductResponseDto(Product product) {
         this.productId = product.getProductId();
+        this.productCode = product.getProductCode();
         this.name = product.getName();
         this.price = product.getPrice();
         this.originalPrice = product.getOriginalPrice();

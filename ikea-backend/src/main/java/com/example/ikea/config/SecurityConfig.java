@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,6 +17,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -37,9 +39,13 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/member/join").permitAll()
-                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/member/login").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+                        .requestMatchers("/error").permitAll()
+
+                        .requestMatchers(HttpMethod.POST, "/api/member/join").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/member/login").permitAll()
+
                         .requestMatchers(
                                 "/api/auth/**",
                                 "/api/product/**",
@@ -47,19 +53,24 @@ public class SecurityConfig {
                                 "/api/category/**",
                                 "/api/notice/**"
                         ).permitAll()
+
+                        .requestMatchers(HttpMethod.GET, "/api/review/product/**").permitAll()
+
                         .requestMatchers("/api/cart/guest/**").permitAll()
                         .requestMatchers("/api/order/guest/**").permitAll()
+
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
+
                         .requestMatchers("/api/qna/**").authenticated()
                         .requestMatchers("/api/review/**").authenticated()
                         .requestMatchers("/api/cart/**").authenticated()
                         .requestMatchers("/api/order/**").authenticated()
                         .requestMatchers("/api/payment/**").authenticated()
+
                         .anyRequest().authenticated()
                 )
 
-                .addFilterBefore(jwtAuthenticationFilter,
-                        UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -68,7 +79,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        List<String> allowedOrigins = java.util.Arrays.stream(allowedOriginsRaw.split(","))
+        List<String> allowedOrigins = Arrays.stream(allowedOriginsRaw.split(","))
                 .map(String::trim)
                 .toList();
 

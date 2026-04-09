@@ -1,0 +1,143 @@
+이제 재고 row가 없을 때:
+
+이전
+서비스에서 예외 발생
+/error로 넘어감
+화면에서는 403처럼 보임
+이후
+GET /api/product_stocks/{productId}
+정상적으로 아래처럼 내려감
+
+이 단계 적용 후 달라지는 요청 형식
+상품 상세 조회
+
+이제 둘 다 됩니다.
+
+GET /api/product/1
+GET /api/product/10489009
+GET /api/product/s29509026
+장바구니 추가
+
+둘 중 하나만 보내도 됩니다.
+
+방식 1: PK 기준
+{
+  "productId": 1,
+  "quantity": 2
+}
+방식 2: 공개 코드 기준
+{
+  "productCode": "10489009",
+  "quantity": 2
+}
+상품 응답 예시
+{
+  "productId": 1,
+  "productCode": "10489009",
+  "name": "GLOSTAD",
+  "price": 129000,
+  "originalPrice": 149000,
+  "imgPath": "/uploads/a.jpg",
+  "categoryName": "소파",
+  "brand": "IKEA",
+  "badge": "BEST",
+  "label": "신상품",
+  "typeSlug": "sofa",
+  "attributes": "...",
+  "detailContent": "...",
+  "galleryImages": "...",
+  "dimensionImagePath": "...",
+  "createdAt": "2026-04-09T10:00:00"
+}
+
+6) 프론트가 이제 보낼 수 있는 요청 형식
+A. 기존 방식: 장바구니 전체 주문
+
+orderItems를 안 보내면 기존처럼 장바구니 전체 주문입니다.
+
+{
+  "address": "인천광역시 남동구 ..."
+}
+B. 단일 바로주문
+{
+  "address": "인천광역시 남동구 ...",
+  "orderItems": [
+    {
+      "productId": 1,
+      "quantity": 1
+    }
+  ]
+}
+
+또는
+
+{
+  "address": "인천광역시 남동구 ...",
+  "orderItems": [
+    {
+      "productCode": "10489009",
+      "quantity": 1
+    }
+  ]
+}
+C. 선택 상품 여러 개 주문
+{
+  "address": "인천광역시 남동구 ...",
+  "orderItems": [
+    {
+      "productId": 1,
+      "quantity": 1
+    },
+    {
+      "productCode": "s29509026",
+      "quantity": 2
+    }
+  ]
+}
+7) 이 수정의 실제 효과
+
+이제 회원 주문 API는 두 모드를 동시에 지원합니다.
+
+orderItems 없음 → 장바구니 전체 주문
+orderItems 있음 → 그 항목만 주문
+
+즉 프론트는
+
+장바구니 전체 주문
+상세페이지 바로주문
+선택상품 주문
+
+8) 이제 가능한 요청 형식
+비회원 리뷰 조회
+
+이제 공개로 열립니다.
+
+GET /api/review/product/1
+GET /api/review/product/10489009
+GET /api/review/product/s29509026
+리뷰 작성
+
+둘 다 가능:
+
+숫자 PK 기준
+{
+  "orderId": 10,
+  "productId": 1,
+  "content": "좋아요",
+  "rating": 5
+}
+외부 코드 기준
+{
+  "orderId": 10,
+  "productCode": "10489009",
+  "content": "좋아요",
+  "rating": 5
+}
+9) 적용 후 기대 결과
+
+이 단계까지 끝나면:
+
+비회원도 상세 페이지에서 리뷰 목록 조회 가능
+리뷰도 상품 상세/장바구니/주문과 같은 식별자 체계를 사용
+productId와 productCode를 병행 지원
+프론트가 문자열 화면용 ID를 쓰더라도 리뷰 API가 따라갈 수 있음
