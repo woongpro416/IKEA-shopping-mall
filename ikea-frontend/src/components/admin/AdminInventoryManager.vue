@@ -241,9 +241,9 @@ watch(
 .admin-inventory-manager__detail-meta p,
 .admin-inventory-manager__status {
   margin: 0;
-  padding: 12px 14px;
-  border: 1px solid #e6edf5;
-  background: #f7f9fb;
+  padding: 0;
+  border: 0;
+  background: transparent;
   color: #556070;
   font-size: 14px;
   line-height: 1.6;
@@ -382,10 +382,10 @@ watch(
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 32px;
-  padding: 0 10px;
-  border: 1px solid #d9d9d9;
-  background: #ffffff;
+  min-height: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
   font-size: 13px;
   font-weight: 700;
 }
