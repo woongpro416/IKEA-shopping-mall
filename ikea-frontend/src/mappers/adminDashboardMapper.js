@@ -11,6 +11,7 @@ import {
 } from '../constants/adminOrderConfig';
 import {
   mergeAdminOrdersWithPayments,
+  normalizeAdminOrder,
   normalizeAdminPayment,
   resolveAdminOrderPaymentCode,
   resolveAdminOrderPaymentSummary,
@@ -35,8 +36,8 @@ function formatDate(value) {
   }
 
   return new Intl.DateTimeFormat('ko-KR', {
-    month: '2-digit',
-    day: '2-digit',
+    month: 'numeric',
+    day: 'numeric',
   }).format(date);
 }
 
@@ -259,7 +260,10 @@ function createOrderTrendChart(orders) {
 }
 
 function createSalesTrendChart(orders) {
-  const trend = createTrendBuckets(orders, (order) => order.totalPrice);
+  const trend = createTrendBuckets(
+    orders,
+    (order) => order.totalPrice ?? order.rawTotalPrice ?? order.finalPrice ?? 0,
+  );
 
   return {
     labels: trend.labels,
@@ -301,10 +305,11 @@ function createSupportChart(qnaRows) {
   };
 }
 
-function createPaymentChart(payments) {
+function createPaymentChart(payments, orders = []) {
+  const paymentSource = payments.length ? payments : orders;
   const paymentEntries = Object.entries(ADMIN_PAYMENT_METHODS)
     .map(([key, method]) => {
-      const count = payments.filter((payment) => resolveAdminOrderPaymentCode(payment) === key).length;
+      const count = paymentSource.filter((payment) => resolveAdminOrderPaymentCode(payment) === key).length;
 
       return {
         label: method.label,
@@ -319,7 +324,7 @@ function createPaymentChart(payments) {
     segments: paymentEntries.length
       ? paymentEntries
       : [{ label: '결제 없음', value: 1, formattedValue: '0건', color: '#dbe6fb' }],
-    valueLabel: `${payments.length}건`,
+    valueLabel: `${paymentSource.length}건`,
     totalText: '결제 기준',
   };
 }
@@ -367,7 +372,10 @@ export function buildAdminDashboard({
   const categoryRows = createCategoryRows(categories, products);
   const productRows = createProductRows(products);
   const normalizedPayments = payments.map((payment) => normalizeAdminPayment(payment));
-  const normalizedOrders = mergeAdminOrdersWithPayments(orders, normalizedPayments);
+  const normalizedOrders = mergeAdminOrdersWithPayments(
+    orders.map((order) => normalizeAdminOrder(order)),
+    normalizedPayments,
+  );
   const orderRows = createOrderRows(normalizedOrders);
   const memberRows = createMemberRows(members);
   const qnaRows = createQuestionRows(qnas);
@@ -391,7 +399,7 @@ export function buildAdminDashboard({
     salesChart: createSalesTrendChart(normalizedOrders),
     categoryChart: createCategoryChart(categoryRows),
     statusChart: createStatusChart(orderRows),
-    paymentChart: createPaymentChart(normalizedPayments),
+    paymentChart: createPaymentChart(normalizedPayments, normalizedOrders),
     supportChart: createSupportChart(qnaRows),
     stockRows: createStockRows(productRows),
     watchProducts: createWatchProducts(products),
