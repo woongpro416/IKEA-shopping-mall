@@ -121,4 +121,10 @@ public class ReviewService {
 
         reviewRepository.delete(review);
     }
+
+    public List<ReviewResponseDto> getAllReviewList() {
+        return reviewRepository.findAll().stream()
+                .map(ReviewResponseDto::new)
+                .toList();
+    }
 }
