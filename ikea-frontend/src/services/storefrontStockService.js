@@ -18,7 +18,13 @@ function normalizeProductId(source = {}) {
     return String(source).trim();
   }
 
-  return String(source.productId ?? source.id ?? '').trim();
+  return String(
+    source.backendProductId
+    ?? source.reviewProductId
+    ?? source.productId
+    ?? source.id
+    ?? '',
+  ).trim();
 }
 
 function normalizeInteger(value) {
@@ -103,12 +109,12 @@ export async function fetchStorefrontInventory(productId, { force = false } = {}
       createStorefrontInventoryEntry(normalizedProductId, payload),
     ))
     .catch((error) => {
-      if (error?.status === 404) {
+      if (error?.status === 403 || error?.status === 404) {
         return replaceStorefrontInventoryEntry({
           productId: normalizedProductId,
           stock: null,
           updatedAt: '',
-          isTracked: true,
+          isTracked: false,
         });
       }
 

@@ -44,6 +44,13 @@ function normalizeIdentifier(value) {
   return String(value ?? '').trim();
 }
 
+function normalizeLookupValue(value) {
+  return normalizeIdentifier(value)
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+}
+
 function formatPriceLabel(value) {
   return `${Number(value ?? 0).toLocaleString('ko-KR')}원`;
 }
@@ -121,7 +128,7 @@ function buildOrderOption(product, orderItem = {}, order = {}) {
   return optionParts.length ? optionParts.join(' / ') : '-';
 }
 
-function buildRecentOrders(orders = [], findProductById) {
+function buildRecentOrders(orders = [], findProduct) {
   return orders.flatMap((order, orderIndex) => {
     const orderId = normalizeIdentifier(order.orderId ?? order.id);
     const orderNumber = normalizeIdentifier(order.orderNo ?? order.orderNumber);
@@ -132,7 +139,10 @@ function buildRecentOrders(orders = [], findProductById) {
 
     return sourceItems.map((orderItem, itemIndex) => {
       const productId = normalizeIdentifier(orderItem.productId ?? order.productId);
-      const product = typeof findProductById === 'function' ? findProductById(productId) : null;
+      const productName = normalizeIdentifier(orderItem.productName ?? order.productName);
+      const product = typeof findProduct === 'function'
+        ? findProduct(productId, productName)
+        : null;
       const quantity = Number(orderItem.quantity ?? 1) || 1;
       const unitPrice = (
         orderItem.orderPrice
@@ -242,7 +252,13 @@ export const useMyPageStore = defineStore('myPage', {
         this.orderSteps = buildOrderSteps(orders);
         this.recentOrders = buildRecentOrders(
           orders,
-          (productId) => catalogStore.findProductById(productId),
+          (productId, productName) => (
+            catalogStore.findProductById(productId)
+            ?? catalogStore.catalogProducts.find(
+              (product) => normalizeLookupValue(product.name) === normalizeLookupValue(productName),
+            )
+            ?? null
+          ),
         );
         this.wishListItems = [];
         this.recentViewItems = [];

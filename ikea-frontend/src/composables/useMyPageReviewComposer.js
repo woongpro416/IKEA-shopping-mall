@@ -38,7 +38,7 @@ export function useMyPageReviewComposer() {
   }
 
   function shouldShowAction(order) {
-    return Boolean(accountStore.accessToken) && Boolean(order?.canWriteReview || isWritten(order));
+    return Boolean(accountStore.accessToken) && Boolean(order);
   }
 
   function isActionDisabled(order) {
@@ -46,7 +46,15 @@ export function useMyPageReviewComposer() {
   }
 
   function getActionLabel(order) {
-    return isWritten(order) ? '작성 완료' : '리뷰 작성';
+    if (isWritten(order)) {
+      return '작성 완료';
+    }
+
+    if (!order?.canWriteReview) {
+      return '배송 완료 후 작성';
+    }
+
+    return '리뷰 작성';
   }
 
   function openDialog(order) {

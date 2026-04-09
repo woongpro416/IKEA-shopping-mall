@@ -26,9 +26,13 @@ function buildOrderNumber(date = new Date()) {
 
 export function getCheckoutItems(items = [], mode = 'all', itemId = '') {
   const purchasableItems = items.filter((item) => !item.isSoldOut);
+  const normalizedItemId = String(itemId ?? '');
 
   if (mode === 'single') {
-    const singleItem = purchasableItems.find((item) => item.productId === String(itemId)) ?? null;
+    const singleItem = purchasableItems.find((item) => (
+      item.productId === normalizedItemId
+      || String(item.backendProductId ?? '') === normalizedItemId
+    )) ?? null;
 
     return singleItem ? [singleItem] : [];
   }
@@ -42,8 +46,13 @@ export function getCheckoutItems(items = [], mode = 'all', itemId = '') {
 }
 
 export function removeCheckoutItems(items = [], mode = 'all', itemId = '') {
+  const normalizedItemId = String(itemId ?? '');
+
   if (mode === 'single') {
-    return items.filter((item) => item.productId !== String(itemId));
+    return items.filter((item) => (
+      item.productId !== normalizedItemId
+      && String(item.backendProductId ?? '') !== normalizedItemId
+    ));
   }
 
   if (mode === 'selected') {

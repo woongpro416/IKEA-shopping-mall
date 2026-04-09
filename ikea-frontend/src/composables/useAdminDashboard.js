@@ -21,7 +21,7 @@ export function useAdminDashboard() {
   );
 
   onMounted(() => {
-    if (!adminDashboardStore.loaded && !adminDashboardStore.isDashboardLoading) {
+    if (!adminDashboardStore.isDashboardLoading) {
       adminDashboardStore.loadDashboard();
     }
   });

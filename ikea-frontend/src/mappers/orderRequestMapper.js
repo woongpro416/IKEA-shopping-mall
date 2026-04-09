@@ -9,7 +9,11 @@ function normalizeNumber(value, fallback = 0) {
 
 function buildOrderItems(items = []) {
   return items.map((item) => ({
-    productId: normalizeIdentifier(item.productId),
+    productId: normalizeIdentifier(
+      item.backendProductId
+      ?? item.reviewProductId
+      ?? item.productId,
+    ),
     quantity: Math.max(1, normalizeNumber(item.quantity, 1)),
   }));
 }
