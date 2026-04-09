@@ -31,6 +31,26 @@ function normalizeArrayPayload(payload, fallback = []) {
     return payload.items;
   }
 
+  if (Array.isArray(payload?.orders)) {
+    return payload.orders;
+  }
+
+  if (Array.isArray(payload?.payments)) {
+    return payload.payments;
+  }
+
+  if (Array.isArray(payload?.members)) {
+    return payload.members;
+  }
+
+  if (Array.isArray(payload?.reviews)) {
+    return payload.reviews;
+  }
+
+  if (Array.isArray(payload?.qnas)) {
+    return payload.qnas;
+  }
+
   return fallback;
 }
 

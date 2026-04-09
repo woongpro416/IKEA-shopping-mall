@@ -212,7 +212,14 @@ function normalizeGuestOrder(source = {}) {
     phoneNumber: normalizeDigits(source.phoneNumber ?? source.receiverPhone ?? source.ordererPhone),
     statusLabel: normalizeText(source.statusLabel ?? source.orderStatusLabel ?? source.status ?? '-'),
     paymentMethodLabel: normalizeText(source.paymentMethodLabel ?? source.payment ?? '-'),
-    finalTotal: Number(source.finalPrice ?? source.totalPrice ?? source.amount ?? 0) || 0,
+    finalTotal: Number(
+      source.finalPrice
+      ?? source.finalTotal
+      ?? source.totalPrice
+      ?? source.productTotal
+      ?? source.amount
+      ?? 0
+    ) || 0,
     orderItems: unwrapArrayPayload(source.orderItems).map((item) => normalizeGuestOrderItem(item)),
   };
 }

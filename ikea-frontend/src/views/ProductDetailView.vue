@@ -435,13 +435,14 @@ async function goToCheckout() {
     return;
   }
 
+  const checkoutItemId = String(currentProduct.value?.id ?? '').trim();
   const cartItem = await syncCurrentProductToCart();
 
-  router.push({
+  await router.push({
     path: ROUTE_PATHS.orderCheckout,
     query: {
       mode: 'single',
-      itemId: cartItem?.productId ?? String(currentProduct.value?.id ?? ''),
+      itemId: cartItem?.productId ?? checkoutItemId,
     },
   });
 }

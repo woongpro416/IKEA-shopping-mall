@@ -124,7 +124,9 @@ const paymentMethods = computed(() => BASE_PAYMENT_METHODS.filter((method) => (
 )));
 
 const defaultPaymentMethod = computed(() => (
-  paymentMethods.value[0]?.id ?? ''
+  paymentMethods.value.find((method) => method.id === 'bank')?.id
+  ?? paymentMethods.value[0]?.id
+  ?? ''
 ));
 
 const deliveryGroups = computed(() => buildDeliveryGroups(orderItems.value));

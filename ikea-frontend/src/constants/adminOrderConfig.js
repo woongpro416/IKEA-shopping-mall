@@ -64,12 +64,16 @@ export function normalizeAdminPaymentMethodCode(paymentMethod) {
     .trim()
     .toUpperCase();
 
-  if (code === 'KAKAOPAY') {
+  if (code === 'KAKAOPAY' || code === 'KAKAO_PAY') {
     return 'KAKAO';
   }
 
-  if (code === 'TOSSPAY') {
+  if (code === 'TOSSPAY' || code === 'TOSS_PAY') {
     return 'TOSS';
+  }
+
+  if (code === 'ACCOUNT_TRANSFER' || code === 'BANK_TRANSFER' || code === 'VIRTUAL_ACCOUNT' || code === 'VBANK') {
+    return 'BANK';
   }
 
   if (code in ADMIN_PAYMENT_METHODS) {

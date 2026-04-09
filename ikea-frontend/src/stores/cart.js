@@ -65,6 +65,11 @@ function normalizeInteger(value, fallback = 0) {
   return Number.isFinite(parsed) ? parsed : fallback;
 }
 
+function normalizePositivePrice(value, fallback = 0) {
+  const numericValue = Number(value);
+  return Number.isFinite(numericValue) && numericValue > 0 ? numericValue : fallback;
+}
+
 function pickNumericProductId(...candidates) {
   for (const candidate of candidates) {
     const normalizedCandidate = normalizeIdentifier(candidate);
@@ -276,9 +281,14 @@ function mapRemoteCartItem(source = {}) {
     selected: true,
   });
   const resolvedPrice = hasPrice ? Number(source.price) : Number(baseItem.price ?? 0);
-  const resolvedOriginalPrice = Number.isFinite(Number(source.originalPrice))
-    ? Number(source.originalPrice)
-    : Number(baseItem.originalPrice ?? resolvedPrice);
+  const resolvedOriginalPrice = normalizePositivePrice(
+    source.originalPrice,
+    Number(baseItem.originalPrice ?? resolvedPrice) || resolvedPrice,
+  );
+  const resolvedTotalPrice = normalizePositivePrice(
+    source.totalPrice,
+    resolvedPrice * quantity,
+  );
 
   return {
     ...baseItem,
@@ -291,9 +301,7 @@ function mapRemoteCartItem(source = {}) {
     quantity,
     price: resolvedPrice,
     originalPrice: resolvedOriginalPrice,
-    totalPrice: Number.isFinite(Number(source.totalPrice))
-      ? Number(source.totalPrice)
-      : resolvedPrice * quantity,
+    totalPrice: resolvedTotalPrice,
     selected: true,
   };
 }
@@ -354,12 +362,14 @@ function mergeCompletedOrderSnapshot(localSnapshot, remotePayload) {
         name: item.productName ?? matchedItem.name,
         quantity,
         price: resolvedPrice,
-        originalPrice: Number.isFinite(Number(item.originalPrice))
-          ? Number(item.originalPrice)
-          : Number(matchedItem.originalPrice ?? resolvedPrice),
-        totalPrice: Number.isFinite(Number(item.totalPrice))
-          ? Number(item.totalPrice)
-          : resolvedPrice * quantity,
+        originalPrice: normalizePositivePrice(
+          item.originalPrice,
+          Number(matchedItem.originalPrice ?? resolvedPrice) || resolvedPrice,
+        ),
+        totalPrice: normalizePositivePrice(
+          item.totalPrice,
+          resolvedPrice * quantity,
+        ),
       };
     });
 
