@@ -61,21 +61,20 @@ public class QnaService {
         Member member = memberRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
 
-        Qna question = Qna.builder()
+        Qna qna = Qna.builder()
                 .memberId(member.getMemberId())
                 .title(dto.getTitle())
                 .content(dto.getContent())
-                .writer(member.getLoginId())
+                .writer(member.getName())
                 .email(member.getEmail())
                 .phoneNumber(member.getPhoneNumber())
                 .level(0)
-                .parentId(0L)
                 .build();
 
-        qnaRepository.save(question);
-        question.setParentId(question.getQnaId());
+        Qna savedQna = qnaRepository.save(qna);
+        savedQna.setParentId(savedQna.getQnaId());
 
-        return question.getQnaId();
+        return savedQna.getQnaId();
     }
 
     // 질문 수정 (일반회원)

@@ -152,4 +152,12 @@ public class ReviewService {
                 .map(ReviewResponseDto::new)
                 .toList();
     }
+
+    //관리자 전용 리뷰삭제
+    @Transactional
+    public void deleteReviewByAdmin(Long reviewId) {
+        reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new IllegalStateException("존재하지 않는 리뷰입니다."));
+        reviewRepository.deleteById(reviewId);
+    }
 }

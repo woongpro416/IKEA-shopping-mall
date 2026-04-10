@@ -21,8 +21,8 @@ public class ReviewResponseDto {
 
     public ReviewResponseDto(Review review) {
         this.reviewId = review.getReviewId();
-        this.memberId = review.getMember().getMemberId();
-        this.loginId = review.getMember().getLoginId();
+        this.memberId = review.getMember() != null ? review.getMember().getMemberId() : null;
+        this.loginId = review.getMember() != null ? review.getMember().getLoginId() : "익명";
         this.productId = review.getProduct().getProductId();
         this.productCode = review.getProduct().getProductCode();
         this.productName = review.getProduct().getName();
