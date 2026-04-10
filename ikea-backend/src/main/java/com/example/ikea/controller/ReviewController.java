@@ -53,4 +53,11 @@ public class ReviewController {
         reviewService.deleteReview(reviewId, memberId);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/my")
+    public ResponseEntity<List<ReviewResponseDto>> getMyReviews(
+            @AuthenticationPrincipal UserDetails userDetails) {
+        Long memberId = memberService.getMemberIdByLoginId(userDetails.getUsername());
+        return ResponseEntity.ok(reviewService.getMyReviewList(memberId));
+    }
 }
