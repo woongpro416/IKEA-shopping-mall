@@ -1,5 +1,6 @@
 package com.example.ikea.dto;
 
+import com.example.ikea.domain.Order;
 import com.example.ikea.domain.Payment;
 import com.example.ikea.domain.PaymentMethod;
 import com.example.ikea.domain.PaymentStatus;
@@ -21,9 +22,11 @@ public class PaymentResponseDto {
     private LocalDateTime paidAt;
 
     public PaymentResponseDto(Payment payment) {
+        Order order = payment.getOrder();
+
         this.paymentId = payment.getPaymentId();
-        this.orderId = payment.getOrder().getOrderId();
-        this.orderNo = payment.getOrder().getOrderNo();
+        this.orderId = order != null ? order.getOrderId() : null;
+        this.orderNo = order != null ? order.getOrderNo() : null;
         this.paymentMethod = payment.getPaymentMethod();
         this.transactionId = payment.getTransactionId();
         this.amount = payment.getAmount();

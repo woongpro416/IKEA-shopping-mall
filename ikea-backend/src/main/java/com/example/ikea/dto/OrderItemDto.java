@@ -1,6 +1,7 @@
 package com.example.ikea.dto;
 
 import com.example.ikea.domain.OrderItem;
+import com.example.ikea.domain.Product;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -17,12 +18,16 @@ public class OrderItemDto {
     private Integer totalPrice;
 
     public OrderItemDto(OrderItem orderItem) {
+        Product product = orderItem.getProduct();
+
         this.orderItemId = orderItem.getOrderItemId();
-        this.productId = orderItem.getProduct().getProductId();
-        this.productCode = orderItem.getProduct().getProductCode();
-        this.productName = orderItem.getProduct().getName();
+        this.productId = product != null ? product.getProductId() : null;
+        this.productCode = product != null ? product.getProductCode() : null;
+        this.productName = product != null ? product.getName() : "삭제되었거나 조회할 수 없는 상품";
         this.quantity = orderItem.getQuantity();
         this.orderPrice = orderItem.getOrderPrice();
-        this.totalPrice = orderItem.getOrderPrice() * orderItem.getQuantity();
+        this.totalPrice = (orderItem.getOrderPrice() != null && orderItem.getQuantity() != null)
+                ? orderItem.getOrderPrice() * orderItem.getQuantity()
+                : null;
     }
 }

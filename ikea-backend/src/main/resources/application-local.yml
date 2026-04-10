@@ -12,7 +12,7 @@ jwt:
 
 payment:
   toss:
-    secret-key: 여기에_로컬_토스_키
-    client-key: 여기에_로컬_토스_클라이언트키
+    secret-key: test_sk_QbgMGZzorzb5y6a5QN9Krl5E1em4
+    client-key: test_ck_26DlbXAaV0Lv5Gn6jPqnVqY50Q9R
   kakao:
-    admin-key: 여기에_로컬_카카오_키
+    secret-key: DEV54E84E483BF63E1926183C32EF97FBC99699A

@@ -16,6 +16,8 @@ public class MemberOrderRequestDto {
     @NotBlank(message = "주소는 필수 입력입니다.")
     private String address;
 
+    private String paymentMethod;
+
     @Valid
     private List<MemberOrderItemRequestDto> orderItems;
 }

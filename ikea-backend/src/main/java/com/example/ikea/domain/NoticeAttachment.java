@@ -35,7 +35,6 @@ public class NoticeAttachment {
     @Column(nullable = false)
     private Long fileSize;
 
-    @Lob
-    @Column(name = "file_data")
+    @Column(name = "file_data", columnDefinition = "bytea")
     private byte[] fileData;
 }

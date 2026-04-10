@@ -41,6 +41,7 @@ public class OrderService {
     private final CartItemRepository cartItemRepository;
     private final ProductStockService productStockService;
     private final ProductService productService;
+    private final PaymentService paymentService;
 
     // 주문 목록 조회(내 주문 내역)
     public List<OrderResponseDto> getOrderList(Long memberId) {
@@ -112,6 +113,8 @@ public class OrderService {
 
             orderItemRepository.save(orderItem);
         }
+
+        paymentService.registerBankTransferPaymentIfNeeded(order, member, dto.getPaymentMethod());
 
         if (dto.getOrderItems() == null || dto.getOrderItems().isEmpty()) {
             Cart cart = cartRepository.findByMember_MemberId(memberId)
@@ -206,6 +209,7 @@ public class OrderService {
 
         validateOrderStatusChange(order.getOrderStatus(), status);
         order.setOrderStatus(status);
+        paymentService.syncPaymentStatusByOrderStatus(order);
     }
 
     public Long getOrderCount() {
@@ -258,6 +262,8 @@ public class OrderService {
 
             orderItemRepository.save(orderItem);
         }
+
+        paymentService.registerBankTransferPaymentIfNeeded(order, null, dto.getPaymentMethod());
 
         cartItemRepository.deleteByCart_CartId(cart.getCartId());
 

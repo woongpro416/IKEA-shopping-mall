@@ -1,14 +1,28 @@
 package com.example.ikea.service;
 
-import com.example.ikea.domain.*;
-import com.example.ikea.dto.*;
+import com.example.ikea.domain.Member;
+import com.example.ikea.domain.Order;
+import com.example.ikea.domain.OrderItem;
+import com.example.ikea.domain.OrderStatus;
+import com.example.ikea.domain.Payment;
+import com.example.ikea.domain.PaymentMethod;
+import com.example.ikea.domain.PaymentStatus;
+import com.example.ikea.dto.KakaoConfirmRequestDto;
+import com.example.ikea.dto.KakaoReadyRequestDto;
+import com.example.ikea.dto.KakaoReadyResponseDto;
+import com.example.ikea.dto.PaymentResponseDto;
+import com.example.ikea.dto.TossConfirmRequestDto;
 import com.example.ikea.repository.MemberRepository;
 import com.example.ikea.repository.OrderRepository;
 import com.example.ikea.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,8 +55,8 @@ public class PaymentService {
     @Value("${payment.toss.base-url}")
     private String tossBaseUrl;
 
-    @Value("${payment.kakao.admin-key}")
-    private String kakaoAdminKey;
+    @Value("${payment.kakao.secret-key}")
+    private String kakaoSecretKey;
 
     @Value("${payment.kakao.base-url}")
     private String kakaoBaseUrl;
@@ -145,22 +159,22 @@ public class PaymentService {
         try {
             RestTemplate restTemplate = new RestTemplate();
             HttpHeaders headers = new HttpHeaders();
-            headers.set("Authorization", "KakaoAK " + kakaoAdminKey);
-            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+            headers.set("Authorization", "SECRET_KEY " + kakaoSecretKey);
+            headers.setContentType(MediaType.APPLICATION_JSON);
 
-            MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-            body.add("cid", "TC0ONETIME");
-            body.add("partner_order_id", order.getOrderNo());
-            body.add("partner_user_id", String.valueOf(memberId));
-            body.add("item_name", "쇼핑몰 주문");
-            body.add("quantity", "1");
-            body.add("total_amount", String.valueOf(order.getFinalPrice()));
-            body.add("tax_free_amount", "0");
-            body.add("approval_url", "http://localhost:5173/payment/kakao/success");
-            body.add("cancel_url", "http://localhost:5173/payment/kakao/cancel");
-            body.add("fail_url", "http://localhost:5173/payment/kakao/fail");
+            Map<String, Object> body = new HashMap<>();
+            body.put("cid", "TC0ONETIME");
+            body.put("partner_order_id", order.getOrderNo());
+            body.put("partner_user_id", String.valueOf(memberId));
+            body.put("item_name", "쇼핑몰 주문");
+            body.put("quantity", 1);
+            body.put("total_amount", order.getFinalPrice());
+            body.put("tax_free_amount", 0);
+            body.put("approval_url", "http://localhost:5173/payment/kakao/success");
+            body.put("cancel_url", "http://localhost:5173/payment/kakao/cancel");
+            body.put("fail_url", "http://localhost:5173/payment/kakao/fail");
 
-            HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(body, headers);
+            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
             ResponseEntity<Map> response = restTemplate.postForEntity(
                     kakaoBaseUrl + "/ready", entity, Map.class);
 
@@ -173,7 +187,7 @@ public class PaymentService {
                         .build();
             }
         } catch (Exception e) {
-            log.error("카카오 결제 준비 실패: {}", e.getMessage());
+            log.error("카카오 결제 준비 실패: {}", e.getMessage(), e);
             throw new IllegalArgumentException("카카오 결제 준비에 실패했습니다.");
         }
 
@@ -204,17 +218,17 @@ public class PaymentService {
         try {
             RestTemplate restTemplate = new RestTemplate();
             HttpHeaders headers = new HttpHeaders();
-            headers.set("Authorization", "KakaoAK " + kakaoAdminKey);
-            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+            headers.set("Authorization", "SECRET_KEY " + kakaoSecretKey);
+            headers.setContentType(MediaType.APPLICATION_JSON);
 
-            MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-            body.add("cid", "TC0ONETIME");
-            body.add("tid", dto.getTid());
-            body.add("partner_order_id", order.getOrderNo());
-            body.add("partner_user_id", String.valueOf(memberId));
-            body.add("pg_token", dto.getPgToken());
+            Map<String, Object> body = new HashMap<>();
+            body.put("cid", "TC0ONETIME");
+            body.put("tid", dto.getTid());
+            body.put("partner_order_id", order.getOrderNo());
+            body.put("partner_user_id", String.valueOf(memberId));
+            body.put("pg_token", dto.getPgToken());
 
-            HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(body, headers);
+            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
             ResponseEntity<Map> response = restTemplate.postForEntity(
                     kakaoBaseUrl + "/approve", entity, Map.class);
 
@@ -245,7 +259,7 @@ public class PaymentService {
                 return new PaymentResponseDto(payment);
             }
         } catch (Exception e) {
-            log.error("카카오 결제 확인 실패: {}", e.getMessage());
+            log.error("카카오 결제 확인 실패: {}", e.getMessage(), e);
             throw new IllegalArgumentException("카카오 결제 확인에 실패했습니다.");
         }
 
@@ -253,6 +267,66 @@ public class PaymentService {
     }
 
     // ============= 공통 ===============
+
+    @Transactional
+    public void registerBankTransferPaymentIfNeeded(Order order, Member member, String rawPaymentMethod) {
+        PaymentMethod paymentMethod = PaymentMethod.fromRequest(rawPaymentMethod);
+
+        if (paymentMethod == null || !paymentMethod.isBankTransfer()) {
+            return;
+        }
+
+        if (paymentRepository.existsByOrder_OrderId(order.getOrderId())) {
+            return;
+        }
+
+        Payment payment = Payment.builder()
+                .order(order)
+                .member(member)
+                .paymentMethod(PaymentMethod.BANK_TRANSFER)
+                .amount(order.getFinalPrice())
+                .paymentStatus(PaymentStatus.PENDING)
+                .build();
+
+        paymentRepository.save(payment);
+    }
+
+    @Transactional
+    public void confirmBankTransferPayment(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalStateException("존재하지 않는 주문입니다."));
+
+        Payment payment = paymentRepository.findByOrder_OrderId(orderId)
+                .orElseThrow(() -> new IllegalStateException("결제 정보를 찾을 수 없습니다."));
+
+        if (payment.getPaymentMethod() != PaymentMethod.BANK_TRANSFER) {
+            throw new IllegalArgumentException("무통장 입금 주문만 확인할 수 있습니다.");
+        }
+
+        if (payment.getPaymentStatus() == PaymentStatus.OK) {
+            throw new IllegalArgumentException("이미 결제 확인이 완료되었습니다.");
+        }
+
+        payment.setPaymentStatus(PaymentStatus.OK);
+        payment.setPaidAt(LocalDateTime.now());
+        order.setOrderStatus(OrderStatus.PAID);
+    }
+
+    @Transactional
+    public void syncPaymentStatusByOrderStatus(Order order) {
+        paymentRepository.findByOrder_OrderId(order.getOrderId()).ifPresent(payment -> {
+            if (payment.getPaymentMethod() != PaymentMethod.BANK_TRANSFER) {
+                return;
+            }
+
+            if (order.getOrderStatus() == OrderStatus.PAID && payment.getPaymentStatus() == PaymentStatus.PENDING) {
+                payment.setPaymentStatus(PaymentStatus.OK);
+                if (payment.getPaidAt() == null) {
+                    payment.setPaidAt(LocalDateTime.now());
+                }
+            }
+        });
+    }
 
     // 결제 취소
     @Transactional
@@ -331,16 +405,16 @@ public class PaymentService {
         try {
             RestTemplate restTemplate = new RestTemplate();
             HttpHeaders headers = new HttpHeaders();
-            headers.set("Authorization", "KakaoAK " + kakaoAdminKey);
-            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+            headers.set("Authorization", "SECRET_KEY " + kakaoSecretKey);
+            headers.setContentType(MediaType.APPLICATION_JSON);
 
-            MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-            body.add("cid", "TC0ONETIME");
-            body.add("tid", tid);
-            body.add("cancel_amount", String.valueOf(amount));
-            body.add("cancel_tax_free_amount", "0");
+            Map<String, Object> body = new HashMap<>();
+            body.put("cid", "TC0ONETIME");
+            body.put("tid", tid);
+            body.put("cancel_amount", amount);
+            body.put("cancel_tax_free_amount", 0);
 
-            HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(body, headers);
+            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
             ResponseEntity<Map> response = restTemplate.postForEntity(
                     kakaoBaseUrl + "/cancel", entity, Map.class);
 
@@ -348,17 +422,9 @@ public class PaymentService {
                 throw new IllegalArgumentException("카카오 결제 취소에 실패했습니다.");
             }
         } catch (Exception e) {
-            log.error("카카오 결제 취소 실패: {}", e.getMessage());
+            log.error("카카오 결제 취소 실패: {}", e.getMessage(), e);
             throw new IllegalArgumentException("카카오 결제 취소에 실패했습니다.");
         }
-    }
-
-    // 내 결제 목록
-    public List<PaymentResponseDto> getMyPaymentList(Long memberId) {
-        return paymentRepository.findByMember_MemberIdOrderByCreatedAtDesc(memberId)
-                .stream()
-                .map(PaymentResponseDto::new)
-                .collect(Collectors.toList());
     }
 
     // 관리자 전용 전체 결제 목록

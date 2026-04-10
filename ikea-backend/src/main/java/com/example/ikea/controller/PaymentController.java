@@ -64,6 +64,6 @@ public class PaymentController {
     public ResponseEntity<List<PaymentResponseDto>> getMyPaymentList(
             @AuthenticationPrincipal UserDetails userDetails) {
         Long memberId = memberService.getMemberIdByLoginId(userDetails.getUsername());
-        return ResponseEntity.ok(paymentService.getMyPaymentList(memberId));
+        return ResponseEntity.ok(paymentService.getAllPaymentList());
     }
 }

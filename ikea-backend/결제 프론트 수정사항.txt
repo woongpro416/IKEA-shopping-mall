@@ -1,0 +1,99 @@
+프론트 수정 요청사항
+
+현재 결제 진행에서 토스/카카오 자체가 먼저 실패하는 게 아니라,
+그 전에 주문 생성 API인 `/api/order` 단계에서 400 에러가 먼저 발생하고 있습니다.
+
+확인한 요청 payload 예시:
+
+```json
+{
+  "address":"(11) 22 33",
+  "ordererName":"이용자1",
+  "ordererPhone":"01012341234",
+  "receiverName":"이용자1",
+  "receiverPhone":"01012341234",
+  "zoneCode":"11",
+  "addressMain":"22",
+  "addressDetail":"33",
+  "deliveryRequest":"",
+  "scheduleText":"2026년 4월 10일 오전",
+  "paymentMethod":"tosspay",
+  "paymentMethodLabel":"토스페이",
+  "productTotal":80000,
+  "discountTotal":0,
+  "couponDiscount":0,
+  "pointApplied":0,
+  "shippingTotal":0,
+  "finalTotal":80000,
+  "orderItems":[
+    {
+      "productId":"85",
+      "quantity":1
+    }
+  ]
+}
+```
+
+문제 원인
+
+* 현재 `paymentMethod` 값이 `"tosspay"` 로 들어가고 있음
+* 백엔드에서는 주문 생성 시 결제수단 값을 서버 기준 코드로 받아야 함
+* 그래서 `/api/order` 단계에서 400 Bad Request가 발생하는 것으로 보임
+
+수정 부탁사항
+
+1. `paymentMethod` 값을 아래처럼 맞춰주세요.
+
+* 토스: `"TOSS"`
+* 카카오: `"KAKAO"`
+* 무통장입금: `"BANK_TRANSFER"`
+
+예시:
+
+```json
+"paymentMethod": "TOSS"
+```
+
+2. `productId`는 문자열보다 숫자로 보내는 쪽이 안전합니다.
+
+기존:
+
+```json
+"productId": "85"
+```
+
+수정 권장:
+
+```json
+"productId": 85
+```
+
+권장 요청 예시
+
+```json
+{
+  "address": "(11) 22 33",
+  "paymentMethod": "TOSS",
+  "orderItems": [
+    {
+      "productId": 85,
+      "quantity": 1
+    }
+  ]
+}
+```
+
+정리
+
+* 지금 문제는 토스/카카오 API 호출 실패가 아니라, 그 전에 `/api/order` 주문 생성 단계에서 먼저 막히는 상황입니다.
+* 그래서 프론트에서 `paymentMethod` 값을 서버 기준 문자열로 맞춰서 보내주면 됩니다.
+
+서버 기준 결제수단 값
+
+* `TOSS`
+* `KAKAO`
+* `BANK_TRANSFER`
+
+
+2. 현재 리뷰를 작성 한 뒤 상품정보에 들어가면 리뷰 작성자 ID 가 익명으로 표시되고 있음
+ 마스킹 처리해서 보내는게 좋아보임.
