@@ -22,6 +22,7 @@ const fallbackCategories = getFallbackCategoryList();
 const fallbackProducts = getFallbackProductList();
 const normalizedFallbackCategories = normalizeCategoryCollection(fallbackCategories);
 const normalizedFallbackProducts = normalizeProductCollection(fallbackProducts);
+const REVIEW_STATS_STORAGE_KEY = 'homio-review-stats-v1';
 let categoriesRequestPromise = null;
 let productsRequestPromise = null;
 
@@ -30,11 +31,54 @@ const DEFAULT_FALLBACK_CATEGORY = normalizedFallbackCategories[0] ?? {
   backendCategoryId: '20128',
   label: '소파',
 };
+function loadPersistedReviewStats() {
+  if (typeof window === 'undefined') {
+    return {};
+  }
+
+  try {
+    const rawValue = window.sessionStorage.getItem(REVIEW_STATS_STORAGE_KEY);
+    const parsedValue = rawValue ? JSON.parse(rawValue) : {};
+    return parsedValue && typeof parsedValue === 'object' ? parsedValue : {};
+  } catch {
+    return {};
+  }
+}
+
+function persistReviewStats(reviewStatsById) {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  try {
+    window.sessionStorage.setItem(REVIEW_STATS_STORAGE_KEY, JSON.stringify(reviewStatsById));
+  } catch {
+    // ignore storage errors
+  }
+}
+
+function mergePersistedReviewStats(products = []) {
+  const reviewStatsById = loadPersistedReviewStats();
+
+  return products.map((product) => {
+    const persistedStat = reviewStatsById[String(product.id ?? '').trim()];
+
+    if (!persistedStat) {
+      return product;
+    }
+
+    return {
+      ...product,
+      reviews: Math.max(0, Number(persistedStat.reviews ?? product.reviews ?? 0)),
+      rating: Number(persistedStat.rating ?? product.rating ?? 0),
+    };
+  });
+}
 
 export const useCatalogStore = defineStore('catalog', {
   state: () => ({
     categories: normalizedFallbackCategories,
-    products: normalizedFallbackProducts,
+    products: mergePersistedReviewStats(normalizedFallbackProducts),
     productDetailsById: {},
     categoriesLoadedFromApi: false,
     productsLoadedFromApi: false,
@@ -100,6 +144,46 @@ export const useCatalogStore = defineStore('catalog', {
     getProductDetailContent(product) {
       return getFallbackProductDetailContent(product);
     },
+    syncProductReviewStats(productId, { reviews = 0, rating = 0 } = {}) {
+      const normalizedProductId = String(productId ?? '').trim();
+
+      if (!normalizedProductId) {
+        return;
+      }
+
+      const nextReviewCount = Math.max(0, Number(reviews ?? 0));
+      const nextRatingValue = Number(rating ?? 0);
+      const nextRating = nextReviewCount > 0 && Number.isFinite(nextRatingValue)
+        ? Number(nextRatingValue.toFixed(1))
+        : 0;
+      const reviewStatsById = loadPersistedReviewStats();
+      reviewStatsById[normalizedProductId] = {
+        reviews: nextReviewCount,
+        rating: nextRating,
+      };
+      persistReviewStats(reviewStatsById);
+
+      const updateProduct = (product) => ({
+        ...product,
+        reviews: nextReviewCount,
+        rating: nextRating,
+      });
+
+      if (this.productDetailsById[normalizedProductId]) {
+        this.productDetailsById = {
+          ...this.productDetailsById,
+          [normalizedProductId]: updateProduct(this.productDetailsById[normalizedProductId]),
+        };
+      }
+
+      const productIndex = this.products.findIndex((product) => String(product.id) === normalizedProductId);
+
+      if (productIndex >= 0) {
+        const nextProducts = [...this.products];
+        nextProducts.splice(productIndex, 1, updateProduct(nextProducts[productIndex]));
+        this.products = nextProducts;
+      }
+    },
     async loadProductDetail(productId, { force = false } = {}) {
       const normalizedProductId = String(productId ?? '').trim();
 
@@ -120,26 +204,27 @@ export const useCatalogStore = defineStore('catalog', {
         id: source.id ?? source.productId ?? baseProduct?.id ?? normalizedProductId,
         productId: source.productId ?? source.id ?? baseProduct?.productId ?? normalizedProductId,
       });
+      const [nextProduct] = mergePersistedReviewStats([normalizedProduct]);
 
       this.productDetailsById = {
         ...this.productDetailsById,
-        [normalizedProductId]: normalizedProduct,
+        [normalizedProductId]: nextProduct,
       };
 
       const productIndex = this.products.findIndex((product) => String(product.id) === normalizedProductId);
 
       if (productIndex >= 0) {
         const nextProducts = [...this.products];
-        nextProducts.splice(productIndex, 1, normalizedProduct);
+        nextProducts.splice(productIndex, 1, nextProduct);
         this.products = nextProducts;
       } else {
-        this.products = normalizeProductCollection([
-          normalizedProduct,
+        this.products = mergePersistedReviewStats(normalizeProductCollection([
+          nextProduct,
           ...this.products,
-        ]);
+        ]));
       }
 
-      return normalizedProduct;
+      return nextProduct;
     },
     async loadCategories() {
       if (categoriesRequestPromise) {
@@ -181,15 +266,17 @@ export const useCatalogStore = defineStore('catalog', {
                 : [];
 
         if (source.length) {
-          this.products = normalizeProductCollection(source, normalizedFallbackProducts);
+          this.products = mergePersistedReviewStats(
+            normalizeProductCollection(source, normalizedFallbackProducts),
+          );
           this.productsLoadedFromApi = true;
           void primeStorefrontInventory(this.products).catch(() => {});
         } else {
-          this.products = normalizedFallbackProducts;
+          this.products = mergePersistedReviewStats(normalizedFallbackProducts);
           this.productsLoadedFromApi = false;
         }
       } catch {
-        this.products = normalizedFallbackProducts;
+        this.products = mergePersistedReviewStats(normalizedFallbackProducts);
         this.productsLoadedFromApi = false;
       } finally {
         productsRequestPromise = null;

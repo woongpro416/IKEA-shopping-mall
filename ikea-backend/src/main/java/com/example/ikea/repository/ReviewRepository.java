@@ -7,9 +7,14 @@ import java.util.List;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
+    //상품 리뷰 목록
+    List<Review> findByProduct_ProductId(Long productId);
+
+    //내  리뷰 목록
+    List<Review> findByMember_MemberId(Long memberId);
+
+    //한 제품에 대한 리뷰 중복 방지
+    boolean existsByMember_MemberIdAndProduct_ProductId(Long memberId, Long productId);
+
     List<Review> findByProduct_ProductIdOrderByCreatedAtDesc(Long productId);
-
-    boolean existsByMember_MemberIdAndOrder_OrderIdAndProduct_ProductId(Long memberId, Long orderId, Long productId);
-
-    List<Review> findByMember_MemberIdOrderByCreatedAtDesc(Long memberId);
 }

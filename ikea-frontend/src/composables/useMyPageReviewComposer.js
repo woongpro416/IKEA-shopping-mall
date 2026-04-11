@@ -34,11 +34,11 @@ export function useMyPageReviewComposer() {
   }
 
   function isWritten(order) {
-    return writtenReviewKeys.value.has(createReviewKey(order));
+    return Boolean(order?.reviewWritten) || writtenReviewKeys.value.has(createReviewKey(order));
   }
 
   function shouldShowAction(order) {
-    return Boolean(accountStore.accessToken) && Boolean(order);
+    return Boolean(accountStore.accessToken) && Boolean(order) && (Boolean(order?.canWriteReview) || isWritten(order));
   }
 
   function isActionDisabled(order) {
@@ -48,10 +48,6 @@ export function useMyPageReviewComposer() {
   function getActionLabel(order) {
     if (isWritten(order)) {
       return '작성 완료';
-    }
-
-    if (!order?.canWriteReview) {
-      return '배송 완료 후 작성';
     }
 
     return '리뷰 작성';
@@ -95,6 +91,7 @@ export function useMyPageReviewComposer() {
       });
 
       markWritten(selectedOrder.value);
+      myPageStore.markReviewWritten(selectedOrder.value);
       statusMessage.value = '리뷰를 등록했습니다.';
       statusTone.value = 'success';
       closeDialog({ force: true });
@@ -103,6 +100,7 @@ export function useMyPageReviewComposer() {
     } catch (error) {
       if (selectedOrder.value && isDuplicateReviewError(error?.message)) {
         markWritten(selectedOrder.value);
+        myPageStore.markReviewWritten(selectedOrder.value);
       }
 
       statusMessage.value = resolveReviewErrorMessage(error, '리뷰 등록에 실패했습니다.');

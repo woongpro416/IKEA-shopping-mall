@@ -10,7 +10,7 @@ export const categoryMeta = {
     heroTitle: '많이 찾는 소파를 편하게 둘러보세요.',
     heroDescription:
       '2인용부터 모듈형까지, 거실 분위기를 바꾸기 좋은 대표 소파만 간결하게 모았습니다.',
-    heroImage: '/content-images/showroom-modern.jpg',
+    heroImage: 'https://www.ikea.com/ext/ingkadam/m/315ad03372ced6ee/original/PH200496.jpg?f=sg',
     bannerTitle: '소파 인기 셀렉션',
     bannerSubtitle: '가장 많이 보는 소파 구성을 먼저 비교해 보세요.',
     bannerImage: '/content-images/modular-sofa.jpg',
@@ -21,7 +21,7 @@ export const categoryMeta = {
     heroTitle: '침실 기본 구성을 차분하게 살펴보세요.',
     heroDescription:
       '침대, 매트리스, 협탁까지 이어지는 수면 공간의 핵심 아이템만 한 번에 비교할 수 있게 정리했습니다.',
-    heroImage: '/content-images/hotel-bed.jpg',
+    heroImage: 'https://www.ikea.com/images/idanaes-326210c2a4fb53795c76e65b072f07d9.jpg?f=sg',
     bannerTitle: '침실 기본 구성',
     bannerSubtitle: '침대와 매트리스, 협탁까지 한 번에 비교해 보세요.',
     bannerImage: '/theme-images/sleep-wellness.jpg',
@@ -32,7 +32,7 @@ export const categoryMeta = {
     heroTitle: '식탁과 의자를 함께 보고 다이닝을 완성해보세요.',
     heroDescription:
       '테이블과 의자를 중심으로 식사 공간에 잘 맞는 조합을 빠르게 비교할 수 있도록 구성했습니다.',
-    heroImage: '/content-images/dining-table.jpg',
+    heroImage: 'https://www.ikea.com/images/roenninge-roenninge-tarbaek-8f33d2b520571cac4d1e4b37f0b5ee88.jpg?f=sg',
     bannerTitle: '다이닝 인기 상품',
     bannerSubtitle: '식사 공간을 완성하는 대표 상품을 먼저 확인해 보세요.',
     bannerImage: '/content-images/showroom-furniture.jpg',

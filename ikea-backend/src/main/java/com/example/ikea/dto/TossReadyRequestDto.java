@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class KakaoReadyRequestDto {
+public class TossReadyRequestDto {
 
-    @NotNull(message = "주문Id를 입력해주세요")
+    @NotNull(message = "주문Id를 입력해주세요.")
     private Long orderId;
 
     private String orderNo;
@@ -18,8 +18,6 @@ public class KakaoReadyRequestDto {
     private Integer amount;
 
     private String successUrl;
-
-    private String cancelUrl;
 
     private String failUrl;
 }

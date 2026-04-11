@@ -315,7 +315,7 @@ export function normalizeAdminReview(review) {
   return {
     reviewId: String(review.reviewId ?? review.id ?? ''),
     productName: review.productName ?? '',
-    memberName: review.memberName ?? review.writer ?? '',
+    memberName: review.loginId ?? review.memberName ?? review.writer ?? '',
     content: review.content ?? '',
     rating: Number(review.rating ?? 0),
     createdAt: review.createdAt ?? '',

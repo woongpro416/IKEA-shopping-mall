@@ -376,6 +376,26 @@ watch(
   { immediate: true },
 );
 
+watch(
+  () => ({
+    productId: requestedProductId.value,
+    hasLoaded: hasLoadedReviews.value,
+    count: reviewCount.value,
+    average: averageRating.value,
+  }),
+  ({ productId, hasLoaded, count, average }) => {
+    if (!hasLoaded || !productId) {
+      return;
+    }
+
+    catalogStore.syncProductReviewStats(productId, {
+      reviews: count,
+      rating: count > 0 ? average : 0,
+    });
+  },
+  { immediate: true },
+);
+
 function formatPrice(value) {
   return `${Number(value ?? 0).toLocaleString('ko-KR')}원`;
 }

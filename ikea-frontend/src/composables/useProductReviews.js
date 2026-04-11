@@ -6,6 +6,10 @@ function normalizeText(value) {
   return String(value ?? '').trim();
 }
 
+function resolveReviewAuthor(item = {}) {
+  return normalizeText(item?.loginId ?? item?.memberName ?? item?.writer);
+}
+
 function normalizeReviewCollection(payload) {
   const source = Array.isArray(payload)
     ? payload
@@ -20,6 +24,7 @@ function normalizeReviewCollection(payload) {
   return source.map((item) => {
     const rating = Number(item?.rating ?? 0);
     const createdAt = normalizeText(item?.createdAt);
+    const author = resolveReviewAuthor(item);
     const date = createdAt ? new Date(createdAt) : null;
     const createdLabel = date && !Number.isNaN(date.getTime())
       ? [
@@ -30,8 +35,8 @@ function normalizeReviewCollection(payload) {
       : '';
 
     return {
-      id: String(item?.reviewId ?? item?.id ?? `${normalizeText(item?.memberName)}-${createdAt}`),
-      author: normalizeText(item?.memberName) || '익명',
+      id: String(item?.reviewId ?? item?.id ?? `${author}-${createdAt}`),
+      author: author || '익명',
       content: normalizeText(item?.content) || '등록된 리뷰 내용을 확인할 수 없습니다.',
       rating,
       ratingLabel: rating > 0 ? rating.toFixed(1) : '',

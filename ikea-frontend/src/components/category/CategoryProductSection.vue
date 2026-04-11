@@ -1,4 +1,5 @@
 <script setup>
+import AdminPagination from '../admin/AdminPagination.vue';
 import WishlistToggleButton from '../common/WishlistToggleButton.vue';
 
 defineProps({
@@ -15,6 +16,14 @@ defineProps({
     required: true,
   },
   selectedPageSize: {
+    type: Number,
+    required: true,
+  },
+  currentPage: {
+    type: Number,
+    required: true,
+  },
+  pageCount: {
     type: Number,
     required: true,
   },
@@ -63,6 +72,7 @@ defineProps({
 const emit = defineEmits([
   'update-sort',
   'update-page-size',
+  'update:currentPage',
   'clear-price-filter',
   'clear-group-filter',
   'toggle-wishlist',
@@ -74,6 +84,10 @@ function updateSort(value) {
 
 function updatePageSize(value) {
   emit('update-page-size', value);
+}
+
+function updateCurrentPage(value) {
+  emit('update:currentPage', value);
 }
 
 function clearPriceFilter() {
@@ -106,9 +120,9 @@ function toggleWishlist(item) {
           <option>할인율순</option>
         </select>
         <select :value="selectedPageSize" aria-label="페이지 크기 선택" @change="updatePageSize($event.target.value)">
+          <option :value="10">10개씩 보기</option>
           <option :value="20">20개씩 보기</option>
-          <option :value="40">40개씩 보기</option>
-          <option :value="60">60개씩 보기</option>
+          <option :value="30">30개씩 보기</option>
         </select>
       </div>
     </div>
@@ -179,6 +193,12 @@ function toggleWishlist(item) {
     <div v-if="!displayedProducts.length" class="hs-empty-state">
       선택한 조건에 맞는 상품이 없습니다.
     </div>
+
+    <AdminPagination
+      :current-page="currentPage"
+      :page-count="pageCount"
+      @update:current-page="updateCurrentPage"
+    />
   </section>
 </template>
 

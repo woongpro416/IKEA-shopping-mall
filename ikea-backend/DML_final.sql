@@ -235,10 +235,3 @@ COMMIT;
 SELECT COUNT(*) AS category_count FROM category;
 SELECT COUNT(*) AS product_count FROM products;
 SELECT COUNT(*) AS product_stock_count FROM product_stocks;
-
-ALTER TABLE payments DROP CONSTRAINT IF EXISTS payments_payment_method_check;
-ALTER TABLE payments DROP CONSTRAINT IF EXISTS chk_payments_method;
-
-ALTER TABLE payments
-ADD CONSTRAINT chk_payments_method
-CHECK (payment_method IN ('TOSS', 'KAKAO', 'BANK_TRANSFER'));

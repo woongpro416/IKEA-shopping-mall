@@ -149,7 +149,7 @@ CREATE TABLE payments (
     order_id         BIGINT NOT NULL UNIQUE,
     member_id        BIGINT,
     payment_method   VARCHAR(20) NOT NULL
-                    CHECK (payment_method IN ('TOSS', 'KAKAO')),
+                    CHECK (payment_method IN ('TOSS', 'KAKAO', 'BANK_TRANSFER')),
     method_no        VARCHAR(100),
     transaction_id   VARCHAR(100),
     amount           INTEGER NOT NULL,

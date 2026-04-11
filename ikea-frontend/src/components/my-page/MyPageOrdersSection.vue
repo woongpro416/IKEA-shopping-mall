@@ -269,7 +269,7 @@ function requestOrderAction(order) {
   font-size: 18px;
   line-height: 1.45;
   word-break: keep-all;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .my-order-row__product p {
@@ -278,7 +278,7 @@ function requestOrderAction(order) {
   font-size: 13px;
   line-height: 1.6;
   word-break: keep-all;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .my-order-row__number {
@@ -315,6 +315,11 @@ function requestOrderAction(order) {
   cursor: pointer;
 }
 
+.my-order-row__actions a:hover,
+.my-order-row__action-button:hover {
+  transform: none !important;
+}
+
 .my-order-row__action-button--danger {
   border-color: #ecc8c8;
   background: #fff7f7;
@@ -327,35 +332,9 @@ function requestOrderAction(order) {
   cursor: default;
 }
 
-@media (max-width: 1180px) {
+@media (max-width: 1220px) {
   .my-status-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .my-order-board__head,
-  .my-order-row {
-    grid-template-columns: 92px minmax(0, 1fr) 120px;
-  }
-
-  .my-order-board__head span:nth-child(1),
-  .my-order-row__date,
-  .my-order-board__head span:nth-child(4),
-  .my-order-row__price {
-    display: none;
-  }
-
-  .my-order-row__actions {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 980px) {
-  .my-status-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .my-section__action-bar {
-    justify-content: flex-start;
   }
 
   .my-order-board__head {
@@ -386,6 +365,16 @@ function requestOrderAction(order) {
 
   .my-order-row__actions {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 980px) {
+  .my-status-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .my-section__action-bar {
+    justify-content: flex-start;
   }
 }
 

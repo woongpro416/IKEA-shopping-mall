@@ -26,6 +26,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -45,7 +46,7 @@ public class OrderService {
 
     // 주문 목록 조회(내 주문 내역)
     public List<OrderResponseDto> getOrderList(Long memberId) {
-        return orderRepository.findByMember_MemberId(memberId).stream()
+        return orderRepository.findByMember_MemberIdOrderByOrderIdDesc(memberId).stream()
                 .map(OrderResponseDto::new)
                 .collect(Collectors.toList());
     }
@@ -80,9 +81,13 @@ public class OrderService {
             throw new IllegalArgumentException("주문 항목이 없습니다.");
         }
 
-        int totalPrice = orderLines.stream()
-                .mapToInt(line -> line.product().getPrice() * line.quantity())
-                .sum();
+        CheckoutPricing pricing = resolveCheckoutPricing(
+                orderLines,
+                dto.getCouponDiscount(),
+                dto.getPointApplied(),
+                dto.getShippingTotal(),
+                dto.getFinalTotal()
+        );
 
         String orderNo = "ORDER_"
                 + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))
@@ -92,8 +97,8 @@ public class OrderService {
                 .member(member)
                 .orderNo(orderNo)
                 .orderStatus(OrderStatus.PENDING)
-                .totalPrice(totalPrice)
-                .finalPrice(totalPrice)
+                .totalPrice(pricing.productTotal())
+                .finalPrice(pricing.finalPrice())
                 .address(dto.getAddress())
                 .guestName(null)
                 .guestPhone(null)
@@ -115,14 +120,32 @@ public class OrderService {
         }
 
         paymentService.registerBankTransferPaymentIfNeeded(order, member, dto.getPaymentMethod());
-
-        if (dto.getOrderItems() == null || dto.getOrderItems().isEmpty()) {
-            Cart cart = cartRepository.findByMember_MemberId(memberId)
-                    .orElseThrow(() -> new IllegalStateException("존재하지 않는 장바구니입니다."));
-            cartItemRepository.deleteByCart_CartId(cart.getCartId());
-        }
+        clearMemberCartItems(memberId, orderLines, dto.getOrderItems() == null || dto.getOrderItems().isEmpty());
 
         return order.getOrderId();
+    }
+
+    private void clearMemberCartItems(Long memberId, List<OrderLine> orderLines, boolean clearAll) {
+        Cart cart = cartRepository.findByMember_MemberId(memberId)
+                .orElseThrow(() -> new IllegalStateException("존재하지 않는 장바구니입니다."));
+
+        if (clearAll) {
+            cartItemRepository.deleteByCart_CartId(cart.getCartId());
+            return;
+        }
+
+        Set<Long> orderedProductIds = orderLines.stream()
+                .map(line -> line.product().getProductId())
+                .collect(Collectors.toSet());
+
+        List<CartItem> cartItems = cartItemRepository.findByCart_CartId(cart.getCartId());
+        List<CartItem> cartItemsToDelete = cartItems.stream()
+                .filter(cartItem -> orderedProductIds.contains(cartItem.getProduct().getProductId()))
+                .toList();
+
+        if (!cartItemsToDelete.isEmpty()) {
+            cartItemRepository.deleteAll(cartItemsToDelete);
+        }
     }
 
     private List<OrderLine> buildOrderLinesFromCart(Long memberId) {
@@ -164,6 +187,49 @@ public class OrderService {
         return lines;
     }
 
+    private CheckoutPricing resolveCheckoutPricing(
+            List<OrderLine> orderLines,
+            Integer couponDiscountValue,
+            Integer pointAppliedValue,
+            Integer shippingTotalValue,
+            Integer requestedFinalTotal
+    ) {
+        int productTotal = orderLines.stream()
+                .mapToInt(line -> resolveOriginalProductPrice(line.product()) * line.quantity())
+                .sum();
+        int salePriceTotal = orderLines.stream()
+                .mapToInt(line -> line.product().getPrice() * line.quantity())
+                .sum();
+        int couponDiscount = normalizeNonNegativeAmount(couponDiscountValue);
+        int shippingTotal = normalizeNonNegativeAmount(shippingTotalValue);
+        int maxPointUsage = Math.max(0, salePriceTotal - couponDiscount);
+        int pointApplied = Math.min(normalizeNonNegativeAmount(pointAppliedValue), maxPointUsage);
+        int finalPrice = Math.max(0, salePriceTotal - couponDiscount - pointApplied + shippingTotal);
+
+        if (requestedFinalTotal != null && requestedFinalTotal >= 0 && !requestedFinalTotal.equals(finalPrice)) {
+            throw new IllegalArgumentException("주문 금액이 일치하지 않습니다.");
+        }
+
+        return new CheckoutPricing(productTotal, finalPrice);
+    }
+
+    private int resolveOriginalProductPrice(Product product) {
+        Integer originalPrice = product.getOriginalPrice();
+
+        if (originalPrice != null && originalPrice > product.getPrice()) {
+            return originalPrice;
+        }
+
+        return product.getPrice();
+    }
+
+    private int normalizeNonNegativeAmount(Integer value) {
+        return value == null ? 0 : Math.max(0, value);
+    }
+
+    private record CheckoutPricing(Integer productTotal, Integer finalPrice) {
+    }
+
     private record OrderLine(Product product, Integer quantity) {
     }
 
@@ -183,6 +249,13 @@ public class OrderService {
 
         if (order.getOrderStatus() != OrderStatus.PENDING) {
             throw new IllegalArgumentException("미결제 주문만 여기서 취소할 수 있습니다. 결제 완료 주문은 결제 취소를 이용하세요.");
+        }
+
+        for (OrderItem orderItem : order.getOrderItemList()) {
+            productStockService.increaseStock(
+                    orderItem.getProduct().getProductId(),
+                    orderItem.getQuantity()
+            );
         }
 
         order.setOrderStatus(OrderStatus.CANCELLED);
@@ -229,9 +302,16 @@ public class OrderService {
             throw new IllegalArgumentException("장바구니가 비어있습니다.");
         }
 
-        int totalPrice = cartItems.stream()
-                .mapToInt(cartItem -> cartItem.getProduct().getPrice() * cartItem.getQuantity())
-                .sum();
+        List<OrderLine> orderLines = cartItems.stream()
+                .map(cartItem -> new OrderLine(cartItem.getProduct(), cartItem.getQuantity()))
+                .toList();
+        CheckoutPricing pricing = resolveCheckoutPricing(
+                orderLines,
+                dto.getCouponDiscount(),
+                dto.getPointApplied(),
+                dto.getShippingTotal(),
+                dto.getFinalTotal()
+        );
 
         String orderNo = "ORDER_"
                 + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))
@@ -241,8 +321,8 @@ public class OrderService {
                 .member(null)
                 .orderNo(orderNo)
                 .orderStatus(OrderStatus.PENDING)
-                .totalPrice(totalPrice)
-                .finalPrice(totalPrice)
+                .totalPrice(pricing.productTotal())
+                .finalPrice(pricing.finalPrice())
                 .address(dto.getAddress())
                 .guestName(dto.getGuestName())
                 .guestPhone(dto.getGuestPhone())

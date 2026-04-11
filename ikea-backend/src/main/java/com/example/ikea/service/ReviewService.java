@@ -73,7 +73,7 @@ public class ReviewService {
         }
 
         boolean alreadyReviewed = reviewRepository
-                .existsByMember_MemberIdAndOrder_OrderIdAndProduct_ProductId(memberId, order.getOrderId(), product.getProductId());
+                .existsByMember_MemberIdAndProduct_ProductId(memberId, product.getProductId());
 
         if (alreadyReviewed) {
             throw new IllegalArgumentException("해당 주문 상품은 이미 리뷰를 작성했습니다.");
@@ -159,12 +159,5 @@ public class ReviewService {
         reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new IllegalStateException("존재하지 않는 리뷰입니다."));
         reviewRepository.deleteById(reviewId);
-    }
-
-    public List<ReviewResponseDto> getMyReviewList(Long memberId) {
-        return reviewRepository.findByMember_MemberIdOrderByCreatedAtDesc(memberId)
-                .stream()
-                .map(ReviewResponseDto::new)
-                .toList();
     }
 }

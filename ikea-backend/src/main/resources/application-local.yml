@@ -15,4 +15,4 @@ payment:
     secret-key: test_sk_QbgMGZzorzb5y6a5QN9Krl5E1em4
     client-key: test_ck_26DlbXAaV0Lv5Gn6jPqnVqY50Q9R
   kakao:
-    secret-key: DEV54E84E483BF63E1926183C32EF97FBC99699A
+    secret-key: DEV974EEEDEFDAB1AB260371A06EB8D910F2E279

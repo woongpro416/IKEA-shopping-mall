@@ -13,6 +13,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     //주문내역 조회
     List<Order> findByMember_MemberId(Long memberId);
 
+    List<Order> findByMember_MemberIdOrderByOrderIdDesc(Long memberId);
+
     //상태별 주문 목록 (관리자 판매 관리)
     List<Order> findByOrderStatus(OrderStatus status);
 

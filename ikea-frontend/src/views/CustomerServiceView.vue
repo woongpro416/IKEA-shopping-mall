@@ -45,6 +45,7 @@ const {
   qnaSubmitted,
   qnaTotalPages,
   qnaViewerMode,
+  loadQnaDetail,
   reloadQnaRows,
   selectFaqCategory,
   toggleFaq,
@@ -155,6 +156,18 @@ async function removeQna(item) {
     showError(resolveAdminActionErrorMessage(error, '등록 내역을 삭제하지 못했습니다.'));
   } finally {
     isDeletingQna.value = false;
+  }
+}
+
+async function handleToggleQnaItem(item, willOpen) {
+  if (!willOpen || !item?.id || item.answerContent || qnaViewerMode.value === 'admin') {
+    return;
+  }
+
+  try {
+    await loadQnaDetail(item.id);
+  } catch {
+    // keep current row state
   }
 }
 </script>
@@ -299,6 +312,7 @@ async function removeQna(item) {
             :show-writer="qnaViewerMode === 'admin'"
             @edit-item="openQnaEdit"
             @delete-item="removeQna"
+            @toggle-item="handleToggleQnaItem"
           />
 
           <AdminPagination

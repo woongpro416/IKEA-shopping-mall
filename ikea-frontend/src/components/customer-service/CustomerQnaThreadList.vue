@@ -25,7 +25,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['edit-item', 'delete-item']);
+const emit = defineEmits(['edit-item', 'delete-item', 'toggle-item']);
 
 const openIds = shallowRef([]);
 
@@ -35,9 +35,12 @@ function isOpen(itemId) {
 
 function toggleItem(itemId) {
   const normalizedItemId = String(itemId);
-  openIds.value = isOpen(normalizedItemId)
-    ? openIds.value.filter((id) => id !== normalizedItemId)
-    : [...openIds.value, normalizedItemId];
+  const willOpen = !isOpen(normalizedItemId);
+  openIds.value = willOpen
+    ? [...openIds.value, normalizedItemId]
+    : openIds.value.filter((id) => id !== normalizedItemId);
+  const item = props.items.find((entry) => String(entry.id) === normalizedItemId);
+  emit('toggle-item', item, willOpen);
 }
 
 watch(

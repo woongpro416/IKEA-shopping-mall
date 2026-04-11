@@ -12,6 +12,8 @@ import com.example.ikea.dto.KakaoReadyRequestDto;
 import com.example.ikea.dto.KakaoReadyResponseDto;
 import com.example.ikea.dto.PaymentResponseDto;
 import com.example.ikea.dto.TossConfirmRequestDto;
+import com.example.ikea.dto.TossReadyRequestDto;
+import com.example.ikea.dto.TossReadyResponseDto;
 import com.example.ikea.repository.MemberRepository;
 import com.example.ikea.repository.OrderRepository;
 import com.example.ikea.repository.PaymentRepository;
@@ -61,21 +63,155 @@ public class PaymentService {
     @Value("${payment.kakao.base-url}")
     private String kakaoBaseUrl;
 
+    @Value("${payment.kakao.cid:TC0ONETIME}")
+    private String kakaoCid;
+
+    @Value("${payment.redirect-base-url:http://localhost:5173}")
+    private String paymentRedirectBaseUrl;
+
     // ============= TOSS ==============
+
+    // 토스 결제 준비
+    @Transactional
+    public TossReadyResponseDto tossReady(Long memberId, TossReadyRequestDto dto) {
+        Order order = getMemberOrderForPayment(memberId, dto.getOrderId());
+        validatePendingOrder(order);
+
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            HttpHeaders headers = buildTossHeaders();
+
+            Map<String, Object> body = new HashMap<>();
+            body.put("method", "CARD");
+            body.put("amount", order.getFinalPrice());
+            body.put("orderId", order.getOrderNo());
+            body.put("orderName", resolveOrderName(order));
+            body.put("successUrl", resolvePaymentRedirectUrl(dto.getSuccessUrl(), "/payment/toss/success"));
+            body.put("failUrl", resolvePaymentRedirectUrl(dto.getFailUrl(), "/payment/toss/fail"));
+            body.put("flowMode", "DIRECT");
+            body.put("easyPay", "TOSSPAY");
+
+            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
+            ResponseEntity<Map> response = restTemplate.postForEntity(
+                    tossBaseUrl + "/payments", entity, Map.class);
+
+            if (response.getStatusCode() == HttpStatus.OK) {
+                String checkoutUrl = resolveTossCheckoutUrl(response.getBody());
+
+                if (checkoutUrl == null || checkoutUrl.isBlank()) {
+                    throw new IllegalArgumentException("토스 결제창 URL을 확인할 수 없습니다.");
+                }
+
+                return TossReadyResponseDto.builder()
+                        .orderId(order.getOrderId())
+                        .orderNo(order.getOrderNo())
+                        .redirectUrl(checkoutUrl)
+                        .build();
+            }
+        } catch (Exception e) {
+            log.error("토스 결제 준비 실패: {}", e.getMessage(), e);
+            throw new IllegalArgumentException("토스 결제 준비에 실패했습니다.");
+        }
+
+        throw new IllegalArgumentException("토스 결제 준비에 실패했습니다.");
+    }
+
+    // 비회원 토스 결제 준비
+    @Transactional
+    public TossReadyResponseDto tossReadyForGuest(TossReadyRequestDto dto) {
+        Order order = getGuestOrderForPayment(dto.getOrderId());
+        validatePendingOrder(order);
+
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            HttpHeaders headers = buildTossHeaders();
+
+            Map<String, Object> body = new HashMap<>();
+            body.put("method", "CARD");
+            body.put("amount", order.getFinalPrice());
+            body.put("orderId", order.getOrderNo());
+            body.put("orderName", resolveOrderName(order));
+            body.put("successUrl", resolvePaymentRedirectUrl(dto.getSuccessUrl(), "/payment/toss/success"));
+            body.put("failUrl", resolvePaymentRedirectUrl(dto.getFailUrl(), "/payment/toss/fail"));
+            body.put("flowMode", "DIRECT");
+            body.put("easyPay", "TOSSPAY");
+
+            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
+            ResponseEntity<Map> response = restTemplate.postForEntity(
+                    tossBaseUrl + "/payments", entity, Map.class);
+
+            if (response.getStatusCode() == HttpStatus.OK) {
+                String checkoutUrl = resolveTossCheckoutUrl(response.getBody());
+
+                if (checkoutUrl == null || checkoutUrl.isBlank()) {
+                    throw new IllegalArgumentException("토스 결제창 URL을 확인할 수 없습니다.");
+                }
+
+                return TossReadyResponseDto.builder()
+                        .orderId(order.getOrderId())
+                        .orderNo(order.getOrderNo())
+                        .redirectUrl(checkoutUrl)
+                        .build();
+            }
+        } catch (Exception e) {
+            log.error("비회원 토스 결제 준비 실패: {}", e.getMessage(), e);
+            throw new IllegalArgumentException("토스 결제 준비에 실패했습니다.");
+        }
+
+        throw new IllegalArgumentException("토스 결제 준비에 실패했습니다.");
+    }
 
     // 토스 결제 확인
     @Transactional
     public PaymentResponseDto confirmTossPayment(Long memberId, TossConfirmRequestDto dto) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+        Order order = getMemberOrderForPayment(memberId, dto.getOrderNo());
 
-        Order order = orderRepository.findByOrderNo(dto.getOrderNo())
-                .orElseThrow(() -> new IllegalStateException("존재하지 않는 주문입니다."));
+        return confirmTossPayment(order, member, dto);
+    }
 
-        if (order.getMember() == null || !order.getMember().getMemberId().equals(memberId)) {
-            throw new AccessDeniedException("본인 주문만 결제할 수 있습니다.");
-        }
+    // 비회원 토스 결제 확인
+    @Transactional
+    public PaymentResponseDto confirmGuestTossPayment(TossConfirmRequestDto dto) {
+        Order order = getGuestOrderForPayment(dto.getOrderNo());
+        return confirmTossPayment(order, null, dto);
+    }
 
+    // ============== KAKAO ==============
+
+    // 카카오 결제 준비
+    @Transactional
+    public KakaoReadyResponseDto kakaoReady(Long memberId, KakaoReadyRequestDto dto) {
+        Order order = getMemberOrderForPayment(memberId, dto.getOrderId());
+        return requestKakaoReady(order, String.valueOf(memberId), dto);
+    }
+
+    // 비회원 카카오 결제 준비
+    @Transactional
+    public KakaoReadyResponseDto kakaoReadyForGuest(KakaoReadyRequestDto dto) {
+        Order order = getGuestOrderForPayment(dto.getOrderId());
+        return requestKakaoReady(order, "guest-" + order.getOrderId(), dto);
+    }
+
+    // 카카오 결제 확인
+    @Transactional
+    public PaymentResponseDto confirmKakaoPayment(Long memberId, KakaoConfirmRequestDto dto) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalStateException("존재하지 않는 회원입니다."));
+        Order order = getMemberOrderForPayment(memberId, dto.getOrderId());
+
+        return confirmKakaoPayment(order, member, dto, String.valueOf(memberId));
+    }
+
+    // 비회원 카카오 결제 확인
+    @Transactional
+    public PaymentResponseDto confirmGuestKakaoPayment(KakaoConfirmRequestDto dto) {
+        Order order = getGuestOrderForPayment(dto.getOrderId());
+        return confirmKakaoPayment(order, null, dto, "guest-" + order.getOrderId());
+    }
+
+    private PaymentResponseDto confirmTossPayment(Order order, Member member, TossConfirmRequestDto dto) {
         if (!order.getFinalPrice().equals(dto.getAmount())) {
             throw new IllegalArgumentException("결제 금액이 일치하지 않습니다.");
         }
@@ -84,22 +220,15 @@ public class PaymentService {
             throw new IllegalArgumentException("이미 처리된 결제입니다.");
         }
 
-        if (order.getOrderStatus() != OrderStatus.PENDING) {
-            throw new IllegalArgumentException("이미 결제된 주문입니다.");
-        }
+        validatePendingOrder(order);
 
         try {
             RestTemplate restTemplate = new RestTemplate();
-            HttpHeaders headers = new HttpHeaders();
-
-            String encoded = Base64.getEncoder()
-                    .encodeToString((tossSecretKey + ":").getBytes(StandardCharsets.UTF_8));
-            headers.set("Authorization", "Basic " + encoded);
-            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpHeaders headers = buildTossHeaders();
 
             Map<String, Object> body = new HashMap<>();
             body.put("paymentKey", dto.getPaymentKey());
-            body.put("orderId", dto.getOrderNo());
+            body.put("orderId", order.getOrderNo());
             body.put("amount", dto.getAmount());
 
             HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
@@ -108,71 +237,35 @@ public class PaymentService {
 
             if (response.getStatusCode() == HttpStatus.OK) {
                 Map<String, Object> data = response.getBody();
-
-                for (OrderItem orderItem : order.getOrderItemList()) {
-                    productStockService.decreaseStock(
-                            orderItem.getProduct().getProductId(),
-                            orderItem.getQuantity()
-                    );
-                }
-
-                Payment payment = Payment.builder()
-                        .order(order)
-                        .member(member)
-                        .paymentMethod(PaymentMethod.TOSS)
-                        .transactionId(dto.getPaymentKey())
-                        .amount(dto.getAmount())
-                        .paymentStatus(PaymentStatus.OK)
-                        .responseData(data != null ? data.toString() : null)
-                        .paidAt(LocalDateTime.now())
-                        .build();
-
-                paymentRepository.save(payment);
-                order.setOrderStatus(OrderStatus.PAID);
-
+                Payment payment = buildApprovedPayment(order, member, PaymentMethod.TOSS, dto.getPaymentKey(), dto.getAmount(), data);
                 return new PaymentResponseDto(payment);
             }
         } catch (Exception e) {
-            log.error("토스 결제 확인 실패: {}", e.getMessage());
+            log.error("토스 결제 확인 실패: {}", e.getMessage(), e);
             throw new IllegalArgumentException("결제 확인에 실패했습니다.");
         }
 
         throw new IllegalArgumentException("결제 확인에 실패했습니다.");
     }
 
-    // ============== KAKAO ==============
-
-    // 카카오 결제 준비
-    @Transactional
-    public KakaoReadyResponseDto kakaoReady(Long memberId, KakaoReadyRequestDto dto) {
-        Order order = orderRepository.findById(dto.getOrderId())
-                .orElseThrow(() -> new IllegalStateException("존재하지 않는 주문입니다."));
-
-        if (order.getMember() == null || !order.getMember().getMemberId().equals(memberId)) {
-            throw new AccessDeniedException("본인 주문만 결제할 수 있습니다.");
-        }
-
-        if (order.getOrderStatus() != OrderStatus.PENDING) {
-            throw new IllegalArgumentException("이미 처리된 주문입니다.");
-        }
+    private KakaoReadyResponseDto requestKakaoReady(Order order, String partnerUserId, KakaoReadyRequestDto dto) {
+        validatePendingOrder(order);
 
         try {
             RestTemplate restTemplate = new RestTemplate();
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("Authorization", "SECRET_KEY " + kakaoSecretKey);
-            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpHeaders headers = buildKakaoHeaders();
 
             Map<String, Object> body = new HashMap<>();
-            body.put("cid", "TC0ONETIME");
+            body.put("cid", kakaoCid);
             body.put("partner_order_id", order.getOrderNo());
-            body.put("partner_user_id", String.valueOf(memberId));
-            body.put("item_name", "쇼핑몰 주문");
+            body.put("partner_user_id", partnerUserId);
+            body.put("item_name", resolveOrderName(order));
             body.put("quantity", 1);
             body.put("total_amount", order.getFinalPrice());
             body.put("tax_free_amount", 0);
-            body.put("approval_url", "http://localhost:5173/payment/kakao/success");
-            body.put("cancel_url", "http://localhost:5173/payment/kakao/cancel");
-            body.put("fail_url", "http://localhost:5173/payment/kakao/fail");
+            body.put("approval_url", resolvePaymentRedirectUrl(dto.getSuccessUrl(), "/payment/kakao/success"));
+            body.put("cancel_url", resolvePaymentRedirectUrl(dto.getCancelUrl(), "/payment/kakao/cancel"));
+            body.put("fail_url", resolvePaymentRedirectUrl(dto.getFailUrl(), "/payment/kakao/fail"));
 
             HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
             ResponseEntity<Map> response = restTemplate.postForEntity(
@@ -194,38 +287,22 @@ public class PaymentService {
         throw new IllegalArgumentException("카카오 결제 준비에 실패했습니다.");
     }
 
-    // 카카오 결제 확인
-    @Transactional
-    public PaymentResponseDto confirmKakaoPayment(Long memberId, KakaoConfirmRequestDto dto) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalStateException("존재하지 않는 회원입니다."));
-
-        Order order = orderRepository.findById(dto.getOrderId())
-                .orElseThrow(() -> new IllegalStateException("존재하지 않는 주문입니다."));
-
-        if (order.getMember() == null || !order.getMember().getMemberId().equals(memberId)) {
-            throw new AccessDeniedException("본인 주문만 결제할 수 있습니다.");
-        }
-
+    private PaymentResponseDto confirmKakaoPayment(Order order, Member member, KakaoConfirmRequestDto dto, String partnerUserId) {
         if (paymentRepository.findByTransactionId(dto.getTid()).isPresent()) {
             throw new IllegalArgumentException("이미 처리된 결제입니다.");
         }
 
-        if (order.getOrderStatus() != OrderStatus.PENDING) {
-            throw new IllegalArgumentException("이미 처리된 주문입니다.");
-        }
+        validatePendingOrder(order);
 
         try {
             RestTemplate restTemplate = new RestTemplate();
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("Authorization", "SECRET_KEY " + kakaoSecretKey);
-            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpHeaders headers = buildKakaoHeaders();
 
             Map<String, Object> body = new HashMap<>();
-            body.put("cid", "TC0ONETIME");
+            body.put("cid", kakaoCid);
             body.put("tid", dto.getTid());
             body.put("partner_order_id", order.getOrderNo());
-            body.put("partner_user_id", String.valueOf(memberId));
+            body.put("partner_user_id", partnerUserId);
             body.put("pg_token", dto.getPgToken());
 
             HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
@@ -234,28 +311,7 @@ public class PaymentService {
 
             if (response.getStatusCode() == HttpStatus.OK) {
                 Map<String, Object> data = response.getBody();
-
-                for (OrderItem orderItem : order.getOrderItemList()) {
-                    productStockService.decreaseStock(
-                            orderItem.getProduct().getProductId(),
-                            orderItem.getQuantity()
-                    );
-                }
-
-                Payment payment = Payment.builder()
-                        .order(order)
-                        .member(member)
-                        .paymentMethod(PaymentMethod.KAKAO)
-                        .transactionId(dto.getTid())
-                        .amount(order.getFinalPrice())
-                        .paymentStatus(PaymentStatus.OK)
-                        .responseData(data != null ? data.toString() : null)
-                        .paidAt(LocalDateTime.now())
-                        .build();
-
-                paymentRepository.save(payment);
-                order.setOrderStatus(OrderStatus.PAID);
-
+                Payment payment = buildApprovedPayment(order, member, PaymentMethod.KAKAO, dto.getTid(), order.getFinalPrice(), data);
                 return new PaymentResponseDto(payment);
             }
         } catch (Exception e) {
@@ -264,6 +320,145 @@ public class PaymentService {
         }
 
         throw new IllegalArgumentException("카카오 결제 확인에 실패했습니다.");
+    }
+
+    private Payment buildApprovedPayment(
+            Order order,
+            Member member,
+            PaymentMethod paymentMethod,
+            String transactionId,
+            Integer amount,
+            Map<String, Object> responseData
+    ) {
+        Payment payment = paymentRepository.findByOrder_OrderId(order.getOrderId())
+                .orElseGet(() -> Payment.builder()
+                        .order(order)
+                        .member(member)
+                        .paymentMethod(paymentMethod)
+                        .amount(amount)
+                        .build());
+
+        payment.setMember(member);
+        payment.setPaymentMethod(paymentMethod);
+        payment.setTransactionId(transactionId);
+        payment.setAmount(amount);
+        payment.setPaymentStatus(PaymentStatus.OK);
+        payment.setResponseData(responseData != null ? responseData.toString() : null);
+        payment.setPaidAt(LocalDateTime.now());
+
+        Payment savedPayment = paymentRepository.save(payment);
+        order.setOrderStatus(OrderStatus.PAID);
+        return savedPayment;
+    }
+
+    private HttpHeaders buildTossHeaders() {
+        HttpHeaders headers = new HttpHeaders();
+        String encoded = Base64.getEncoder()
+                .encodeToString((tossSecretKey + ":").getBytes(StandardCharsets.UTF_8));
+        headers.set("Authorization", "Basic " + encoded);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        return headers;
+    }
+
+    private HttpHeaders buildKakaoHeaders() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "SECRET_KEY " + kakaoSecretKey);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        return headers;
+    }
+
+    private Order getMemberOrderForPayment(Long memberId, Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalStateException("존재하지 않는 주문입니다."));
+
+        if (order.getMember() == null || !order.getMember().getMemberId().equals(memberId)) {
+            throw new AccessDeniedException("본인 주문만 결제할 수 있습니다.");
+        }
+
+        return order;
+    }
+
+    private Order getMemberOrderForPayment(Long memberId, String orderNo) {
+        Order order = orderRepository.findByOrderNo(orderNo)
+                .orElseThrow(() -> new IllegalStateException("존재하지 않는 주문입니다."));
+
+        if (order.getMember() == null || !order.getMember().getMemberId().equals(memberId)) {
+            throw new AccessDeniedException("본인 주문만 결제할 수 있습니다.");
+        }
+
+        return order;
+    }
+
+    private Order getGuestOrderForPayment(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalStateException("존재하지 않는 주문입니다."));
+
+        if (order.getMember() != null) {
+            throw new AccessDeniedException("비회원 주문만 결제할 수 있습니다.");
+        }
+
+        return order;
+    }
+
+    private Order getGuestOrderForPayment(String orderNo) {
+        Order order = orderRepository.findByOrderNo(orderNo)
+                .orElseThrow(() -> new IllegalStateException("존재하지 않는 주문입니다."));
+
+        if (order.getMember() != null) {
+            throw new AccessDeniedException("비회원 주문만 결제할 수 있습니다.");
+        }
+
+        return order;
+    }
+
+    private void validatePendingOrder(Order order) {
+        if (order.getOrderStatus() != OrderStatus.PENDING) {
+            throw new IllegalArgumentException("이미 처리된 주문입니다.");
+        }
+    }
+
+    private String resolveOrderName(Order order) {
+        if (order.getOrderItemList() == null || order.getOrderItemList().isEmpty()) {
+            return "쇼핑몰 주문";
+        }
+
+        OrderItem firstItem = order.getOrderItemList().get(0);
+        String firstProductName = firstItem.getProduct().getName();
+
+        if (order.getOrderItemList().size() == 1) {
+            return firstProductName;
+        }
+
+        return firstProductName + " 외 " + (order.getOrderItemList().size() - 1) + "건";
+    }
+
+    private String resolvePaymentRedirectUrl(String requestedUrl, String fallbackPath) {
+        if (requestedUrl != null && !requestedUrl.isBlank()) {
+            return requestedUrl;
+        }
+
+        return paymentRedirectBaseUrl + fallbackPath;
+    }
+
+    private String resolveTossCheckoutUrl(Map<String, Object> responseData) {
+        if (responseData == null) {
+            return null;
+        }
+
+        Object redirectUrl = responseData.get("checkoutUrl");
+        if (redirectUrl instanceof String value && !value.isBlank()) {
+            return value;
+        }
+
+        Object checkout = responseData.get("checkout");
+        if (checkout instanceof Map<?, ?> checkoutMap) {
+            Object url = checkoutMap.get("url");
+            if (url instanceof String value && !value.isBlank()) {
+                return value;
+            }
+        }
+
+        return null;
     }
 
     // ============= 공통 ===============
@@ -430,6 +625,13 @@ public class PaymentService {
     // 관리자 전용 전체 결제 목록
     public List<PaymentResponseDto> getAllPaymentList() {
         return paymentRepository.findAll()
+                .stream()
+                .map(PaymentResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
+    public List<PaymentResponseDto> getMyPaymentList(Long memberId) {
+        return paymentRepository.findByMember_MemberIdOrderByCreatedAtDesc(memberId)
                 .stream()
                 .map(PaymentResponseDto::new)
                 .collect(Collectors.toList());

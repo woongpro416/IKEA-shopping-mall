@@ -33,6 +33,7 @@ onMounted(() => {
 
 const selectedSort = ref('인기순');
 const selectedPageSize = ref(20);
+const currentPage = ref(1);
 const selectedTypeSlug = ref('all');
 const priceRange = ref({ min: 0, max: 0 });
 const priceInputs = ref({ min: '0', max: '0' });
@@ -146,7 +147,11 @@ const filteredProducts = computed(() => {
   return decorateStorefrontItems(result);
 });
 
-const displayedProducts = computed(() => filteredProducts.value.slice(0, selectedPageSize.value));
+const pageCount = computed(() => Math.max(Math.ceil(filteredProducts.value.length / selectedPageSize.value), 1));
+const displayedProducts = computed(() => {
+  const start = (currentPage.value - 1) * selectedPageSize.value;
+  return filteredProducts.value.slice(start, start + selectedPageSize.value);
+});
 const priceMinLabel = computed(() => formatPrice(priceRange.value.min));
 const priceMaxLabel = computed(() => formatPrice(priceRange.value.max));
 const minPricePercent = computed(() => {
@@ -190,10 +195,12 @@ function toggleFilter(groupId, option) {
 
   if (current.includes(option)) {
     filterState.value[groupId] = current.filter((item) => item !== option);
+    currentPage.value = 1;
     return;
   }
 
   filterState.value[groupId] = [...current, option];
+  currentPage.value = 1;
 }
 
 function resetFilters() {
@@ -201,6 +208,7 @@ function resetFilters() {
   syncPriceInputs();
   filterState.value = createEmptyFilterState();
   openGroups.value = createDefaultOpenGroups();
+  currentPage.value = 1;
 }
 
 function matchesArrayFilter(selectedItems, valueOrList) {
@@ -245,11 +253,13 @@ function handlePriceInput(changedSide) {
   );
   clampPriceRange(changedSide);
   syncPriceInputs();
+  currentPage.value = 1;
 }
 
 function handlePriceRangeInput(changedSide) {
   clampPriceRange(changedSide);
   syncPriceInputs();
+  currentPage.value = 1;
 }
 
 function formatPrice(price) {
@@ -283,19 +293,27 @@ function updatePriceRange({ side, value }) {
 
 function updateSort(value) {
   selectedSort.value = value;
+  currentPage.value = 1;
 }
 
 function updatePageSize(value) {
   selectedPageSize.value = Number(value);
+  currentPage.value = 1;
+}
+
+function updateCurrentPage(value) {
+  currentPage.value = Number(value);
 }
 
 function clearPriceFilter() {
   priceRange.value = { ...defaultPrice.value };
   syncPriceInputs();
+  currentPage.value = 1;
 }
 
 function clearGroupFilter(groupId) {
   filterState.value[groupId] = [];
+  currentPage.value = 1;
 }
 
 function isProductWishlisted(productId) {
@@ -315,6 +333,15 @@ watch(
     syncPriceInputs();
   },
   { immediate: true, deep: true },
+);
+
+watch(
+  () => pageCount.value,
+  (nextPageCount) => {
+    if (currentPage.value > nextPageCount) {
+      currentPage.value = nextPageCount;
+    }
+  },
 );
 
 watch(
@@ -401,6 +428,8 @@ watch(
             :current-heading="currentHeading"
             :selected-sort="selectedSort"
             :selected-page-size="selectedPageSize"
+            :current-page="currentPage"
+            :page-count="pageCount"
             :active-filter-count="activeFilterCount"
             :is-price-changed="isPriceChanged"
             :filter-groups="filterGroups"
@@ -413,6 +442,7 @@ watch(
             :is-product-wishlisted="isProductWishlisted"
             @update-sort="updateSort"
             @update-page-size="updatePageSize"
+            @update:current-page="updateCurrentPage"
             @clear-price-filter="clearPriceFilter"
             @clear-group-filter="clearGroupFilter"
             @toggle-wishlist="toggleProductWishlist"

@@ -130,9 +130,9 @@ function handleKeydown(event, slide) {
 .hs-hero {
   --hs-hero-height: clamp(560px, 42vw, 760px);
   position: relative;
-  width: 100vw;
+  width: 100%;
+  max-width: 100%;
   height: var(--hs-hero-height);
-  margin-left: calc(50% - 50vw);
   overflow: hidden;
 }
 

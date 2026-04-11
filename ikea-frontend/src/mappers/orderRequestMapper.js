@@ -7,6 +7,24 @@ function normalizeNumber(value, fallback = 0) {
   return Number.isFinite(numericValue) ? numericValue : fallback;
 }
 
+function normalizePaymentMethodForRequest(value) {
+  const normalized = normalizeIdentifier(value).toLowerCase();
+
+  if (normalized === 'tosspay' || normalized === 'toss') {
+    return 'TOSS';
+  }
+
+  if (normalized === 'kakaopay' || normalized === 'kakao') {
+    return 'KAKAO';
+  }
+
+  if (normalized === 'bank' || normalized === 'bank_transfer' || normalized === 'account_transfer' || normalized === 'vbank') {
+    return 'BANK_TRANSFER';
+  }
+
+  return normalizeIdentifier(value);
+}
+
 function buildOrderItems(items = []) {
   return items.map((item) => ({
     productId: normalizeIdentifier(
@@ -45,7 +63,7 @@ export function buildCheckoutOrderRequest(payload = {}) {
     addressDetail: normalizeIdentifier(payload.addressDetail),
     deliveryRequest: normalizeIdentifier(payload.deliveryRequest),
     scheduleText: normalizeIdentifier(payload.scheduleText),
-    paymentMethod: normalizeIdentifier(payload.paymentMethod),
+    paymentMethod: normalizePaymentMethodForRequest(payload.paymentMethod),
     paymentMethodLabel: normalizeIdentifier(payload.paymentMethodLabel),
     productTotal: normalizeNumber(payload.productTotal),
     discountTotal: normalizeNumber(payload.discountTotal),
@@ -67,5 +85,12 @@ export function buildGuestOrderRequest(payload = {}) {
     guestName: normalizeIdentifier(payload.guestName ?? payload.ordererName),
     guestPhone: normalizeIdentifier(payload.guestPhone ?? payload.ordererPhone),
     address: buildDeliveryAddress(payload),
+    paymentMethod: normalizePaymentMethodForRequest(payload.paymentMethod),
+    productTotal: normalizeNumber(payload.productTotal),
+    discountTotal: normalizeNumber(payload.discountTotal),
+    couponDiscount: normalizeNumber(payload.couponDiscount),
+    pointApplied: normalizeNumber(payload.pointApplied),
+    shippingTotal: normalizeNumber(payload.shippingTotal),
+    finalTotal: normalizeNumber(payload.finalTotal),
   };
 }

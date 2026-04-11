@@ -28,7 +28,30 @@ public class PaymentController {
         Long memberId = memberService.getMemberIdByLoginId(userDetails.getUsername());
         return ResponseEntity.ok(paymentService.confirmTossPayment(memberId, dto));
     }
-    
+
+    //토스 결제 준비
+    @PostMapping("/toss/ready")
+    public ResponseEntity<TossReadyResponseDto> readyToss(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody @Valid TossReadyRequestDto dto) {
+        Long memberId = memberService.getMemberIdByLoginId(userDetails.getUsername());
+        return ResponseEntity.ok(paymentService.tossReady(memberId, dto));
+    }
+
+    //비회원 토스 결제 준비
+    @PostMapping("/guest/toss/ready")
+    public ResponseEntity<TossReadyResponseDto> readyGuestToss(
+            @RequestBody @Valid TossReadyRequestDto dto) {
+        return ResponseEntity.ok(paymentService.tossReadyForGuest(dto));
+    }
+
+    //비회원 토스 결제 확인
+    @PostMapping("/guest/confirm/toss")
+    public ResponseEntity<PaymentResponseDto> confirmGuestToss(
+            @RequestBody @Valid TossConfirmRequestDto dto) {
+        return ResponseEntity.ok(paymentService.confirmGuestTossPayment(dto));
+    }
+
     //카카오 결제 준비
     @PostMapping("/kakao/ready")
     public ResponseEntity<KakaoReadyResponseDto> readyKakao(
@@ -37,7 +60,14 @@ public class PaymentController {
         Long memberId = memberService.getMemberIdByLoginId(userDetails.getUsername());
         return ResponseEntity.ok(paymentService.kakaoReady(memberId, dto));
     }
-    
+
+    //비회원 카카오 결제 준비
+    @PostMapping("/guest/kakao/ready")
+    public ResponseEntity<KakaoReadyResponseDto> readyGuestKakao(
+            @RequestBody @Valid KakaoReadyRequestDto dto) {
+        return ResponseEntity.ok(paymentService.kakaoReadyForGuest(dto));
+    }
+
     //카카오 결제 확인
     @PostMapping("/confirm/kakao")
     public ResponseEntity<PaymentResponseDto> confirmKakao (
@@ -45,6 +75,13 @@ public class PaymentController {
             @RequestBody @Valid KakaoConfirmRequestDto dto) {
         Long memberId = memberService.getMemberIdByLoginId(userDetails.getUsername());
         return ResponseEntity.ok(paymentService.confirmKakaoPayment(memberId, dto));
+    }
+
+    //비회원 카카오 결제 확인
+    @PostMapping("/guest/confirm/kakao")
+    public ResponseEntity<PaymentResponseDto> confirmGuestKakao(
+            @RequestBody @Valid KakaoConfirmRequestDto dto) {
+        return ResponseEntity.ok(paymentService.confirmGuestKakaoPayment(dto));
     }
     
     //결제 취소
@@ -64,6 +101,6 @@ public class PaymentController {
     public ResponseEntity<List<PaymentResponseDto>> getMyPaymentList(
             @AuthenticationPrincipal UserDetails userDetails) {
         Long memberId = memberService.getMemberIdByLoginId(userDetails.getUsername());
-        return ResponseEntity.ok(paymentService.getAllPaymentList());
+        return ResponseEntity.ok(paymentService.getMyPaymentList(memberId));
     }
 }

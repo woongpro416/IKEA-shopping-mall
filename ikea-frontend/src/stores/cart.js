@@ -508,6 +508,7 @@ function normalizePaymentMethodCode(value) {
     case 'TOSS_PAY':
       return 'tosspay';
     case 'BANK':
+    case 'BANK_TRANSFER':
     case 'VIRTUAL_ACCOUNT':
       return 'bank';
     case 'CARD':

@@ -9,6 +9,7 @@ import { resolveCustomerServiceSection } from '../constants/customerServiceNavig
 import { getCustomerSupportQnaRows } from '../services/customerSupportService';
 import { getCurrentMember } from '../services/memberService';
 import { getCustomerNoticeRows } from '../services/noticeService';
+import { getQnaDetail } from '../services/qnaService';
 import { useAccountStore } from '../stores/account';
 import { resolveLookupErrorMessage } from '../utils/apiErrorMessage';
 import { hasAdminAccess, hasAuthenticatedSession } from '../utils/accessControl';
@@ -118,6 +119,36 @@ export function useCustomerServiceBoard() {
     const start = (qnaPage.value - 1) * BOARD_PAGE_SIZE;
     return filteredQnaRows.value.slice(start, start + BOARD_PAGE_SIZE);
   });
+
+  async function loadQnaDetail(qnaId) {
+    const normalizedQnaId = Number(qnaId);
+
+    if (!Number.isFinite(normalizedQnaId)) {
+      return null;
+    }
+
+    const payload = await getQnaDetail(normalizedQnaId);
+    const source = payload?.data ?? payload ?? {};
+    const answers = Array.isArray(source.answers) ? source.answers : [];
+    const latestAnswer = answers[0] ?? null;
+
+    qnaRows.value = qnaRows.value.map((row) => {
+      if (Number(row.id) !== normalizedQnaId) {
+        return row;
+      }
+
+      return {
+        ...row,
+        answerContent: String(latestAnswer?.content ?? '').trim(),
+        answerDate: latestAnswer?.createdAt
+          ? String(latestAnswer.createdAt).slice(0, 10).replace(/-/g, '.')
+          : row.answerDate,
+        status: latestAnswer ? '답변 완료' : row.status,
+      };
+    });
+
+    return latestAnswer;
+  }
 
   async function loadNoticeRows() {
     isNoticeLoading.value = true;
@@ -272,6 +303,7 @@ export function useCustomerServiceBoard() {
     qnaSubmitted,
     qnaTotalPages,
     qnaViewerMode,
+    loadQnaDetail,
     reloadQnaRows: loadQnaRows,
     selectFaqCategory,
     toggleFaq,

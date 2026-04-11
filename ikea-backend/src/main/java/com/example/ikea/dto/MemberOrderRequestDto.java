@@ -18,6 +18,18 @@ public class MemberOrderRequestDto {
 
     private String paymentMethod;
 
+    private Integer productTotal;
+
+    private Integer discountTotal;
+
+    private Integer couponDiscount;
+
+    private Integer pointApplied;
+
+    private Integer shippingTotal;
+
+    private Integer finalTotal;
+
     @Valid
     private List<MemberOrderItemRequestDto> orderItems;
 }

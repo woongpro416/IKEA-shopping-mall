@@ -16,13 +16,15 @@ spring:
 
 
 payment:
+  redirect-base-url: ${PAYMENT_REDIRECT_BASE_URL:http://localhost:5173}
   toss:
     secret-key: ${TOSS_SECRET_KEY:test_sk_여기에실제키입력}
     client-key: ${TOSS_CLIENT_KEY:test_ck_여기에실제키입력}
     base-url: https://api.tosspayments.com/v1
   kakao:
-    admin-key: ${KAKAO_ADMIN_KEY:여기에실제키입력}
-    base-url: https://kapi.kakao.com/v1/payment
+    secret-key: ${KAKAO_SECRET_KEY:여기에실제키입력}
+    cid: ${KAKAO_CID:TC0ONETIME}
+    base-url: https://open-api.kakaopay.com/online/v1/payment
 
 jwt:
   secret: ikea2026SpringBootJwtSecretKeySecureABC

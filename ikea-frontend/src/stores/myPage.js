@@ -83,7 +83,17 @@ function formatDateLabel(value) {
   ].join('.');
 }
 
-function buildSummaryCards(orders = [], reviews = []) {
+function createReviewKey(orderId, productId) {
+  return [orderId, productId].map((value) => normalizeIdentifier(value)).join(':');
+}
+
+function buildWrittenReviewKeys(reviews = []) {
+  return new Set(
+    reviews.map((review) => createReviewKey(review?.orderId, review?.productId)).filter(Boolean),
+  );
+}
+
+function buildSummaryCards(orders = [], reviewCount = 0) {
   const inProgressStatuses = new Set(['PENDING', 'PAID', 'ORDERED', 'DELIVERING']);
   const inProgressCount = orders.filter((order) => (
     inProgressStatuses.has(normalizeOrderStatusCode(order.orderStatus ?? order.status))
@@ -93,7 +103,7 @@ function buildSummaryCards(orders = [], reviews = []) {
     { id: 'orders', label: '진행중 주문', value: `${inProgressCount}건` },
     { id: 'coupon', label: '사용 가능 쿠폰', value: '-' },
     { id: 'point', label: '보유 포인트', value: '-' },
-    { id: 'review', label: '내 리뷰', value: `${reviews.length}건` },
+    { id: 'review', label: '내 리뷰', value: `${reviewCount}건` },
   ];
 }
 
@@ -128,7 +138,7 @@ function buildOrderOption(product, orderItem = {}, order = {}) {
   return optionParts.length ? optionParts.join(' / ') : '-';
 }
 
-function buildRecentOrders(orders = [], findProduct) {
+function buildRecentOrders(orders = [], findProduct, writtenReviewKeys = new Set()) {
   return orders.flatMap((order, orderIndex) => {
     const orderId = normalizeIdentifier(order.orderId ?? order.id);
     const orderNumber = normalizeIdentifier(order.orderNo ?? order.orderNumber);
@@ -156,6 +166,8 @@ function buildRecentOrders(orders = [], findProduct) {
         ?? (sourceItems.length === 1 ? order.totalPrice ?? order.finalPrice : null)
         ?? 0
       );
+      const reviewKey = createReviewKey(orderId, productId);
+      const reviewWritten = writtenReviewKeys.has(reviewKey);
 
       return {
         id: normalizeIdentifier(
@@ -174,7 +186,8 @@ function buildRecentOrders(orders = [], findProduct) {
         price: formatPriceLabel(priceValue),
         productId: productId || normalizeIdentifier(product?.id),
         quantity,
-        canWriteReview: orderStatusCode === 'COMPLETED',
+        canWriteReview: orderStatusCode === 'COMPLETED' && !reviewWritten,
+        reviewWritten,
       };
     });
   }).slice(0, 5);
@@ -187,6 +200,8 @@ export const useMyPageStore = defineStore('myPage', {
     return {
       ...getMyPageStaticContent(),
       profile: getFallbackMyPageProfile(accountStore),
+      myReviews: [],
+      localWrittenReviewKeys: [],
       isProfileLoading: false,
       profileError: '',
       loaded: false,
@@ -201,6 +216,37 @@ export const useMyPageStore = defineStore('myPage', {
       this.recentOrders = baseContent.recentOrders;
       this.wishListItems = baseContent.wishListItems;
       this.recentViewItems = baseContent.recentViewItems;
+      this.myReviews = [];
+    },
+    markReviewWritten(order) {
+      const reviewKey = createReviewKey(order?.orderId, order?.productId);
+
+      if (!reviewKey) {
+        return;
+      }
+
+      if (!this.localWrittenReviewKeys.includes(reviewKey)) {
+        this.localWrittenReviewKeys = [...this.localWrittenReviewKeys, reviewKey];
+      }
+
+      this.summaryCards = this.summaryCards.map((card) => {
+        if (card.id !== 'review') {
+          return card;
+        }
+
+        const currentCount = Number.parseInt(String(card.value ?? '0').replace(/[^\d]/g, ''), 10) || 0;
+        const nextCount = Math.max(currentCount, this.localWrittenReviewKeys.length);
+        return {
+          ...card,
+          value: `${nextCount}건`,
+        };
+      });
+
+      this.recentOrders = this.recentOrders.map((item) => (
+        createReviewKey(item.orderId, item.productId) === reviewKey
+          ? { ...item, canWriteReview: false, reviewWritten: true }
+          : item
+      ));
     },
     async loadProfile() {
       const accountStore = useAccountStore();
@@ -213,6 +259,7 @@ export const useMyPageStore = defineStore('myPage', {
       if (!accountStore.accessToken) {
         this.profile = getFallbackMyPageProfile(accountStore);
         this.resetDynamicSections();
+        this.localWrittenReviewKeys = [];
         this.profileError = '';
         this.loaded = true;
         this.loadedSessionKey = '';
@@ -247,8 +294,17 @@ export const useMyPageStore = defineStore('myPage', {
         const reviews = reviewsResult.status === 'fulfilled'
           ? unwrapArrayPayload(reviewsResult.value)
           : [];
+        const writtenReviewKeys = buildWrittenReviewKeys(reviews);
+        this.localWrittenReviewKeys.forEach((reviewKey) => {
+          const normalizedKey = normalizeIdentifier(reviewKey);
 
-        this.summaryCards = buildSummaryCards(orders, reviews);
+          if (normalizedKey) {
+            writtenReviewKeys.add(normalizedKey);
+          }
+        });
+
+        this.myReviews = reviews;
+        this.summaryCards = buildSummaryCards(orders, Math.max(reviews.length, writtenReviewKeys.size));
         this.orderSteps = buildOrderSteps(orders);
         this.recentOrders = buildRecentOrders(
           orders,
@@ -259,6 +315,7 @@ export const useMyPageStore = defineStore('myPage', {
             )
             ?? null
           ),
+          writtenReviewKeys,
         );
         this.wishListItems = [];
         this.recentViewItems = [];

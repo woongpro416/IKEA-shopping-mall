@@ -23,4 +23,16 @@ public class GuestOrderRequestDto {
     private String address;
 
     private String paymentMethod;
+
+    private Integer productTotal;
+
+    private Integer discountTotal;
+
+    private Integer couponDiscount;
+
+    private Integer pointApplied;
+
+    private Integer shippingTotal;
+
+    private Integer finalTotal;
 }
