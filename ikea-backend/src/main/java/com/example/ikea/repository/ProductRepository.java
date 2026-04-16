@@ -11,21 +11,30 @@ import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    List<Product> findByCategory_Id(Long categoryId);
+    List<Product> findByDeletedFalse();
 
-    List<Product> findByNameContaining(String keyword);
+    List<Product> findByCategory_IdAndDeletedFalse(Long categoryId);
 
-    List<Product> findTop4ByOrderByCreatedAtDesc();
+    List<Product> findByNameContainingAndDeletedFalse(String keyword);
+
+    List<Product> findTop4ByDeletedFalseOrderByCreatedAtDesc();
 
     @Query("SELECT p FROM Product p " +
             "JOIN OrderItem oi ON oi.product = p " +
+            "WHERE p.deleted = false " +
             "GROUP BY p " +
             "ORDER BY SUM(oi.quantity) DESC")
     List<Product> findTop4ByBestProducts(Pageable pageable);
 
-    List<Product> findTop3ByCategoryOrderByCreatedAtDesc(Category category);
+    List<Product> findTop3ByCategoryAndDeletedFalseOrderByCreatedAtDesc(Category category);
 
     Optional<Product> findByProductCode(String productCode);
 
+    Optional<Product> findByProductCodeAndDeletedFalse(String productCode);
+
+    Optional<Product> findByProductIdAndDeletedFalse(Long productId);
+
     boolean existsByProductCode(String productCode);
+
+    long countByDeletedFalse();
 }

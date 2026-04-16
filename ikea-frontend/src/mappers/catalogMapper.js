@@ -2,6 +2,7 @@
   backendCategories as fallbackCategories,
   catalogProducts as fallbackProducts,
 } from '../data/catalog';
+import { resolveMediaUrl } from '../utils/mediaUrl';
 
 function cloneArray(items = []) {
   return items.map((item) => ({ ...item }));
@@ -69,12 +70,12 @@ function normalizeDetailDraft(product = {}, fallbackProduct = null) {
     : normalizeStringArray(parsedDraft.galleryImages).length
       ? normalizeStringArray(parsedDraft.galleryImages)
       : fallbackGalleryImages;
-  const dimensionImage = String(
+  const dimensionImage = resolveMediaUrl(String(
     product.dimensionImagePath
     ?? parsedDraft.dimensionImage
     ?? fallbackProduct?.detailDraft?.dimensionImage
     ?? '',
-  ).trim();
+  ).trim());
 
   if (
     !Object.keys(parsedDraft).length
@@ -86,7 +87,7 @@ function normalizeDetailDraft(product = {}, fallbackProduct = null) {
 
   return {
     ...parsedDraft,
-    galleryImages,
+    galleryImages: galleryImages.map((item) => resolveMediaUrl(item)),
     dimensionImage,
     useDimensionImage: Boolean(
       parsedDraft.useDimensionImage ?? dimensionImage,
@@ -198,7 +199,7 @@ export function normalizeCatalogProduct(product = {}) {
   );
   const id = String(product.id ?? product.productId ?? fallbackProduct?.id ?? fallbackProduct?.productId ?? '');
   const productId = String(product.productId ?? product.id ?? fallbackProduct?.productId ?? fallbackProduct?.id ?? '');
-  const resolvedImage = product.image ?? product.imgPath ?? '';
+  const resolvedImage = resolveMediaUrl(product.image ?? product.imgPath ?? '');
   const categoryLabel = product.categoryLabel
     ?? product.categoryName
     ?? resolvedCategory?.label
@@ -224,9 +225,9 @@ export function normalizeCatalogProduct(product = {}) {
     originalPrice,
     discountRate: providedDiscountRate > 0 ? providedDiscountRate : calculatedDiscountRate,
     image: resolvedImage,
-    imgPath: product.imgPath ?? product.image ?? '',
+    imgPath: resolveMediaUrl(product.imgPath ?? product.image ?? ''),
     imageAlt: product.imageAlt ?? product.name ?? fallbackProduct?.name ?? '',
-    altImage: product.altImage ?? fallbackProduct?.altImage ?? '',
+    altImage: resolveMediaUrl(product.altImage ?? fallbackProduct?.altImage ?? ''),
     categorySlug,
     categoryLabel,
     categoryName: product.categoryName ?? categoryLabel,

@@ -40,42 +40,58 @@ const emit = defineEmits([
     </header>
 
     <div class="admin-products-manager__form-grid">
-      <label class="admin-products-manager__field-row">
+      <div class="admin-products-manager__field-row">
         <span>대표 이미지</span>
         <div class="admin-products-manager__field-control">
-          <input type="file" accept="image/*" @change="emit('main-file-change', $event)" />
+          <input
+            class="admin-products-manager__file-input"
+            type="file"
+            accept="image/*"
+            @change="emit('main-file-change', $event)"
+          />
           <small>{{ selectedMainFiles[0]?.name || selectedProduct?.image || '선택된 파일 없음' }}</small>
         </div>
-      </label>
+      </div>
 
-      <label class="admin-products-manager__field-row">
+      <div class="admin-products-manager__field-row">
         <span>갤러리 이미지</span>
         <div class="admin-products-manager__field-control">
-          <input type="file" accept="image/*" multiple @change="emit('gallery-file-change', $event)" />
+          <input
+            class="admin-products-manager__file-input"
+            type="file"
+            accept="image/*"
+            multiple
+            @change="emit('gallery-file-change', $event)"
+          />
           <small>
             {{
               selectedGalleryFiles.length
                 ? `${selectedGalleryFiles.length}개 선택`
                 : existingGalleryCount
                   ? `기존 ${existingGalleryCount}개 사용`
-                  : '선택된 파일 없음'
+              : '선택된 파일 없음'
             }}
           </small>
         </div>
-      </label>
+      </div>
 
-      <label class="admin-products-manager__field-row">
+      <div class="admin-products-manager__field-row">
         <span>치수 이미지</span>
         <div class="admin-products-manager__field-control">
-          <input type="file" accept="image/*" @change="emit('dimension-file-change', $event)" />
+          <input
+            class="admin-products-manager__file-input"
+            type="file"
+            accept="image/*"
+            @change="emit('dimension-file-change', $event)"
+          />
           <small>
             {{
               selectedDimensionFiles[0]?.name
                 || (hasExistingDimensionImage ? '기존 이미지 사용' : '선택된 파일 없음')
-            }}
+              }}
           </small>
         </div>
-      </label>
+      </div>
     </div>
   </section>
 </template>
@@ -124,16 +140,15 @@ const emit = defineEmits([
   align-items: center;
 }
 
-.admin-products-manager__field-control input[type='file'] {
-  display: block;
+.admin-products-manager__file-input {
   width: 100%;
   min-height: var(--control-height);
-  padding-top: 10px;
-  padding-bottom: 10px;
-  padding-inline: 14px;
+  padding: 10px 14px;
   border: 1px solid var(--border-default);
   background: var(--surface-strong);
   font: inherit;
+  color: var(--text-strong);
+  cursor: pointer;
 }
 
 .admin-products-manager__field-control small {
