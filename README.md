@@ -61,15 +61,15 @@
 
 | 홈 | 카테고리 |
 | --- | --- |
-| ![홈 화면](docs/images/real-home.jpg) | ![카테고리 화면](docs/images/real-category.jpg) |
+| ![홈 화면](docs/images/screen-home.png) | ![카테고리 화면](docs/images/screen-category.png) |
 
 | 상품 상세 | 주문/결제 |
 | --- | --- |
-| ![상품 상세 화면](docs/images/real-detail.jpg) | ![주문/결제 화면](docs/images/real-checkout.jpg) |
+| ![상품 상세 화면](docs/images/screen-detail.png) | ![주문/결제 화면](docs/images/screen-checkout.png) |
 
 | 관리자 대시보드 |
 | --- |
-| ![관리자 대시보드](docs/images/real-admin-dashboard.jpg) |
+| ![관리자 대시보드](docs/images/screen-admin-dashboard.png) |
 
 ## 시스템 아키텍처
 
