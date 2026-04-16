@@ -35,14 +35,14 @@ public class ProductService {
     private String uploadDir;
 
     public List<ProductResponseDto> getProductList() {
-        return productRepository.findAll()
+        return productRepository.findByDeletedFalse()
                 .stream()
                 .map(ProductResponseDto::new)
                 .collect(Collectors.toList());
     }
 
     public List<ProductResponseDto> getProductListByCategory(Long categoryId) {
-        return productRepository.findByCategory_Id(categoryId)
+        return productRepository.findByCategory_IdAndDeletedFalse(categoryId)
                 .stream()
                 .map(ProductResponseDto::new)
                 .collect(Collectors.toList());
@@ -54,14 +54,14 @@ public class ProductService {
     }
 
     public List<ProductResponseDto> searchProduct(String keyword) {
-        return productRepository.findByNameContaining(keyword)
+        return productRepository.findByNameContainingAndDeletedFalse(keyword)
                 .stream()
                 .map(ProductResponseDto::new)
                 .collect(Collectors.toList());
     }
 
     public List<ProductResponseDto> getNewProducts() {
-        return productRepository.findTop4ByOrderByCreatedAtDesc()
+        return productRepository.findTop4ByDeletedFalseOrderByCreatedAtDesc()
                 .stream()
                 .map(ProductResponseDto::new)
                 .collect(Collectors.toList());
@@ -78,7 +78,7 @@ public class ProductService {
     public List<ProductResponseDto> getRecommendProducts(Long categoryId) {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new IllegalStateException("존재하지 않는 카테고리입니다."));
-        return productRepository.findTop3ByCategoryOrderByCreatedAtDesc(category)
+        return productRepository.findTop3ByCategoryAndDeletedFalseOrderByCreatedAtDesc(category)
                 .stream()
                 .map(ProductResponseDto::new)
                 .collect(Collectors.toList());
@@ -110,20 +110,27 @@ public class ProductService {
         String trimmed = productIdentifier.trim();
 
         if (trimmed.matches("\\d+")) {
-            return productRepository.findById(Long.valueOf(trimmed))
-                    .orElseGet(() -> productRepository.findByProductCode(trimmed)
+            return productRepository.findByProductIdAndDeletedFalse(Long.valueOf(trimmed))
+                    .orElseGet(() -> productRepository.findByProductCodeAndDeletedFalse(trimmed)
                             .orElseThrow(() -> new IllegalStateException("존재하지 않는 상품입니다.")));
         }
 
-        return productRepository.findByProductCode(trimmed)
+        return productRepository.findByProductCodeAndDeletedFalse(trimmed)
                 .orElseThrow(() -> new IllegalStateException("존재하지 않는 상품입니다."));
     }
 
     // =================== 관리자 권한 ====================
 
     @Transactional
-    public Long createProduct(ProductRequestDto dto, List<MultipartFile> imgFile) throws IOException {
-        String imgPath = saveImage(imgFile);
+    public Long createProduct(
+            ProductRequestDto dto,
+            List<MultipartFile> imgFile,
+            List<MultipartFile> galleryFiles,
+            MultipartFile dimensionFile
+    ) throws IOException {
+        String imgPath = saveMainImage(imgFile);
+        String galleryImages = buildGalleryImagesPayload(saveImages(galleryFiles));
+        String dimensionImagePath = saveOptionalImage(dimensionFile);
 
         Category category = categoryRepository.findById(dto.getCategoryId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다."));
@@ -147,8 +154,8 @@ public class ProductService {
                 .typeSlug(dto.getTypeSlug())
                 .attributes(dto.getAttributes())
                 .detailContent(dto.getDetailContent())
-                .galleryImages(dto.getGalleryImages())
-                .dimensionImagePath(dto.getDimensionImagePath())
+                .galleryImages(galleryImages)
+                .dimensionImagePath(dimensionImagePath)
                 .build();
 
         Product savedProduct = productRepository.save(product);
@@ -164,7 +171,13 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductResponseDto updateProduct(Long productId, ProductRequestDto dto, List<MultipartFile> imgFile) throws IOException {
+    public ProductResponseDto updateProduct(
+            Long productId,
+            ProductRequestDto dto,
+            List<MultipartFile> imgFile,
+            List<MultipartFile> galleryFiles,
+            MultipartFile dimensionFile
+    ) throws IOException {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new IllegalStateException("존재하지 않는 상품입니다."));
 
@@ -180,7 +193,17 @@ public class ProductService {
 
         if (imgFile != null && !imgFile.isEmpty()) {
             deleteImage(product.getImgPath());
-            product.setImgPath(saveImage(imgFile));
+            product.setImgPath(saveMainImage(imgFile));
+        }
+
+        if (galleryFiles != null && !galleryFiles.isEmpty()) {
+            deleteImages(product.getGalleryImages());
+            product.setGalleryImages(buildGalleryImagesPayload(saveImages(galleryFiles)));
+        }
+
+        if (dimensionFile != null && !dimensionFile.isEmpty()) {
+            deleteImage(product.getDimensionImagePath());
+            product.setDimensionImagePath(saveOptionalImage(dimensionFile));
         }
 
         product.setProductCode(productCode);
@@ -194,8 +217,12 @@ public class ProductService {
         product.setTypeSlug(dto.getTypeSlug());
         product.setAttributes(dto.getAttributes());
         product.setDetailContent(dto.getDetailContent());
-        product.setGalleryImages(dto.getGalleryImages());
-        product.setDimensionImagePath(dto.getDimensionImagePath());
+        if (galleryFiles == null || galleryFiles.isEmpty()) {
+            product.setGalleryImages(dto.getGalleryImages() != null ? dto.getGalleryImages() : product.getGalleryImages());
+        }
+        if (dimensionFile == null || dimensionFile.isEmpty()) {
+            product.setDimensionImagePath(dto.getDimensionImagePath() != null ? dto.getDimensionImagePath() : product.getDimensionImagePath());
+        }
 
         return new ProductResponseDto(product);
     }
@@ -204,12 +231,12 @@ public class ProductService {
     public void deleteProduct(Long productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new IllegalStateException("존재하지 않는 상품입니다."));
-        deleteImage(product.getImgPath());
-        productRepository.delete(product);
+        productStockRepository.deleteByProduct_ProductId(productId);
+        product.setDeleted(true);
     }
 
     public Long getProductCount() {
-        return productRepository.count();
+        return productRepository.countByDeletedFalse();
     }
 
     private String normalizeProductCode(String productCode) {
@@ -219,24 +246,59 @@ public class ProductService {
         return productCode.trim();
     }
 
-    private String saveImage(List<MultipartFile> imgFile) throws IOException {
+    private String saveMainImage(List<MultipartFile> imgFile) throws IOException {
         if (imgFile == null || imgFile.isEmpty() || imgFile.get(0).isEmpty()) {
             throw new IllegalArgumentException("상품 이미지는 필수입니다.");
         }
 
+        return saveImage(imgFile.get(0));
+    }
+
+    private List<String> saveImages(List<MultipartFile> files) throws IOException {
+        if (files == null || files.isEmpty()) {
+            return List.of();
+        }
+
+        List<String> savedPaths = new java.util.ArrayList<>();
+        for (MultipartFile file : files) {
+            if (file != null && !file.isEmpty()) {
+                savedPaths.add(saveImage(file));
+            }
+        }
+        return savedPaths;
+    }
+
+    private String saveOptionalImage(MultipartFile file) throws IOException {
+        if (file == null || file.isEmpty()) {
+            return null;
+        }
+
+        return saveImage(file);
+    }
+
+    private String saveImage(MultipartFile file) throws IOException {
         File dir = new File(uploadDir);
         if (!dir.exists()) {
             dir.mkdirs();
         }
 
-        MultipartFile file = imgFile.get(0);
         String originalFilename = file.getOriginalFilename();
         String savedFilename = UUID.randomUUID() + "_" + originalFilename;
 
         File dest = new File(dir, savedFilename);
         file.transferTo(dest);
 
-        return "/uploads/" + savedFilename;
+        return "/uploads/products/" + savedFilename;
+    }
+
+    private String buildGalleryImagesPayload(List<String> imagePaths) {
+        if (imagePaths == null || imagePaths.isEmpty()) {
+            return null;
+        }
+
+        return imagePaths.stream()
+                .map(path -> "\"" + path + "\"")
+                .collect(Collectors.joining(",", "[", "]"));
     }
 
     private void deleteImage(String imgPath) {
@@ -244,11 +306,34 @@ public class ProductService {
             return;
         }
 
-        String fileName = imgPath.replace("/uploads/", "");
+        String fileName = imgPath
+                .replace("/uploads/products/", "")
+                .replace("/uploads/", "");
         File file = new File(uploadDir, fileName);
 
         if (file.exists()) {
             file.delete();
+        }
+    }
+
+    private void deleteImages(String galleryImages) {
+        if (galleryImages == null || galleryImages.isBlank()) {
+            return;
+        }
+
+        String trimmed = galleryImages.trim();
+        if (!trimmed.startsWith("[") || !trimmed.endsWith("]")) {
+            deleteImage(trimmed);
+            return;
+        }
+
+        String body = trimmed.substring(1, trimmed.length() - 1).trim();
+        if (body.isBlank()) {
+            return;
+        }
+
+        for (String token : body.split(",")) {
+            deleteImage(token.replace("\"", "").trim());
         }
     }
 }

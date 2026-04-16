@@ -58,6 +58,10 @@ public class Product {
     @Column(length = 500)
     private String dimensionImagePath;
 
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+    @Builder.Default
+    private Boolean deleted = false;
+
     @CreationTimestamp
     private LocalDateTime createdAt;
 
