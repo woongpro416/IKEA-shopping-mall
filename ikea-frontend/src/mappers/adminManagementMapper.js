@@ -5,7 +5,6 @@ import {
   normalizeAdminPaymentMethodCode,
 } from '../constants/adminOrderConfig';
 import { resolveOrderDateTimeValue, resolveOrderDateValue } from '../utils/orderDate';
-import { resolveMediaUrl } from '../utils/mediaUrl';
 
 export function formatAdminNumber(value) {
   return Number(value ?? 0).toLocaleString('ko-KR');
@@ -124,8 +123,8 @@ export function normalizeAdminProduct(product, categories = []) {
     categoryName: resolvedCategory?.label ?? product.categoryName ?? product.categoryLabel ?? '',
     categoryLabel: resolvedCategory?.label ?? product.categoryLabel ?? product.categoryName ?? '',
     categorySlug: resolvedCategory?.slug ?? product.categorySlug ?? '',
-    image: resolveMediaUrl(product.imgPath ?? product.image ?? ''),
-    altImage: resolveMediaUrl(product.altImage ?? ''),
+    image: product.imgPath ?? product.image ?? '',
+    altImage: product.altImage ?? '',
     createdAt: product.createdAt ?? '',
     reviews: Number(product.reviews ?? 0),
     rating: Number(product.rating ?? 0),

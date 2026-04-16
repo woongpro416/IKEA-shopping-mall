@@ -61,26 +61,6 @@ function buildJsonPartFormData(dto, files = [], fileFieldName) {
   return formData;
 }
 
-function buildAdminProductFormData(dto, payload = {}) {
-  const formData = new FormData();
-  formData.append('dto', new Blob([JSON.stringify(dto)], { type: 'application/json' }));
-
-  (payload.mainFiles ?? []).forEach((file) => {
-    formData.append('imgFile', file);
-  });
-
-  (payload.galleryFiles ?? []).forEach((file) => {
-    formData.append('galleryFiles', file);
-  });
-
-  const dimensionFile = payload.dimensionFiles?.[0];
-  if (dimensionFile) {
-    formData.append('dimensionFile', dimensionFile);
-  }
-
-  return formData;
-}
-
 function buildAdminQnaAnswerPayload(payload = {}) {
   return {
     title: String(payload.title ?? '').trim(),
@@ -103,18 +83,11 @@ export function createAdminProduct(payload) {
     name: payload.name,
     price: Number(payload.price),
     categoryId: Number(payload.categoryId),
-    originalPrice: payload.originalPrice,
-    brand: payload.brand,
-    badge: payload.badge,
-    label: payload.label,
-    typeSlug: payload.typeSlug,
-    attributes: payload.attributes,
-    detailContent: payload.detailContent,
   };
 
   return httpRequester.post(
     '/admin/product',
-    buildAdminProductFormData(dto, payload),
+    buildJsonPartFormData(dto, payload.files ?? [], 'imgFile'),
   );
 }
 
@@ -123,18 +96,11 @@ export function updateAdminProduct(productId, payload) {
     name: payload.name,
     price: Number(payload.price),
     categoryId: Number(payload.categoryId),
-    originalPrice: payload.originalPrice,
-    brand: payload.brand,
-    badge: payload.badge,
-    label: payload.label,
-    typeSlug: payload.typeSlug,
-    attributes: payload.attributes,
-    detailContent: payload.detailContent,
   };
 
   return httpRequester.put(
     `/admin/product/${productId}`,
-    buildAdminProductFormData(dto, payload),
+    buildJsonPartFormData(dto, payload.files ?? [], 'imgFile'),
   );
 }
 

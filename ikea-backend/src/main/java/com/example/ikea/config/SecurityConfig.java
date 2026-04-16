@@ -51,8 +51,7 @@ public class SecurityConfig {
                                 "/api/product/**",
                                 "/api/product_stocks/**",
                                 "/api/category/**",
-                                "/api/notice/**",
-                                "/uploads/**"
+                                "/api/notice/**"
                         ).permitAll()
 
                         .requestMatchers(HttpMethod.GET, "/api/review/product/**").permitAll()

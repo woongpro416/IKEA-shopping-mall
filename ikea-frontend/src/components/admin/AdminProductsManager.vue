@@ -169,28 +169,6 @@ function formatMeasurementsText(measurements = []) {
     .join('\n');
 }
 
-function parseMultilineList(text = '') {
-  return String(text ?? '')
-    .split('\n')
-    .map((line) => line.trim())
-    .filter(Boolean);
-}
-
-function parseMeasurementsInput(text = '') {
-  return String(text ?? '')
-    .split('\n')
-    .map((line) => line.trim())
-    .filter(Boolean)
-    .map((line) => {
-      const [label, ...valueParts] = line.split(':');
-      return {
-        label: String(label ?? '').trim(),
-        value: valueParts.join(':').trim(),
-      };
-    })
-    .filter((item) => item.label && item.value);
-}
-
 function replaceAttributeValues(nextValues = {}) {
   Object.keys(formState.attributes).forEach((fieldId) => {
     formState.attributes[fieldId] = nextValues[fieldId] ?? '';
@@ -330,17 +308,7 @@ function beginEditMode(product) {
 function applyProducts(items) {
   const normalizedItems = items
     .map((item) => normalizeAdminProduct(item, categories.value))
-    .filter((item) => item.productId)
-    .sort((left, right) => {
-      const leftTime = left.createdAt ? new Date(left.createdAt).getTime() : Number.NaN;
-      const rightTime = right.createdAt ? new Date(right.createdAt).getTime() : Number.NaN;
-
-      if (!Number.isNaN(leftTime) && !Number.isNaN(rightTime) && leftTime !== rightTime) {
-        return rightTime - leftTime;
-      }
-
-      return Number(right.productId ?? 0) - Number(left.productId ?? 0);
-    });
+    .filter((item) => item.productId);
 
   products.value = normalizedItems;
 
@@ -417,31 +385,15 @@ async function submitProduct() {
   }
 
   isSubmitting.value = true;
-  const normalizedAttributes = Object.fromEntries(
-    Object.entries(formState.attributes)
-      .map(([key, value]) => [key, String(value ?? '').trim()])
-      .filter(([, value]) => value),
-  );
-  const detailContent = {
-    heroHook: String(formState.heroHook ?? '').trim(),
-    description: parseMultilineList(formState.descriptionText),
-    highlights: parseMultilineList(formState.highlightsText),
-    measurements: parseMeasurementsInput(formState.measurementsText),
-  };
   const payload = {
     name: formState.name.trim(),
-    brand: String(formState.brand ?? '').trim() || null,
-    badge: String(formState.badge ?? '').trim() || null,
-    label: String(formState.label ?? '').trim() || null,
-    typeSlug: String(formState.typeSlug ?? '').trim() || null,
     price: Number(formState.price || 0),
-    originalPrice: formState.originalPrice ? Number(formState.originalPrice) : null,
     categoryId: Number(formState.categoryId),
-    attributes: JSON.stringify(normalizedAttributes),
-    detailContent: JSON.stringify(detailContent),
-    mainFiles: selectedMainFiles.value,
-    galleryFiles: selectedGalleryFiles.value,
-    dimensionFiles: selectedDimensionFiles.value,
+    files: [
+      ...selectedMainFiles.value,
+      ...selectedGalleryFiles.value,
+      ...selectedDimensionFiles.value,
+    ],
   };
   const isEditMode = Boolean(activeProductId.value);
 

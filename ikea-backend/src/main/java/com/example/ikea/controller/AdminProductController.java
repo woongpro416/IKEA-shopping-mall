@@ -23,21 +23,17 @@ public class AdminProductController {
     @PostMapping
     public ResponseEntity<Long> createProduct(
             @RequestPart @Valid ProductRequestDto dto,
-            @RequestPart List<MultipartFile> imgFile,
-            @RequestPart(required = false) List<MultipartFile> galleryFiles,
-            @RequestPart(required = false) MultipartFile dimensionFile)
+            @RequestPart List<MultipartFile> imgFile)
         throws IOException {
-        return ResponseEntity.ok(productService.createProduct(dto, imgFile, galleryFiles, dimensionFile));
+        return ResponseEntity.ok(productService.createProduct(dto, imgFile));
     }
 
     //상품 수정
     @PutMapping("/{productId}")
     public ResponseEntity<ProductResponseDto> updateProduct(
             @PathVariable Long productId, @RequestPart @Valid ProductRequestDto dto,
-            @RequestPart(required = false) List<MultipartFile> imgFile,
-            @RequestPart(required = false) List<MultipartFile> galleryFiles,
-            @RequestPart(required = false) MultipartFile dimensionFile) throws IOException {
-        return ResponseEntity.ok(productService.updateProduct(productId, dto, imgFile, galleryFiles, dimensionFile));
+            @RequestPart(required = false) List<MultipartFile> imgFile) throws IOException {
+        return ResponseEntity.ok(productService.updateProduct(productId, dto, imgFile));
     }
 
     //상품 삭제

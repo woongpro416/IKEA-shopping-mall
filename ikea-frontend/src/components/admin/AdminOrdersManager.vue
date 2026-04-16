@@ -108,33 +108,12 @@ function createOrderItemKey(orderId, item, index) {
   return `${orderId}-${item.productId ?? item.productName ?? item.name ?? index}`;
 }
 
-function resolveOrderSortValue(order) {
-  const timestamp = order?.createdAt ? new Date(order.createdAt).getTime() : Number.NaN;
-
-  if (!Number.isNaN(timestamp)) {
-    return timestamp;
-  }
-
-  return Number(order?.orderId ?? 0);
-}
-
 function applyOrders(items, payments = []) {
   const normalizedOrders = items
     .map((item) => normalizeAdminOrder(item))
     .filter((item) => item.orderId);
 
-  allOrders.value = mergeAdminOrdersWithPayments(normalizedOrders, payments)
-    .slice()
-    .sort((left, right) => {
-      const rightSortValue = resolveOrderSortValue(right);
-      const leftSortValue = resolveOrderSortValue(left);
-
-      if (rightSortValue !== leftSortValue) {
-        return rightSortValue - leftSortValue;
-      }
-
-      return String(right.orderNo ?? '').localeCompare(String(left.orderNo ?? ''));
-    });
+  allOrders.value = mergeAdminOrdersWithPayments(normalizedOrders, payments);
 
   const hasSelectedOrder = allOrders.value.some((order) => order.orderId === selectedOrderId.value);
 
