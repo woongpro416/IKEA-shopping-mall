@@ -1,10 +1,19 @@
-FROM eclipse-temurin:21-jre
+FROM eclipse-temurin:21-jdk-alpine AS build
 
 WORKDIR /app
 
-ARG JAR_FILE=build/libs/*.jar
-COPY ${JAR_FILE} app.jar
+COPY gradlew gradlew
+COPY gradle gradle
+COPY build.gradle settings.gradle ./
+RUN chmod +x gradlew && ./gradlew dependencies --no-daemon
+
+COPY src src
+RUN ./gradlew bootJar -x test --no-daemon
+
+FROM eclipse-temurin:21-jre-alpine
+
+WORKDIR /app
+COPY --from=build /app/build/libs/*.jar app.jar
 
 EXPOSE 8402
-
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]

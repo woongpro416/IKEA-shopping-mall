@@ -1,41 +1,44 @@
 server:
-  port: 8402
+  port: ${SERVER_PORT:8402}
 
 spring:
-  profiles:
-    active: local
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5440/ikea}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:1234}
   jpa:
-    show-sql: true
+    hibernate:
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
+    show-sql: ${SPRING_JPA_SHOW_SQL:false}
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+        dialect: ${SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT:org.hibernate.dialect.PostgreSQLDialect}
   servlet:
     multipart:
-      max-file-size: 20MB
-      max-request-size: 20MB
-
+      max-file-size: ${SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE:20MB}
+      max-request-size: ${SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE:20MB}
 
 payment:
   redirect-base-url: ${PAYMENT_REDIRECT_BASE_URL:http://localhost:5173}
   toss:
-    secret-key: ${TOSS_SECRET_KEY:test_sk_여기에실제키입력}
-    client-key: ${TOSS_CLIENT_KEY:test_ck_여기에실제키입력}
-    base-url: https://api.tosspayments.com/v1
+    secret-key: ${TOSS_SECRET_KEY:test_sk_change_me}
+    client-key: ${TOSS_CLIENT_KEY:test_ck_change_me}
+    base-url: ${TOSS_BASE_URL:https://api.tosspayments.com/v1}
   kakao:
-    secret-key: ${KAKAO_SECRET_KEY:여기에실제키입력}
+    secret-key: ${KAKAO_SECRET_KEY:test_kakao_secret_change_me}
     cid: ${KAKAO_CID:TC0ONETIME}
-    base-url: https://open-api.kakaopay.com/online/v1/payment
+    base-url: ${KAKAO_BASE_URL:https://open-api.kakaopay.com/online/v1/payment}
 
 jwt:
-  secret: ikea2026SpringBootJwtSecretKeySecureABC
+  secret: ${JWT_SECRET:local-dev-secret-change-me-please-use-env}
 
 app:
   cors:
-    allowed-origins: http://localhost:5173
+    allowed-origins: ${APP_CORS_ALLOWED_ORIGINS:http://localhost:5173,http://127.0.0.1:5173}
 
 file:
-  upload-dir: C:/uploads/products/
+  upload-dir: ${FILE_UPLOAD_DIR:uploads/products/}
 
 logging:
   level:
-    org.springframework.security: DEBUG
+    org.springframework.security: ${SPRING_SECURITY_LOG_LEVEL:INFO}
