@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHashHistory } from 'vue-router';
 import {
   buildCustomerServiceNoticeDetailPath,
   buildProductCategoryPath,
@@ -39,7 +39,7 @@ const SearchResultsView = () => import('../views/SearchResultsView.vue');
 const LegalDocumentView = () => import('../views/LegalDocumentView.vue');
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHashHistory(),
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) {
       return savedPosition;
